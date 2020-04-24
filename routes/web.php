@@ -67,3 +67,5 @@ Route::resource('admin/messag-messages', 'Admin\\MessagMessagesController');
 
 Route::resource('admin/conversations', 'Admin\\ConversationsController');
 Route::resource('admin/chats', 'Admin\\ChatsController');
+
+Route::resource('admin/tournament', 'Admin\\TournamentController');
