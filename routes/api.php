@@ -33,7 +33,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('update', 'API\AuthController@Update');
     Route::post('get/profile', 'API\AuthController@getProfile');
     Route::post('logout', 'API\AuthController@logout');
-    
+    Route::post('tournament/store', 'API\TournamentsController@createTournaments');
+    Route::post('tournament/list', 'API\TournamentsController@tournamentList');
+    Route::post('tournament/score', 'API\TournamentsController@addScoreToTournament');
+    Route::post('users', 'API\TournamentsController@findFriend');
+    Route::post('friends/store', 'API\TournamentsController@addFriend');
+    Route::post('friends', 'API\TournamentsController@myFriends');
+    Route::post('friends/requests', 'API\TournamentsController@pendingRequests');
     Route::post('connectWithStripe', 'API\ApiController@connectWithStripe');
 });
 Route::post('testing-push', 'API\ConfigurationController@testingPush');

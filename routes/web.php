@@ -40,32 +40,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
 
     Route::resource('configuration', 'Admin\ConfigurationController');
     Route::get('configuration', 'Admin\ConfigurationController@customEdit');
-
+    Route::resource('tournament', 'Admin\\TournamentController');
 
     Route::get('generator', ['uses' => '\Appzcoder\LaravelAdmin\Controllers\ProcessController@getGenerator']);
     Route::post('generator', ['uses' => '\Appzcoder\LaravelAdmin\Controllers\ProcessController@postGenerator']);
-    Route::resource('vehicle-damage', 'Admin\VehicleDamageController');
 });
 
-//Route::resource('admin/products', 'Admin\\ProductsController');
-//Route::resource('admin/product-category', 'Admin\\ProductCategoryController');
-//Route::resource('admin/service-provider-availability', 'Admin\\ServiceProviderAvailabilityController');
-//Route::resource('admin/vehicle-damage', 'Admin\\VehicleDamageController');
-//Route::resource('admin/user-vehicle', 'Admin\\UserVehicleController');
-//Route::resource('admin/user-job', 'Admin\\UserJobController');
-//Route::resource('admin/user-job-proposal', 'Admin\\UserJobProposalController');
-//Route::resource('admin/notification', 'Admin\\NotificationController');
-//Route::resource('admin/job-issues', 'Admin\\JobIssuesController');
-//Route::resource('admin/job-issues', 'Admin\\JobIssuesController');
-//Route::resource('admin/job-issue-images', 'Admin\\JobIssueImagesController');
-//Route::resource('admin/challenges', 'Admin\\challengesController');
-Route::resource('admin/metas', 'Admin\MetasController');
-Route::get('admin/privacy_policy', 'Admin\MetasController@privacy_policy');
-Route::get('admin/terms_and_condition', 'Admin\MetasController@terms_and_condition');
-
-Route::resource('admin/messag-messages', 'Admin\\MessagMessagesController');
-
-Route::resource('admin/conversations', 'Admin\\ConversationsController');
-Route::resource('admin/chats', 'Admin\\ChatsController');
-
-Route::resource('admin/tournament', 'Admin\\TournamentController');

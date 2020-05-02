@@ -20,6 +20,7 @@ class AuthController extends ApiController {
     public $successStatus = 200;
     
     public function register(Request $request) {
+        
         $rules = ['first_name' => 'required','last_name' => 'required', 'email' => 'required|email|unique:users', 'password' => 'required','image' => 'required', 'field_to_play' => 'required', 'field_to_play_id' => 'required', 'video_stream' => 'required','video_stream_id'=>'required'];
          $rules = array_merge($this->requiredParams, $rules);
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
@@ -50,16 +51,18 @@ class AuthController extends ApiController {
         try {
             $rules = ['email' => 'required', 'password' => 'required'];
             $rules = array_merge($this->requiredParams, $rules);
+            
             $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), true);
+            
             if ($validateAttributes):
                 return $validateAttributes;
             endif;
-
+           
             //parent::addUserDeviceData($user, $request);
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])):
                 $user = \App\User::find(Auth::user()->id);
                 $user->save();
-
+                
                 if ($user->hasRole('Customer') === true):
                     $token = $user->createToken('netscape')->accessToken;
                 else:
