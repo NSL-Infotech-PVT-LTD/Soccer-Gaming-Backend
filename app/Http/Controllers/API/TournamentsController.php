@@ -198,9 +198,13 @@ class TournamentsController extends ApiController {
             $errors = self::formatValidator($validator);
             return parent::error($errors);
         }
-        
+        $friendsdata = \App\UserFriend::where('user_id', '=', \Auth::id())->where('friend_id', '=', $request->friend_id)->where('status', '=', 'pending')->get();
+//        dd($friendsdata->toArray());
+        if (count($friendsdata) > 0){
+            return parent::error(['message' => 'Friend request already sent']);
+        }
         $input = $request->all();
-        $input['user_id'] = \Auth::id(); 
+        $input['user_id'] = \Auth::id();
 
         $input['status'] = 'pending';
 

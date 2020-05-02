@@ -139,7 +139,7 @@
 
 
                       
-                    <li><a href="{{ url('admin/generator')}}"><i class="fa fa-bars"></i> <span>Generator</span></a></li>
+                    <!-- <li><a href="{{ url('admin/generator')}}"><i class="fa fa-bars"></i> <span>Generator</span></a></li> -->
 
                 </ul>
             </div>
