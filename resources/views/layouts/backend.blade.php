@@ -14,6 +14,8 @@
         <link href="{{ asset('template/css/style.css') }} " rel='stylesheet' type='text/css' />
         <!-- Graph CSS -->
         <link href="{{ asset('template/css/font-awesome.css') }}" rel="stylesheet">
+        
+        <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}"/>
         <!-- jQuery -->
         <link href='//fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet' type='text/css'/>
         <link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
