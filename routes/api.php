@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('change-password', 'API\AuthController@changePassword');
     Route::post('update', 'API\AuthController@Update');
     Route::post('get/profile', 'API\AuthController@getProfile');
-    Route::post('logout', 'API\AuthController@logout');
+    Route::get('logout', 'API\AuthController@logout');
     Route::post('tournament/store', 'API\TournamentsController@createTournaments');
     Route::post('tournament/list', 'API\TournamentsController@tournamentList');
     Route::post('tournament/score', 'API\TournamentsController@addScoreToTournament');
