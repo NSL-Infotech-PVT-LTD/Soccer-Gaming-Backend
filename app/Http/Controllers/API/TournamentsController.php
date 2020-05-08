@@ -200,7 +200,7 @@ class TournamentsController extends ApiController {
         }
         $friendsdata = \App\UserFriend::where('user_id', '=', \Auth::id())->where('friend_id', '=', $request->friend_id)->where('status', '=', 'pending')->get();
 //        dd($friendsdata->toArray());
-        if (count($friendsdata) > 0){
+        if (count($friendsdata) > 0) {
             return parent::error(['message' => 'Friend request already sent']);
         }
         $input = $request->all();
@@ -271,6 +271,49 @@ class TournamentsController extends ApiController {
             $myfriends = $myfriends->orderby('id', 'desc');
 
             return parent::success($myfriends->paginate($perPage));
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    public function getVideosByTwitchId(Request $request) {
+//        dd('s');
+        $rules = ['channel_id' => 'required'];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        
+        try {
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://id.twitch.tv/oauth2/token",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => array(
+                    "client_secret: 1u0dzwqcqemxbmo3szsrj7u9akau8z",
+                    "client_id: blxzkdpum1su6aq4aqq9w5gnviawq7",
+                    "grant_type: client_credentials"
+                ),
+            ));
+            
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+//            dd($err);
+            curl_close($curl);
+            if ($err) {
+//            echo "cURL Error #:" . $err;
+            } else {
+//            echo $response;
+            }
+          
+        dd($response);
+            return json_decode($response);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }

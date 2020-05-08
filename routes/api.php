@@ -45,6 +45,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('chat/getItems', 'API\MessageController@getItems');
     Route::post('chat/getItemsByReceiverId', 'API\MessageController@getItemsByReceiverId');
     
+    Route::post('game/twitch', 'API\TournamentsController@getVideosByTwitchId');
+    
     Route::post('connectWithStripe', 'API\ApiController@connectWithStripe');
 });
 Route::post('testing-push', 'API\ConfigurationController@testingPush');
