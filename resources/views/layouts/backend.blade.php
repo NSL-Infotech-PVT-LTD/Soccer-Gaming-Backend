@@ -11,7 +11,9 @@
         <!-- Bootstrap Core CSS -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <!-- Custom CSS -->
+          <link href="{{ asset('template/css/style-new.css') }} " rel='stylesheet' type='text/css' />
         <link href="{{ asset('template/css/style.css') }} " rel='stylesheet' type='text/css' />
+
         <!-- Graph CSS -->
         <link href="{{ asset('template/css/font-awesome.css') }}" rel="stylesheet">
         
