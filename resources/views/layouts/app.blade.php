@@ -35,7 +35,7 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         @if(!Auth::check())
-                            <li><a class="nav-link" href="{{ url('/login') }}">Login</a></li>
+                            
                             <!--<li><a class="nav-link" href="{{ url('/register') }}">Register</a></li>-->
                         @else
                             <li class="nav-item dropdown">
