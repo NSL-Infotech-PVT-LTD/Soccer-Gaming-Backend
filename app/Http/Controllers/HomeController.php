@@ -30,5 +30,10 @@ class HomeController extends Controller {
 
         return view('home');
     }
+    
+    public function forgotsuccess() {
+        \Auth::logout();
+        return view('forgotsuccess');
+    }
 
 }
