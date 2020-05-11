@@ -21,7 +21,7 @@ class AuthController extends ApiController {
 
     public function register(Request $request) {
 
-        $rules = ['username' => 'required', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required|string|max:255|unique:users', 'password' => 'required', 'image' => 'required', 'field_to_play' => 'required', 'field_to_play_id' => '', 'video_stream' => 'required', 'video_stream_id' => ''];
+        $rules = ['username' => 'required|string|max:255|unique:users', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required|email|unique:users', 'password' => 'required', 'image' => 'required', 'field_to_play' => 'required', 'field_to_play_id' => '', 'video_stream' => 'required', 'video_stream_id' => ''];
         $rules = array_merge($this->requiredParams, $rules);
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
