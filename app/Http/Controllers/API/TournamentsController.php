@@ -278,30 +278,70 @@ class TournamentsController extends ApiController {
 
     public function getVideosByTwitchId(Request $request) {
 //        dd('s');
-        $rules = ['channel_id' => 'required'];
+        $rules = [];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
         endif;
-        
+        $a = [];
+        foreach (['44322889', '150314191'] as $chanelId):
+            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/' . $chanelId . '/videos')['videos'];
+        endforeach;
+        dd($a);
+    }
+
+    private static function getCurl($url) {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Client-ID: blxzkdpum1su6aq4aqq9w5gnviawq7',
+                'Accept: application/vnd.twitchtv.v5+json'
+            ),
+        ));
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+        if ($err) {
+//            echo "cURL Error #:" . $err;
+        } else {
+//            echo $response;
+        }
+//        dd($response);
+        return (array) json_decode($response);
+    }
+
+    private static function GetTwitchToken() {
         try {
+            $data = array(
+                "client_id" => "blxzkdpum1su6aq4aqq9w5gnviawq7",
+                "client_secret" => "1u0dzwqcqemxbmo3szsrj7u9akau8z",
+                "grant_type" => "client_credentials",
+                "scope" => "collections_edit"
+            );
             $curl = curl_init();
+//            dd(http_build_query($data));
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://id.twitch.tv/oauth2/token",
+                CURLOPT_URL => "https://id.twitch.tv/oauth2/token?" . http_build_query($data),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
                 CURLOPT_TIMEOUT => 30,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "GET",
-                CURLOPT_HTTPHEADER => array(
-                    "client_secret: 1u0dzwqcqemxbmo3szsrj7u9akau8z",
-                    "client_id: blxzkdpum1su6aq4aqq9w5gnviawq7",
-                    "grant_type: client_credentials"
-                ),
+                CURLOPT_CUSTOMREQUEST => "POST",
+//                CURLOPT_POSTFIELDS => json_encode($data),
+                CURLOPT_HTTPHEADER => [],
             ));
-            
+
             $response = curl_exec($curl);
             $err = curl_error($curl);
 //            dd($err);
@@ -311,8 +351,8 @@ class TournamentsController extends ApiController {
             } else {
 //            echo $response;
             }
-          
-        dd($response);
+            dd(json_decode($response)->access_token);
+            dd();
             return json_decode($response);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
