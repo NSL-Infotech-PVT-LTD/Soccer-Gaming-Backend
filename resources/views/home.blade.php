@@ -21,11 +21,11 @@
         padding: 20px;
         background-color: #382e72;
         text-decoration: none;
-        border-radius: 10px;
+        border-radius:0px;
     }
     
     .overviewcard__icon {
-        font-size: 30px;
+        font-size: 18px;
         text-decoration: none;
     }
     .overviewcard__info {

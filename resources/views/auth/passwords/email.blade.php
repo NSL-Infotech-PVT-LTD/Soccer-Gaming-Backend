@@ -5,7 +5,7 @@
 <div class="container">
     <div class="row justify-content-center">
          <div class="log">
-                <img src="http://localhost/tournie/public/logo.png">
+                <img src="/tournie/public/logo.png">
  
             </div>
         <div class="col-md-12">
