@@ -18,10 +18,11 @@ use Illuminate\Support\Facades\Password;
 class AuthController extends ApiController {
 
     public $successStatus = 200;
-    
+
     public function register(Request $request) {
-        $rules = ['first_name' => 'required','last_name' => 'required', 'email' => 'required|email|unique:users', 'password' => 'required','image' => 'required', 'field_to_play' => 'required', 'field_to_play_id' => 'required', 'video_stream' => 'required','video_stream_id'=>'required'];
-         $rules = array_merge($this->requiredParams, $rules);
+
+        $rules = ['username' => 'required|string|max:255|unique:users', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required|email|unique:users', 'password' => 'required', 'image' => 'required', 'field_to_play' => 'required', 'field_to_play_id' => '', 'video_stream' => 'required', 'video_stream_id' => ''];
+        $rules = array_merge($this->requiredParams, $rules);
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -46,32 +47,68 @@ class AuthController extends ApiController {
         }
     }
 
-    public function login(Request $request) {
+//    public function login(Request $request) {
+//        try {
+//            $rules = ['email' => 'required', 'password' => 'required'];
+//            $rules = array_merge($this->requiredParams, $rules);
+//
+//            $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), true);
+//
+//            if ($validateAttributes):
+//                return $validateAttributes;
+//            endif;
+//
+//            //parent::addUserDeviceData($user, $request);
+//            if (Auth::attempt(['email' => request('email'), 'password' => request('password')])):
+//                $user = \App\User::find(Auth::user()->id);
+//                $user->save();
+//
+//                if ($user->hasRole('Customer') === true):
+//                    $token = $user->createToken('netscape')->accessToken;
+//                else:
+//                    return parent::error("User not found");
+//                endif;
+////                $user = $user->with('roles');
+//                // Add user device details for firbase
+//                parent::addUserDeviceData($user, $request);
+//                return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
+//            else:
+//                return parent::error("User credentials doesn't matched");
+//            endif;
+//        } catch (\Exception $ex) {
+//            return parent::error($ex->getMessage());
+//        }
+//    }
+
+    public function Login(Request $request) {
         try {
-            $rules = ['email' => 'required', 'password' => 'required'];
-            $rules = array_merge($this->requiredParams, $rules);
-            $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), true);
-            if ($validateAttributes):
-                return $validateAttributes;
-            endif;
 
-            //parent::addUserDeviceData($user, $request);
-            if (Auth::attempt(['email' => request('email'), 'password' => request('password')])):
-                $user = \App\User::find(Auth::user()->id);
-                $user->save();
+        $rules = ['email' => 'required', 'password' => 'required'];
+        $rules = array_merge($this->requiredParams, $rules);
 
-                if ($user->hasRole('Customer') === true):
-                    $token = $user->createToken('netscape')->accessToken;
-                else:
-                    return parent::error("User not found");
-                endif;
-//                $user = $user->with('roles');
-                // Add user device details for firbase
-                parent::addUserDeviceData($user, $request);
-                return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
-            else:
-                return parent::error("User credentials doesn't matched");
-            endif;
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), true);
+
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+
+            if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+//                dd('s');
+            $user = \App\User::find(Auth::user()->id);
+            $user->save();
+            $token = $user->createToken('netscape')->accessToken;
+            parent::addUserDeviceData($user, $request);
+            return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
+        } elseif (Auth::attempt(['username' => request('email'), 'password' => request('password')])) {
+//                dd('st');
+            $user = \App\User::find(Auth::user()->id);
+            $user->save();
+            $token = $user->createToken('netscape')->accessToken;
+            parent::addUserDeviceData($user, $request);
+            return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
+        } else {
+            return parent::error("User credentials doesn't matched");
+        }
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
@@ -112,7 +149,7 @@ class AuthController extends ApiController {
                 $model = \App\User::find(\Auth::id());
                 $model->password = \Hash::make($request->password);
                 $model->save();
-                return parent::success(['message'=>'Password Changed Successfully']);
+                return parent::success(['message' => 'Password Changed Successfully']);
             else:
                 return parent::error('Please use valid old password');
             endif;
@@ -120,8 +157,8 @@ class AuthController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
-    
-     public function resetPassword(Request $request, Factory $view) {
+
+    public function resetPassword(Request $request, Factory $view) {
         //Validating attributes
         $rules = ['email' => 'required|exists:users,email'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), true);
@@ -154,11 +191,11 @@ class AuthController extends ApiController {
         }
         return parent::error('Something Went');
     }
-    
+
     public function Update(Request $request) {
         $user = \App\User::findOrFail(\Auth::id());
 
-        $rules = ['first_name' => '', 'last_name' => '', 'image' => '', 'field_to_play' => '','field_to_play_id'=>'','video_stream'=>'','video_stream_id'=>''];
+        $rules = ['first_name' => '', 'last_name' => '', 'image' => '', 'field_to_play' => '', 'field_to_play_id' => '', 'video_stream' => '', 'video_stream_id' => ''];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -172,14 +209,14 @@ class AuthController extends ApiController {
             $user->fill($input);
             $user->save();
 
-            $user = \App\User::whereId($user->id)->select('id','first_name','last_name','email','image','field_to_play','field_to_play_id','video_stream','video_stream_id')->first();
+            $user = \App\User::whereId($user->id)->select('id', 'first_name', 'last_name', 'email', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id')->first();
             return parent::successCreated(['message' => 'Updated Successfully', 'user' => $user]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
     }
-    
-     public function getProfile(Request $request) {
+
+    public function getProfile(Request $request) {
         $rules = [];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
@@ -190,7 +227,7 @@ class AuthController extends ApiController {
             $model = new \App\User();
             $roleusersSA = \DB::table('role_user')->where('role_id', \App\Role::where('name', 'Customer')->first()->id)->pluck('user_id');
             $model = $model->wherein('users.id', $roleusersSA)
-                    ->Select('id','first_name','last_name','email','image','field_to_play','field_to_play_id','video_stream','video_stream_id');
+                    ->Select('id', 'first_name', 'last_name', 'email', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id');
             $model = $model->groupBy('users.id');
             $model = $model->where('users.id', \Auth::id());
             if (isset($request->search))

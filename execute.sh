@@ -1,6 +1,6 @@
-cd /var/www/dev/wreckt 
+cd /var/www/dev/tournie 
 git pull origin development-0.0.6
 composer install
-sudo chmod -R 0777 /var/www/dev/wreckt/storage /var/www/dev/wreckt/bootstrap /var/www/dev/wreckt/public/uploads 
-/usr/bin/php /var/www/dev/wreckt/artisan migrate
+sudo chmod -R 0777 /var/www/dev/tournie/storage /var/www/dev/tournie/bootstrap /var/www/dev/tournie/public/uploads 
+/usr/bin/php /var/www/dev/tournie/artisan migrate
 exit
