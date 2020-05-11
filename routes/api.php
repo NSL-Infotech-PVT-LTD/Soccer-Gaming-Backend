@@ -47,6 +47,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     
     
     Route::post('connectWithStripe', 'API\ApiController@connectWithStripe');
+    
+    Route::post('game/twitch', 'API\TournamentsController@getVideosByTwitchId');
 });
 Route::post('testing-push', 'API\ConfigurationController@testingPush');
-    Route::post('game/twitch', 'API\TournamentsController@getVideosByTwitchId');
+    

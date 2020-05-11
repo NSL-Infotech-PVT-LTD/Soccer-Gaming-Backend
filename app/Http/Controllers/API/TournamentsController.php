@@ -279,6 +279,12 @@ class TournamentsController extends ApiController {
     public function getVideosByTwitchId(Request $request) {
 //        dd('s');
         $rules = [];
+//        dd(Auth::id());
+        $myfriends = new \App\UserFriend();
+        $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
+
+        $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted");
+        dd($myfriends->toArray());
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;

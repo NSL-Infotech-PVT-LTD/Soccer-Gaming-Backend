@@ -25,7 +25,7 @@
     }
     
     .overviewcard__icon {
-        font-size: 30px;
+        font-size: 22px;
         text-decoration: none;
     }
     .overviewcard__info {
@@ -59,7 +59,7 @@
                 <a href="{{url('admin/ads')}}" class="links" style="text-decoration: none;">
                     <div class="main-overview">
                         <div class="overviewcard">
-                            <div class="overviewcard__icon">Total Tournaments&nbsp;&nbsp;<i class="fa fa-picture-o"></i></div>
+                            <div class="overviewcard__icon">Total Tournament&nbsp;<i class="fa fa-picture-o"></i></div>
                             <div class="overviewcard__info"><?php
                                 echo count($users = App\Tournament::get());
                                 ?></div>
