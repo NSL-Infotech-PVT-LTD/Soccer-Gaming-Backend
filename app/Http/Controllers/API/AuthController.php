@@ -227,7 +227,7 @@ class AuthController extends ApiController {
             $model = new \App\User();
             $roleusersSA = \DB::table('role_user')->where('role_id', \App\Role::where('name', 'Customer')->first()->id)->pluck('user_id');
             $model = $model->wherein('users.id', $roleusersSA)
-                    ->Select('id', 'first_name', 'last_name', 'email', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id');
+                    ->Select('id', 'username', 'first_name', 'last_name', 'email', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id');
             $model = $model->groupBy('users.id');
             $model = $model->where('users.id', \Auth::id());
             if (isset($request->search))

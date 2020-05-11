@@ -50,15 +50,19 @@ label.form-check-label {
     padding-top: 0px;
 }
 .main_log {
-    max-width:40%;
+    width: 40%;
     margin: auto;
     background: #eef2f5;
-    padding: 40px 10px 15px; 
+    padding: 40px 10px 15px;
     border-bottom: 4px solid #163551;
-        margin-top: 10%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%)
 }
 div#app {
-    background: url(http://localhost/tournie/public/banner.jpg);
+    background: url(/tournie/public/banner.jpg);
     background-size: cover;
     height: 100vh;
     background-position: center;
@@ -73,8 +77,35 @@ div#app {
     letter-spacing: 2px;
     color: #f00809;
 }
+
+.ch {
+    background: #f00809;
+    padding: 10px 0;
+    color: #fff !IMPORTANT;
+    letter-spacing: 0px;
+    font-size: 11px !IMPORTANT;
+}
+.main_log.ch {
+    background: #f00809;
+    padding: 33px 0;
+    width: 50%;
+}
+.card-header.ch {
+    font-size: 15px !IMPORTANT;
+    background: #fff;
+    color: #f00809 !IMPORTANT;
+}
+
+ .top_bg {
+    background: #eceae9 !IMPORTANT;
+}
+.top_left a {
+    background: #163551;
+    padding: 9px 20px;
+    text-transform: uppercase;
+}
 @media(max-width:767px){.main_log {
-    max-width: 100%;
+   width: 100% !IMPORTANT;
     padding: 40px 0px;
 
 }
@@ -90,7 +121,7 @@ a.btn.btn-link {
 
 @media(min-width:768px) and (max-width: 1200px){
   .main_log {
-    max-width: 80%;
+   width: 80%;
     padding: 40px 0px;
 
 }

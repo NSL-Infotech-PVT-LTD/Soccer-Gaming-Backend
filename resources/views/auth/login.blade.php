@@ -7,7 +7,7 @@
         <div class="col-md-12">
          
             <div class="log">
-                <img src="http://localhost/tournie/public/logo.png">
+                <img src="/tournie/public/logo.png">
  
             </div>
 
