@@ -25,11 +25,8 @@
     }
     
     .overviewcard__icon {
-<<<<<<< HEAD
-        font-size: 22px;
-=======
+
         font-size: 18px;
->>>>>>> c86cdd3e1b84f762f1025e9de423d8f161904415
         text-decoration: none;
     }
     .overviewcard__info {
@@ -52,7 +49,8 @@
                             <div class="overviewcard__icon">Total App-Users&nbsp;&nbsp;<i class="fa fa-users"></i></div>
                             <div class="overviewcard__info"><?php
                                 echo count($users = App\User::get());
-                                ?></div>
+                                ?>
+                            </div>
                         </div>
                     </div>
                 </a>
@@ -63,10 +61,10 @@
                 <a href="{{url('admin/ads')}}" class="links" style="text-decoration: none;">
                     <div class="main-overview">
                         <div class="overviewcard">
-                            <div class="overviewcard__icon">Total Tournament&nbsp;<i class="fa fa-picture-o"></i></div>
+                            <div class="overviewcard__icon">Total Tournament&nbsp;<i class="fa fa-trophy"></i></div>
                             <div class="overviewcard__info"><?php
-                                echo count($users = App\Tournament::get());
-                                ?></div>
+                                echo count($tournament = App\Tournament::get());
+                               ?></div>
                         </div>
                     </div>
                 </a>
@@ -75,9 +73,9 @@
                 <a href="{{url('admin/features')}}" class="links" style="text-decoration: none;">
                     <div class="main-overview">
                         <div class="overviewcard">
-                            <div class="overviewcard__icon">Total Teams&nbsp;&nbsp;<i class="fa fa-unlock"></i></div>
+                            <div class="overviewcard__icon">Total Teams&nbsp;&nbsp;<i class="fa fa-gamepad"></i></div>
                             <div class="overviewcard__info"><?php
-                                //echo //count($users = App\Feature::get());
+                                echo count($teams = \App\TournamentFixture::get());
                                 ?></div>
                         </div>
                     </div>

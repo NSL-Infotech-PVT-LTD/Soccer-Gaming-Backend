@@ -279,19 +279,31 @@ class TournamentsController extends ApiController {
     public function getVideosByTwitchId(Request $request) {
 //        dd('s');
         $rules = [];
-//        dd(Auth::id());
-        $myfriends = new \App\UserFriend();
-        $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
-
-        $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted");
-        dd($myfriends->toArray());
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
         endif;
+        
+    //mycode for channel id    
+        
+        $myfriends = new \App\UserFriend();
+        $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
+        $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted")->get();
+        $friendsChannelId = [];
+        foreach($myfriends as $friends):
+            $friendsData = User::select('video_stream_id')->where("id", $friends->friend_id)->where("video_stream", "twitch")->get();
+            foreach($friendsData as $data):
+                $friendsChannelId[] = $data->video_stream_id;
+            endforeach;
+        endforeach;
+//        dd($friendsChannelId);
+        
+    //ends
+        
         $a = [];
-        foreach (['44322889', '150314191'] as $chanelId):
-            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/' . $chanelId . '/videos')['videos'];
+        foreach ($friendsChannelId as $chanelId):
+//            dd($chanelId);
+            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/' . $chanelId . '/videos')['videos'][0];
         endforeach;
         dd($a);
     }

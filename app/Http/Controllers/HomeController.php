@@ -35,5 +35,4 @@ class HomeController extends Controller {
         \Auth::logout();
         return view('auth.passwords.forgetsuccess');
     }
-
 }

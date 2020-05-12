@@ -76,9 +76,9 @@
                 <div class="card-body">
                     <?php if (isset($role_id)): ?> 
                        
-                            <a href="{{ url('/admin/users/create') }}" class="btn btn-success btn-sm" title="Add New User">
+<!--                            <a href="{{ url('/admin/users/create') }}" class="btn btn-success btn-sm" title="Add New User">
                                 <i class="fa fa-plus" aria-hidden="true"></i> Add New
-                            </a>
+                            </a>-->
                        
                     <?php endif; ?>
 
