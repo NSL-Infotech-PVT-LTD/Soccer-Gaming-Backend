@@ -104,6 +104,15 @@ div#app {
     padding: 9px 20px;
     text-transform: uppercase;
 }
+
+.card {
+    border: 0;
+}
+
+.card-header {
+    border: 0;
+}
+
 @media(max-width:767px){.main_log {
    width: 100% !IMPORTANT;
     padding: 40px 0px;
