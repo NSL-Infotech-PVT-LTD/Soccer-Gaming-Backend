@@ -37,7 +37,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
     ]);
     Route::resource('settings', 'Admin\SettingsController');
     Route::post('user/change-status', 'Admin\UsersController@changeStatus')->name('user.changeStatus');
-
+    Route::resource('teams', 'Admin\\TeamsController');
     Route::resource('configuration', 'Admin\ConfigurationController');
     Route::get('configuration', 'Admin\ConfigurationController@customEdit');
     Route::resource('tournament', 'Admin\\TournamentController');
@@ -45,4 +45,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
     Route::get('generator', ['uses' => '\Appzcoder\LaravelAdmin\Controllers\ProcessController@getGenerator']);
     Route::post('generator', ['uses' => '\Appzcoder\LaravelAdmin\Controllers\ProcessController@postGenerator']);
 });
+
 

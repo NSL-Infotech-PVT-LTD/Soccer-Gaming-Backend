@@ -138,6 +138,7 @@
 <?php endforeach; ?>
                         </ul>
                     </li>
+                    <li><a href="{{ url('admin/teams')}}"><i class="fa fa-users"></i> <span>Teams</span></a></li>
                     
                    
 

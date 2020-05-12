@@ -159,6 +159,70 @@ class TournamentsController extends ApiController {
         }
     }
 
+    public function teamList(Request $request) {
+//        dd('s');
+        $rules = ['search' => ''];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+
+            $teams = new \App\Team();
+            $teams = $teams->select('id', 'team_name', 'league_name', 'image');
+
+            $perPage = isset($request->limit) ? $request->limit : 20;
+            if (isset($request->search)) {
+                $teams = $teams->where(function($query) use ($request) {
+                    $query->where('team_name', 'LIKE', "%$request->search%")
+                            ->orWhere('league_name', 'LIKE', "%$request->search%");
+                });
+            }
+//            $tournament = $tournament->with(['players']);
+            $teams = $teams->orderby('id', 'desc');
+
+            return parent::success($teams->paginate($perPage));
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    public function playerList(Request $request) {
+//        dd('st');
+        $rules = ['search' => ''];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+
+            $players = new User();
+            $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
+                            'roles', function($q) {
+                        $q->where('name', 'Customer');
+                    }
+                    );
+            $players = $players->where('id', '!=',\Auth::id());
+
+
+            $perPage = isset($request->limit) ? $request->limit : 20;
+            if (isset($request->search)) {
+                $players = $players->where(function($query) use ($request) {
+                    $query->where('username', 'LIKE', "%$request->search%")
+                            ->orWhere('email', 'LIKE', "%$request->search%");
+                });
+            }
+//            $tournament = $tournament->with(['players']);
+            $players = $players->orderby('id', 'desc');
+
+            return parent::success($players->paginate($perPage));
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
     public function findFriend(Request $request) {
 
         $rules = ['search' => ''];
@@ -283,23 +347,22 @@ class TournamentsController extends ApiController {
         if ($validateAttributes):
             return $validateAttributes;
         endif;
-        
-    //mycode for channel id    
-        
+
+        //mycode for channel id    
+
         $myfriends = new \App\UserFriend();
         $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
         $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted")->get();
         $friendsChannelId = [];
-        foreach($myfriends as $friends):
+        foreach ($myfriends as $friends):
             $friendsData = User::select('video_stream_id')->where("id", $friends->friend_id)->where("video_stream", "twitch")->get();
-            foreach($friendsData as $data):
+            foreach ($friendsData as $data):
                 $friendsChannelId[] = $data->video_stream_id;
             endforeach;
         endforeach;
 //        dd($friendsChannelId);
-        
-    //ends
-        
+        //ends
+
         $a = [];
         foreach ($friendsChannelId as $chanelId):
 //            dd($chanelId);
