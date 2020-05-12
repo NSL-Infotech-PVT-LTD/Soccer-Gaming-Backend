@@ -1,11 +1,9 @@
-<!DOCTYPE html">
-<html lang="en">
+<html>
    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title> </title>
       <style>
          @import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap');
+	 
 
 		 body {
     background-image: url(http://localhost/tournie/public/banner.jpg);
