@@ -45,7 +45,7 @@ class AuthController extends ApiController {
     //send mail to user as a feedback    
     $dataM = ['subject' => 'Register Notification', 'name' => $request->username, 'to' => $request->email];
 
-    Mail::send(['html' => 'emails.notify'], $dataM, function($message) use ($dataM) {
+    Mail::send('emails.notify', $dataM, function($message) use ($dataM) {
         $message->from('info@tournie.com');
         $message->to($dataM['to']);
         $message->subject($dataM['subject']);
