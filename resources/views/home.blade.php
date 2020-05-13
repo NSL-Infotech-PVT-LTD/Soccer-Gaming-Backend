@@ -43,7 +43,7 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-4">
-                <a href="{{url('admin/users')}}" class="links" style="text-decoration: none;">
+                <a href="{{ url('admin/users/role/2') }}" class="links" style="text-decoration: none;">
                     <div class="main-overview active">
                         <div class="overviewcard">
                             <div class="overviewcard__icon">Total App-Users&nbsp;&nbsp;<i class="fa fa-users"></i></div>
@@ -58,7 +58,7 @@
 
 
             <div class="col-md-4">
-                <a href="{{url('admin/ads')}}" class="links" style="text-decoration: none;">
+                <a href="javascript:void(0)" class="links" style="text-decoration: none;">
                     <div class="main-overview">
                         <div class="overviewcard">
                             <div class="overviewcard__icon">Total Tournament&nbsp;<i class="fa fa-trophy"></i></div>
@@ -70,12 +70,12 @@
                 </a>
             </div>
             <div class="col-md-4">
-                <a href="{{url('admin/features')}}" class="links" style="text-decoration: none;">
+                <a href="{{ url('admin/teams') }}" class="links" style="text-decoration: none;">
                     <div class="main-overview">
                         <div class="overviewcard">
                             <div class="overviewcard__icon">Total Teams&nbsp;&nbsp;<i class="fa fa-gamepad"></i></div>
                             <div class="overviewcard__info"><?php
-                                echo count($teams = \App\TournamentFixture::get());
+                                echo count($teams = \App\Team::get());
                                 ?></div>
                         </div>
                     </div>

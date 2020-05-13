@@ -4,11 +4,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/opt/lampp/htdocs/tournie/app/Tournament.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/.env</file>
             <file>file:/opt/lampp/htdocs/tournie/routes/api.php</file>
             <file>file:/opt/lampp/htdocs/tournie/app/TournamentPlayerTeam.php</file>
             <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/API/MessageController.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/emails/notify.blade.php</file>
             <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/Admin/TeamsController.php</file>
             <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/API/AuthController.php</file>
             <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/API/TournamentsController.php</file>

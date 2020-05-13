@@ -5,7 +5,7 @@
         <div class="row">
             @include('admin.sidebar')
 
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">User</div>
                     <div class="card-body">
@@ -29,15 +29,47 @@
 
                         <div class="table-responsive">
                             <table class="table">
-                                <thead>
+                                
                                     <tr>
-                                        <th>ID.</th> <th>First Name</th><th>Last Name</th><th>Email</th>
+                                        <th>ID.</th>
+                                        <td>{{ $user->id }}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
                                     <tr>
-                                        <td>{{ $user->id }}</td> <td> {{ $user->first_name }} </td><td> {{ $user->last_name }} </td><td> {{ $user->email }} </td><td> {{ $user->location }} </td>
-                    
+                                        <th>Username</th>
+                                        <td>{{ $user->username }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <td> {{ $user->first_name }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Name</th>
+                                        <td> {{ $user->last_name }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email</th>
+                                        <td> {{ $user->email }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Field to play</th>
+                                        <td> {{ $user->field_to_play }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Field to play ID</th>
+                                        <td> {{ $user->field_to_play_id }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Video stream</th>
+                                        <td>{{ $user->video_stream }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Video stream Id</th>
+                                        <td>{{ $user->video_stream_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Image</th>
+                                        <td><img width="50" src="<?= url('uploads/image/'.$user->image); ?>" style="
+                                             margin-bottom: 4px;"></td>
                                     </tr>
                                 </tbody>
                             </table>

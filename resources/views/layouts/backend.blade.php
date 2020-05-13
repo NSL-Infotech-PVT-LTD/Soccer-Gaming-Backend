@@ -175,15 +175,7 @@
             }
         });
     </script>
-    <!--js 
-    {{--        <script src="{{ asset('template/js/jquery.nicescroll.js') }} "></script>--}}
-{{--        <script src="{{ asset('template/js/scripts.js') }} "></script>--}}
-{{--        <!-- Bootstrap Core JavaScript -->--}}
-<script src="{{ asset('template/js/bootstrap.min.js') }} "></script>
-{{--        <!-- /Bootstrap Core JavaScript -->--}}
-{{--        <!-- real-time -->--}}
-{{--        <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script>--}}
-{{--        <script src="{{ asset('template/js/jquery.fn.gantt.js') }} "></script>--}}
+
 <script src="{{ asset('template/js/menu_jquery.js') }}  "></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>

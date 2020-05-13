@@ -156,6 +156,7 @@
         });
     });
   $('.data-table').on('click', '.changeStatus', function (e) {
+            
             e.preventDefault();
             var id = $(this).attr('data-id');
             var status = $(this).attr('data-status');
