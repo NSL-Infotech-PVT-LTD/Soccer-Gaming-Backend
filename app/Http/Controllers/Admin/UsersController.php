@@ -47,7 +47,7 @@ class UsersController extends Controller {
 //        return view('admin.users.index', compact('users', 'role_id'));
 
 
-        if ($request->ajax()) {
+        if ($request->ajax()) { 
             $roleusers = \DB::table('role_user')->where('role_id', $role_id)->pluck('user_id');
             $users = User::wherein('id', $roleusers)->latest();
             return Datatables::of($users)
