@@ -46,6 +46,3 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
     Route::post('generator', ['uses' => '\Appzcoder\LaravelAdmin\Controllers\ProcessController@postGenerator']);
 });
 
-
-
-Route::resource('admin/clubs', 'Admin\\ClubsController');

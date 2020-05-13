@@ -359,10 +359,9 @@ class TournamentsController extends ApiController {
         $clubs = $a[0]['data']->clubs;
 //            dd($clubs);
         foreach ($clubs as $club):
-//            dd($club->Image->url);
-            $input['name'] = $club->name;
+            $input['team_name'] = $club->name;
             $input['image'] = $club->Image->url;
-            $club = \App\Club::create($input);
+            $club = \App\Team::create($input);
         endforeach;
     }
 

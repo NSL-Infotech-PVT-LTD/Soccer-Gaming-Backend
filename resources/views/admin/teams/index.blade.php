@@ -30,15 +30,15 @@
                             <table class="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th>#</th><th>Team Name</th><th>League Name</th><th>Image</th><th>Actions</th>
+                                        <th>#</th><th>Team Name</th><th>Image</th><th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($teams as $item)
                                     <tr>
                                         <td>{{ $item->id }}</td>
-                                        <td>{{ $item->team_name }}</td><td>{{ $item->league_name }}</td>
-                                        <td><img width="50" src="<?= url($item->image); ?>" style="
+                                        <td>{{ $item->team_name }}</td>
+                                        <td><img width="50" src="<?= ($item->image); ?>" style="
                                              margin-bottom: 4px;"></td>
                                         <td>
                                             <a href="{{ url('/admin/teams/' . $item->id) }}" title="View Team"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
