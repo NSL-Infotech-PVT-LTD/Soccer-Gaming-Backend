@@ -47,3 +47,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
 });
 
 
+
+Route::resource('admin/clubs', 'Admin\\ClubsController');

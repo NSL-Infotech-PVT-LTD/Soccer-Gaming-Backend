@@ -200,11 +200,11 @@ class TournamentsController extends ApiController {
 
             $players = new User();
             $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
-                            'roles', function($q) {
-                        $q->where('name', 'Customer');
-                    }
-                    );
-            $players = $players->where('id', '!=',\Auth::id());
+                    'roles', function($q) {
+                $q->where('name', 'Customer');
+            }
+            );
+            $players = $players->where('id', '!=', \Auth::id());
 
 
             $perPage = isset($request->limit) ? $request->limit : 20;
@@ -338,6 +338,59 @@ class TournamentsController extends ApiController {
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
+    }
+
+    public function clubList(Request $request) {
+
+        $rules = [];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+
+        //ends
+
+        $a = [];
+//        foreach (['1','2'] as $page):
+//            dd('s');
+        $a[] = self::getClubsCurl('https://fut.best/api/clubs?page=1&limit=5');
+//        endforeach;
+//        dd($a[0]['data']->clubs);
+        $clubs = $a[0]['data']->clubs;
+//            dd($clubs);
+        foreach ($clubs as $club):
+//            dd($club->Image->url);
+            $input['name'] = $club->name;
+            $input['image'] = $club->Image->url;
+            $club = \App\Club::create($input);
+        endforeach;
+    }
+
+    private static function getClubsCurl($url) {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+//            echo $response;
+        }
+//        dd($response);
+        return (array) json_decode($response);
     }
 
     public function getVideosByTwitchId(Request $request) {

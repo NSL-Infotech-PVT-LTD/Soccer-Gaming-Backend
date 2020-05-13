@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     
     Route::post('game/twitch', 'API\TournamentsController@getVideosByTwitchId');
     Route::post('game/teams', 'API\TournamentsController@teamList');
+    Route::post('game/clubs', 'API\TournamentsController@clubList');
     Route::post('game/players', 'API\TournamentsController@playerList');
 });
 Route::post('testing-push', 'API\ConfigurationController@testingPush');

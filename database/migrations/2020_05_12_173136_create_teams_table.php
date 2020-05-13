@@ -14,10 +14,11 @@ class CreateTeamsTable extends Migration
     {
         Schema::create('teams', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            
             $table->string('team_name')->nullable();
             $table->string('league_name')->nullable();
             $table->string('image')->nullable();
+            App\Helpers\DbExtender::defaultParams($table);
             });
     }
 
