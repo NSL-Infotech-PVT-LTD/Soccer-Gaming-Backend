@@ -285,7 +285,7 @@ class ApiController extends \App\Http\Controllers\Controller {
     }
 
     private static function pushNotifyiOS($data, $devicetoken, $customData = null) {
-        //return true;
+        //return true; 
         $deviceToken = $devicetoken;
         $ctx = stream_context_create();
         // ck.pem is your certificate file
