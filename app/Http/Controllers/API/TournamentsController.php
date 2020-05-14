@@ -274,7 +274,9 @@ class TournamentsController extends ApiController {
 
 
         $userfriends = \App\UserFriend::create($input);
-
+        
+        parent::pushNotifications(['title' => 'Hey', 'body' => 'You received one Friend Request', 'data' => ['target_id' => $request->friend_id, 'target_model' => 'user_friends', 'data_type' => 'coversation']], $userJob->user_id, Auth::id());
+        
         return parent::success(['message' => 'Your friend request has been sent', 'userfriends' => $userfriends]);
     }
 
