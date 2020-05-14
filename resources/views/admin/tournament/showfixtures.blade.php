@@ -11,7 +11,7 @@
                 <div class="card-body">
 
 
-                    {!! Form::open(['method' => 'GET', 'url' => '/admin/tournament', 'class' => 'form-inline my-2 my-lg-0 float-right', 'role' => 'search'])  !!}
+                    {!! Form::open(['method' => 'GET', 'url' => '/admin/tournamentFixture', 'class' => 'form-inline my-2 my-lg-0 float-right', 'role' => 'search'])  !!}
                     <div class="input-group">
                         <input type="text" class="form-control" name="search" placeholder="Search..." value="{{ request('search') }}">
                         <span class="input-group-append">
