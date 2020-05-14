@@ -82,6 +82,14 @@ class TournamentController extends Controller
 
         return view('admin.tournament.show', compact('tournament'));
     }
+    
+    public function showTournamentFixture($tournament_id)
+    {
+        dd($tournament_id);
+        $tournamentfixtures = \App\TournamentFixture::findOrFail($id);
+
+        return view('admin.tournament.showfixtures', compact('tournamentfixtures'));
+    }
 
     /**
      * Show the form for editing the specified resource.

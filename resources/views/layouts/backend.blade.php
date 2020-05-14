@@ -139,6 +139,7 @@
                         </ul>
                     </li>
                     <li><a href="{{ url('admin/teams')}}"><i class="fa fa-users"></i> <span>Teams</span></a></li>
+                    <li><a href="{{ url('admin/tournament')}}"><i class="fa fa-gamepad"></i> <span>Tournaments</span></a></li>
                     
                    
 

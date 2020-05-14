@@ -292,7 +292,7 @@ class TournamentsController extends ApiController {
             $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
 
             $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted");
-
+            $myfriends = $myfriends->with(['userDetails']);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $myfriends = $myfriends->where(function($query) use ($request) {
@@ -301,6 +301,7 @@ class TournamentsController extends ApiController {
                 });
             }
 
+            
             $myfriends = $myfriends->orderby('id', 'desc');
 
             return parent::success($myfriends->paginate($perPage));
@@ -351,17 +352,14 @@ class TournamentsController extends ApiController {
         //ends
 
         $a = [];
-//        foreach (['1','2'] as $page):
-//            dd('s');
         $a[] = self::getClubsCurl('https://fut.best/api/clubs?page=1&limit=5');
-//        endforeach;
-//        dd($a[0]['data']->clubs);
         $clubs = $a[0]['data']->clubs;
-//            dd($clubs);
         foreach ($clubs as $club):
-            $input['team_name'] = $club->name;
-            $input['image'] = $club->Image->url;
-            $club = \App\Team::create($input);
+            if (\App\Team::where('team_name', $club->name)->get()->isEmpty()):
+                $input['team_name'] = $club->name;
+                $input['image'] = $club->Image->url;
+                $club = \App\Team::create($input);
+            endif;
         endforeach;
     }
 
