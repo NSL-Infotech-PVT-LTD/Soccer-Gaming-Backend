@@ -233,7 +233,7 @@ class TournamentsController extends ApiController {
         try {
             $players = new User();
 
-            $players = $players->select('first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
+            $players = $players->select('id','first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
 
 //            $players = $players->where("id", \Auth::id());
             $players = $players->wherein('id', \DB::table('role_user')->where('role_id', '2')->pluck('user_id'));

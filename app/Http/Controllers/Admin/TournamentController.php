@@ -85,8 +85,8 @@ class TournamentController extends Controller
     
     public function showTournamentFixture($tournament_id)
     {
-        dd($tournament_id);
-        $tournamentfixtures = \App\TournamentFixture::findOrFail($id);
+//        dd($tournament_id);
+        $tournamentfixtures = \App\TournamentFixture::where('tournament_id',$tournament_id)->get();
 
         return view('admin.tournament.showfixtures', compact('tournamentfixtures'));
     }

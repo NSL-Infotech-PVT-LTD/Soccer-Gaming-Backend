@@ -40,7 +40,7 @@
                                     <td>{{ $item->name }}</td><td>{{ $item->type }}</td><td>{{ $item->number_of_players }}</td><td>{{ $item->number_of_teams_per_player }}</td><td>{{ $item->number_of_plays_against_each_team }}</td>
                                             <td>
                                                 <a href="{{ url('/admin/tournament/' . $item->id) }}" title="View Tournament"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
-                                                <a href="{{ url('/admin/tournamentFixture/' . $item->id) }}" title="View Tournament Fixture"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
+                                                <a href="{{ url('/admin/tournamentFixture/' . $item->id) }}" title="View Tournament Fixture"><button class="btn btn-info btn-sm"><i class="fa fa-gamepad" aria-hidden="true"></i></button></a>
                                                 <a href="{{ url('/admin/tournament/' . $item->id . '/edit') }}" title="Edit Tournament"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></a>
                                                 {!! Form::open([
                                                 'method' => 'DELETE',
