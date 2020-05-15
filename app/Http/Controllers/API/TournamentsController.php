@@ -270,7 +270,7 @@ class TournamentsController extends ApiController {
         $input = $request->all();
         $input['user_id'] = \Auth::id();
 
-        $input['status'] = 'pending';
+        $input['status'] = 'pending'; 
 
 
         $userfriends = \App\UserFriend::create($input);
