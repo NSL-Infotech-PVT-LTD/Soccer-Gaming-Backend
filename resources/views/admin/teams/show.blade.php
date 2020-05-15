@@ -11,8 +11,8 @@
                     <div class="card-body">
 
                         <a href="{{ url('/admin/teams') }}" title="Back"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
-                        <a href="{{ url('/admin/teams/' . $team->id . '/edit') }}" title="Edit Team"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
-                        {!! Form::open([
+<!--                        <a href="{{ url('/admin/teams/' . $team->id . '/edit') }}" title="Edit Team"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>-->
+<!--                        {!! Form::open([
                             'method'=>'DELETE',
                             'url' => ['admin/teams', $team->id],
                             'style' => 'display:inline'
@@ -24,7 +24,7 @@
                                     'onclick'=>'return confirm("Confirm delete?")'
                             ))!!}
                         {!! Form::close() !!}
-                        <br/>
+                        <br/>-->
                         <br/>
 
                         <div class="table-responsive">
@@ -33,7 +33,7 @@
                                     <tr>
                                         <th>ID</th><td>{{ $team->id }}</td>
                                     </tr>
-                                    <tr><th> Team Name </th><td> {{ $team->team_name }} </td></tr><tr><th> League Name </th><td> {{ $team->league_name }} </td></tr><tr><th> Image </th><td> {{ $team->image }} </td></tr>
+                                    <tr><th> Team Name </th><td> {{ $team->team_name }} </td></tr><tr><th> Image </th><td> <img width='50' src="{{ $team->image }}"> </td></tr>
                                 </tbody>
                             </table>
                         </div>

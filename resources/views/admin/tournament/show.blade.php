@@ -55,17 +55,23 @@
                                     <th>#</th><th>Player Name</th><th>Team</th><th>Image</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody><?php $i = 1; ?>
                                 @foreach($playersTeams as $item)
                                 <tr>
-                                    <td>{{$item->id }}</td>
+                                    <td>{{$i++ }}</td>
                                     <td>
                                         <?php
                                         $user = DB::table('users')->where('id', $item->player_id)->first();
-                                        echo $user->username;
+                                        echo $user->first_name;
                                         ?> 
                                     </td>
-                                    <td>{{ $item->team_id }}</td>
+                                    <td>
+                                        <?php
+                                        $teams = DB::table('teams')->where('id', $item->team_id)->first();
+                                        echo $teams->team_name;
+                                        ?> 
+                                    </td>
+                                    <td><img width='50' src="{{$teams->image}}"></td>
                                 </tr>
                                 @endforeach
                             </tbody>
