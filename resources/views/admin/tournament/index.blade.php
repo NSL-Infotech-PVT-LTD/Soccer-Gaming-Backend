@@ -30,7 +30,7 @@
                         <table class="table table-borderless">
                             <thead>
                                 <tr>
-                                    <th>#</th><th>Name</th><th>Type</th><th>Number Of Players</th><th>Number of teams per Players</th><th>Number of Plays</th><th>Actions</th>
+                                    <th>#</th><th>Name</th><th>Type</th><th>Number Of Players</th><th>Teams per Players</th><th>Number of Plays</th><th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
