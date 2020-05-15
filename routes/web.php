@@ -23,7 +23,7 @@ Route::get('forget/success', 'HomeController@forgetsuccess')->name('forget.succe
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' => ['Super-Admin']], function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('users/role/{role_id}', 'Admin\UsersController@indexByRoleId')->name('users-role');
-    Route::get('tournamentFixture/{tournament_id}', 'Admin\TournamentController@showTournamentFixture')->name('users-role');
+    Route::get('tournamentFixture/{tournament_id}', 'Admin\TournamentController@showTournamentFixture');
     Route::get('/', 'Admin\AdminController@index');
     Route::resource('roles', 'Admin\RolesController');
     Route::resource('permissions', 'Admin\PermissionsController');
