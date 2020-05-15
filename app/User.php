@@ -21,7 +21,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'username', 'first_name','last_name','email','password','confirm_password','image','field_to_play','field_to_play_id','video_stream','video_stream_id','remember_token'];
+        'username', 'first_name', 'last_name', 'email', 'password', 'confirm_password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'remember_token'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -31,6 +31,7 @@ class User extends Authenticatable {
     protected $hidden = [
         'password', 'remember_token',
     ];
+    protected $appends = ['friend_request_sent'];
 
     /**
      * The attributes that should be cast to native types.
@@ -40,13 +41,11 @@ class User extends Authenticatable {
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-//    protected $appends = array('role');
 
+//    protected $appends = array('role');
 //    public function getUserImageAttribute($value) {
 //        return User::where('id', $this->created_by)->value('image');
 //    }
-    
-    
 //    public function getRoleAttribute() {
 //        try {
 //            $rolesID = \DB::table('role_user')->where('user_id', $this->id)->pluck('role_id');
@@ -60,10 +59,11 @@ class User extends Authenticatable {
 //            return [];
 //        }
 //    }
-    
+
     public function getmentionAvailablityAttribute($value) {
         return $value == null ? [] : json_decode($value);
     }
+
     public function getscheduleAttribute($value) {
         return $value == null ? [] : json_decode($value);
     }
@@ -78,11 +78,18 @@ class User extends Authenticatable {
             return [];
         return \DB::table('role_user')->whereIN('role_id', $role->pluck('role_id'))->pluck('user_id')->toArray();
     }
-    
-    
-    
-    public function getRatings(){
-        return $this->hasMany(Rating::class,'provider_id','id')->with('userDetails');
+
+    public function getRatings() {
+        return $this->hasMany(Rating::class, 'provider_id', 'id')->with('userDetails');
     }
-    
+
+    public function getFriendRequestSentAttribute() {
+        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id',$this->id)->where('status','pending')->get();
+        if ($model->isEmpty() !== true):
+            return true;
+        else:
+            return false;
+        endif;
+    }
+
 }
