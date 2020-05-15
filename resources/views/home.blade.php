@@ -58,7 +58,7 @@
 
 
             <div class="col-md-4">
-                <a href="javascript:void(0)" class="links" style="text-decoration: none;">
+                <a href="{{ url('admin/tournament') }}" class="links" style="text-decoration: none;">
                     <div class="main-overview">
                         <div class="overviewcard">
                             <div class="overviewcard__icon">Total Tournament&nbsp;<i class="fa fa-trophy"></i></div>
