@@ -16,9 +16,8 @@ class CreateNotificationsTable extends Migration {
             $table->string('title');
             $table->string('body');
             $table->string('data');
-            $table->integer('action_id');
-            $table->bigInteger('created_by')->unsigned()->index();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->bigInteger('target_id')->unsigned()->index();
+            $table->foreign('target_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('is_read', [0, 1])->default(0)->comment('0 -> Unread, 1 -> Read');
             \App\Helpers\DbExtender::defaultParams($table);
         });

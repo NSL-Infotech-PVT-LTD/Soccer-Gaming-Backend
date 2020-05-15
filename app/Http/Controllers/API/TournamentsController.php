@@ -233,7 +233,7 @@ class TournamentsController extends ApiController {
         try {
             $players = new User();
 
-            $players = $players->select('id','first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
+            $players = $players->select('id', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
 
 //            $players = $players->where("id", \Auth::id());
             $players = $players->wherein('id', \DB::table('role_user')->where('role_id', '2')->pluck('user_id'));
@@ -270,13 +270,13 @@ class TournamentsController extends ApiController {
         $input = $request->all();
         $input['user_id'] = \Auth::id();
 
-        $input['status'] = 'pending'; 
+        $input['status'] = 'pending';
 
 
         $userfriends = \App\UserFriend::create($input);
-        
-//        parent::pushNotifications(['title' => 'Hey', 'body' => 'You received one Friend Request', 'data' => ['target_id' => $request->friend_id, 'target_model' => 'UserFriend', 'data_type' => 'coversation']], $request->friend_id);
-        
+
+        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You received one Friend Request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+
         return parent::success(['message' => 'Your friend request has been sent', 'userfriends' => $userfriends]);
     }
 
@@ -303,7 +303,7 @@ class TournamentsController extends ApiController {
                 });
             }
 
-            
+
             $myfriends = $myfriends->orderby('id', 'desc');
 
             return parent::success($myfriends->paginate($perPage));
@@ -487,6 +487,34 @@ class TournamentsController extends ApiController {
             dd(json_decode($response)->access_token);
             dd();
             return json_decode($response);
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    public function notifications(Request $request) {
+        $rules = ['search' => '', 'limit' => ''];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+            
+            $model = new \App\Notification();
+            $perPage = isset($request->limit) ? $request->limit : 20;
+
+            if (isset($request->search))
+                $model = $model->Where('title', 'LIKE', "%$request->search%")
+                        ->orWhere('body', 'LIKE', "%$request->search%")
+                        ->orWhere('data', 'LIKE', "%$request->search%");
+
+            $model = $model->where('target_id', \Auth::id());
+            \App\Notification::whereIn('id', $model->get()->pluck('id'))->update(['is_read' => '1']);
+
+            $model = $model->where('target_id', \Auth::id())->select('id', 'title', 'body', 'data', 'target_id', 'is_read', 'params', 'state');
+//            $model = $model->with('userDetail')->orderBy('created_at', 'desc');
+            return parent::success($model->paginate($perPage));
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }

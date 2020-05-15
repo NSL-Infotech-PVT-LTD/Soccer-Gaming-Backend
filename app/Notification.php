@@ -29,7 +29,7 @@ class Notification extends Model {
      *
      * @var array
      */
-    protected $fillable = ['title', 'body', 'data', 'created_by','action_id', 'is_read'];
+    protected $fillable = ['title', 'body', 'data', 'target_id', 'is_read'];
 
     /**
      * Change activity log event description

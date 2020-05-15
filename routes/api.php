@@ -35,6 +35,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('logout', 'API\AuthController@logout');
     Route::post('tournament/store', 'API\TournamentsController@createTournaments');
     Route::post('tournament/list', 'API\TournamentsController@tournamentList');
+    Route::post('notification/list', 'API\TournamentsController@notifications');
     Route::post('tournament/score', 'API\TournamentsController@addScoreToTournament');
     Route::post('users', 'API\TournamentsController@findFriend');
     Route::post('friends/store', 'API\TournamentsController@addFriend');
