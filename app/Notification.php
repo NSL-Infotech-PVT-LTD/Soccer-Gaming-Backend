@@ -53,7 +53,7 @@ class Notification extends Model {
     }
 
     public function getFriendRequestAttribute() {
-        dd($this->data->target_id);
+//        dd($this->data->target_id);
         try {
             $model = UserFriend::where('friend_id', \Auth::id())->Where('user_id', $this->data->target_id)->where('status', 'pending')->get();
             if ($model->isEmpty() !== true):
