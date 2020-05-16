@@ -23,7 +23,7 @@ class UserFriend extends Model {
     protected $appends = ['userDetails'];
 
     public function getUserDetailsAttribute() {
-        return User::where('user_id', $this->user_user_id)->select('id', 'username', 'image')->first();
+        return User::where('user_id', $this->user_id)->select('id', 'username', 'image')->first();
 //        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'username', 'image');
     }
 
