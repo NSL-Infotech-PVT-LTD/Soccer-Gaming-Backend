@@ -19,11 +19,15 @@ class UserFriend extends Model {
      *
      * @var array
      */
-    protected $fillable = [
-        'user_id', 'friend_id', 'status'];
+    protected $fillable = ['user_id', 'friend_id', 'status'];
+    protected $appends = ['userDetails'];
 
-    public function UserDetails() {
-        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'username', 'image');
+    public function getUserDetailsAttribute() {
+        return User::where('user_id', $this->user_user_id)->select('id', 'username', 'image')->first();
+//        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'username', 'image');
     }
 
+//    public function UserDetails() {
+//        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'username', 'image');
+//    }
 }

@@ -305,7 +305,7 @@ class TournamentsController extends ApiController {
                 $query->orWhere('friend_id', \Auth::id());
             });
             $myfriends = $myfriends->where("status", "accepted");
-            $myfriends = $myfriends->with(['userDetails']);
+//            $myfriends = $myfriends->with(['userDetails']);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $myfriends = $myfriends->where(function($query) use ($request) {
