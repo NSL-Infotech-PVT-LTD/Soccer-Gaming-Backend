@@ -20,7 +20,7 @@ class UserFriend extends Model {
      * @var array
      */
     protected $fillable = ['user_id', 'friend_id', 'status'];
-    protected $appends = ['userDetails'];
+    protected $appends = ['user_details'];
 
     public function getUserDetailsAttribute() {
         return User::where('id', $this->user_id)->select('id', 'username', 'image')->first();
