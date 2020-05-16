@@ -248,10 +248,10 @@ class ApiController extends \App\Http\Controllers\Controller {
         return true;
     }
 
-    public static function pushNotifications($data = [], $userId, $action_id = null, $saveNotification = true) {
+    public static function pushNotifications($data = [], $userId, $saveNotification = true) {
 
         if ($saveNotification) {
-            self::savePushNotification($data, $userId, $action_id);
+            self::savePushNotification($data, $userId);
         }
 
 //        echo $userId;
@@ -269,13 +269,13 @@ class ApiController extends \App\Http\Controllers\Controller {
         return true;
     }
 
-    private static function savePushNotification($data, $userId, $action_id) {
+    private static function savePushNotification($data, $userId) {
         try {
 
             if (isset($data['data']))
                 $data['data'] = json_encode($data['data']);
-            $data += ['created_by' => $userId];
-            $data += ['action_id' => $action_id];
+            $data += ['target_id' => $userId];
+//            $data += ['action_id' => $action_id];
 
             \App\Notification::create($data);
             return true;
@@ -285,7 +285,7 @@ class ApiController extends \App\Http\Controllers\Controller {
     }
 
     private static function pushNotifyiOS($data, $devicetoken, $customData = null) {
-        //return true;
+        //return true; 
         $deviceToken = $devicetoken;
         $ctx = stream_context_create();
         // ck.pem is your certificate file

@@ -41,6 +41,17 @@ class AuthController extends ApiController {
 //            testing comment
             // Add user device details for firbase
             parent::addUserDeviceData($user, $request);
+
+    //send mail to user as a feedback    
+    $dataM = ['subject' => 'Register Notification', 'name' => $request->username, 'to' => $request->email];
+
+    Mail::send('emails.notify', $dataM, function($message) use ($dataM) {
+        $message->from('info@tournie.com');
+        $message->to($dataM['to']);
+        $message->subject($dataM['subject']);
+    });
+    //ENDS
+
             return parent::successCreated(['message' => 'Created Successfully', 'token' => $token, 'user' => $user]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
@@ -83,32 +94,32 @@ class AuthController extends ApiController {
     public function Login(Request $request) {
         try {
 
-        $rules = ['email' => 'required', 'password' => 'required'];
-        $rules = array_merge($this->requiredParams, $rules);
+            $rules = ['email' => 'required', 'password' => 'required'];
+            $rules = array_merge($this->requiredParams, $rules);
 
-        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), true);
+            $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), true);
 
-        if ($validateAttributes):
-            return $validateAttributes;
-        endif;
+            if ($validateAttributes):
+                return $validateAttributes;
+            endif;
 
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
 //                dd('s');
-            $user = \App\User::find(Auth::user()->id);
-            $user->save();
-            $token = $user->createToken('netscape')->accessToken;
-            parent::addUserDeviceData($user, $request);
-            return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
-        } elseif (Auth::attempt(['username' => request('email'), 'password' => request('password')])) {
+                $user = \App\User::find(Auth::user()->id);
+                $user->save();
+                $token = $user->createToken('netscape')->accessToken;
+                parent::addUserDeviceData($user, $request);
+                return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
+            } elseif (Auth::attempt(['username' => request('email'), 'password' => request('password')])) {
 //                dd('st');
-            $user = \App\User::find(Auth::user()->id);
-            $user->save();
-            $token = $user->createToken('netscape')->accessToken;
-            parent::addUserDeviceData($user, $request);
-            return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
-        } else {
-            return parent::error("User credentials doesn't matched");
-        }
+                $user = \App\User::find(Auth::user()->id);
+                $user->save();
+                $token = $user->createToken('netscape')->accessToken;
+                parent::addUserDeviceData($user, $request);
+                return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
+            } else {
+                return parent::error("User credentials doesn't matched");
+            }
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
@@ -227,7 +238,7 @@ class AuthController extends ApiController {
             $model = new \App\User();
             $roleusersSA = \DB::table('role_user')->where('role_id', \App\Role::where('name', 'Customer')->first()->id)->pluck('user_id');
             $model = $model->wherein('users.id', $roleusersSA)
-                    ->Select('id', 'first_name', 'last_name', 'email', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id');
+                    ->Select('id', 'username', 'first_name', 'last_name', 'email', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id');
             $model = $model->groupBy('users.id');
             $model = $model->where('users.id', \Auth::id());
             if (isset($request->search))

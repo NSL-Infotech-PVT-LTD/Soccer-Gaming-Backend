@@ -29,7 +29,8 @@ class Notification extends Model {
      *
      * @var array
      */
-    protected $fillable = ['title', 'body', 'data', 'created_by','action_id', 'is_read'];
+    protected $fillable = ['title', 'body', 'data', 'target_id', 'is_read'];
+    protected $appends = ['friend_request'];
 
     /**
      * Change activity log event description
@@ -38,20 +39,31 @@ class Notification extends Model {
      *
      * @return string
      */
-    
     public function getDataAttribute($value) {
-       
+
         return $value = Null ? [] : json_decode($value);
     }
-    
+
     public function getDescriptionForEvent($eventName) {
         return __CLASS__ . " model has been {$eventName}";
     }
 
-    
-
     public function userDetail() {
-        return $this->hasOne(User::class, 'id', 'action_id')->select('id', 'name', 'email','image');
+        return $this->hasOne(User::class, 'id', 'action_id')->select('id', 'name', 'email', 'image');
+    }
+
+    public function getFriendRequestAttribute() {
+//        dd($this->data->target_id);
+        try {
+            $model = UserFriend::where('friend_id', \Auth::id())->Where('user_id', $this->data->target_id)->where('status', 'pending')->get();
+            if ($model->isEmpty() !== true):
+                return false;
+            else:
+                return true;
+            endif;
+        } catch (\Exception $ex) {
+            return 0;
+        }
     }
 
 }

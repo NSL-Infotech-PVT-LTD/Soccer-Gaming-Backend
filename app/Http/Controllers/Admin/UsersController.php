@@ -17,7 +17,7 @@ class UsersController extends Controller {
      *
      * @return void
      */
-    protected $__rulesforindex = ['first_name' => 'required', 'last_name' => 'required', 'email' => 'required'];
+    protected $__rulesforindex = ['username' => 'required', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required'];
 
     public function index(Request $request) {
         $keyword = $request->get('search');
@@ -55,15 +55,17 @@ class UsersController extends Controller {
                             ->addColumn('action', function($item)use($role_id) {
 //                                $return = 'return confirm("Confirm delete?")';
                                 $return = '';
-
-//                                    if ($item->state == '0'):
-//                                        $return .= "<button class='btn btn-danger btn-sm changeStatus' title='UnBlock'  data-id=" . $item->id . " data-status='UnBlock'>UnBlock / Active</button>";
-//                                    else:
-//                                        $return .= "<button class='btn btn-success btn-sm changeStatus' title='Block' data-id=" . $item->id . " data-status='Block' >Block / Inactive</button>";
-//                                    endif;
-
-                                $return .= " <a href=" . url('/admin/users/' . $item->id) . " title='View User'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>
-                                         <a href=" . url('/admin/users/' . $item->id . '/edit') . " title='Edit User'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></a>";
+                                if ($role_id == '1') {
+                                    $return .= " <a href=" . url('/admin/users/' . $item->id . '/edit') . " title='Edit User'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></a>";
+                                }
+                                if ($role_id != '1'):
+                                    if ($item->state == '0'):
+                                        $return .= "<button class='btn btn-danger btn-sm changeStatus' title='UnBlock'  data-id=" . $item->id . " data-status='UnBlock'><i class='fa fa-unlock' aria-hidden='true'></i></button>";
+                                    else:
+                                        $return .= "<button class='btn btn-success btn-sm changeStatus' title='Block' data-id=" . $item->id . " data-status='Block' ><i class='fa fa-ban' aria-hidden='true'></i></button>";
+                                    endif;
+                                endif;
+                                $return .= " <a href=" . url('/admin/users/' . $item->id) . " title='View User'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
 
                                 return $return;
                             })
@@ -129,46 +131,84 @@ class UsersController extends Controller {
      *
      * @return void
      */
+//    public function edit($id) {
+//        $roles = Role::select('id', 'name', 'label')->get();
+//        $roles = $roles->pluck('label', 'name');
+//
+//        $user = User::with('roles')->select('id', 'first_name','last_name', 'email')->findOrFail($id);
+//        $user_roles = [];
+//        foreach ($user->roles as $role) {
+//            $user_roles[] = $role->name;
+//        }
+//
+//        return view('admin.users.edit', compact('user', 'roles', 'user_roles', 'role_id'));
+//    }
+//    public function update(Request $request, $id) {
+//        $this->validate(
+//                $request, [
+//            'first_name' => 'required',
+//            'last_name' => 'required',
+//            'email' => 'required|string|max:255|email|unique:users,email,' . $id,
+//                ]
+//        );
+//
+//        $data = $request->except('password');
+//        if ($request->has('password')) {
+//            if (!empty($request->password))
+//                $data['password'] = bcrypt($request->password);
+//        }
+//
+//        $user = User::findOrFail($id);
+//        $user->update($data);
+//
+//        return redirect('admin/users/' . $id)->with('flash_message', 'User updated!');
+//    }
+
     public function edit($id) {
         $roles = Role::select('id', 'name', 'label')->get();
         $roles = $roles->pluck('label', 'name');
-
-        $user = User::with('roles')->select('id', 'first_name','last_name', 'email')->findOrFail($id);
+        $user = User::with('roles')->select('id', 'first_name','last_name', 'email', 'password')->findOrFail($id);
         $user_roles = [];
         foreach ($user->roles as $role) {
             $user_roles[] = $role->name;
         }
 
-        return view('admin.users.edit', compact('user', 'roles', 'user_roles', 'role_id'));
+        return view('admin.users.edit', compact('user', 'roles', 'user_roles'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     *
+     * @return void
+     */
     public function update(Request $request, $id) {
         $this->validate(
                 $request, [
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|string|max:255|email|unique:users,email,' . $id,
+            'roles' => 'required'
                 ]
         );
-
         $data = $request->except('password');
-        if ($request->has('password')) {
-            if (!empty($request->password))
-                $data['password'] = bcrypt($request->password);
-        }
-
+// if ($request->has('password')) {
+// $data['password'] = bcrypt($request->password);
+// }
         $user = User::findOrFail($id);
-//        dd($request->roles);
+// dd($user->toArray());
         $user->update($data);
-
-//        $user->roles()->detach();
-//        foreach ($request->roles as $role) {
-////            $user->assignRole('Super-Admin');
-//            $user->assignRole($role);
-//        }
-//        
-
-        return redirect('admin/users/' . $id)->with('flash_message', 'User updated!');
+        $user->roles()->detach();
+        foreach ($request->roles as $role) {
+            $user->assignRole($role);
+        }
+// dd($user->roles->toArray());
+// $role_id = \DB::table('role_user')->select('role_id')->get();
+        $role_id = $user->roles->first()->id;
+// dd($role_id);
+        return redirect('admin/users/role/' . $role_id)->with('flash_message', 'User Updated!');
     }
 
     /**

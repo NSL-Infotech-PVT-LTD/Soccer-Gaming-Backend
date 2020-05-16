@@ -7,7 +7,7 @@ image: php:7.1
 
 pipelines:
     branches:
-        development-0.0.6:
+        development-0.0.1:
         - step: 
             name: Production
             caches:

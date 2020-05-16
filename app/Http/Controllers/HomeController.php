@@ -31,9 +31,8 @@ class HomeController extends Controller {
         return view('home');
     }
     
-    public function forgotsuccess() {
+    public function forgetsuccess() {
         \Auth::logout();
-        return view('forgotsuccess');
+        return view('auth.passwords.forgetsuccess');
     }
-
 }

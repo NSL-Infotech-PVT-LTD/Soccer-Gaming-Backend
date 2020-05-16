@@ -35,11 +35,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('logout', 'API\AuthController@logout');
     Route::post('tournament/store', 'API\TournamentsController@createTournaments');
     Route::post('tournament/list', 'API\TournamentsController@tournamentList');
+    Route::post('notification/list', 'API\TournamentsController@notifications');
     Route::post('tournament/score', 'API\TournamentsController@addScoreToTournament');
     Route::post('users', 'API\TournamentsController@findFriend');
     Route::post('friends/store', 'API\TournamentsController@addFriend');
     Route::post('friends', 'API\TournamentsController@myFriends');
     Route::post('friends/requests', 'API\TournamentsController@pendingRequests');
+    Route::post('friends/accept', 'API\TournamentsController@acceptRejectRequests');
     
     Route::post('chat/store', 'API\MessageController@store');
     Route::post('chat/getItems', 'API\MessageController@getItems');
@@ -47,6 +49,11 @@ Route::group(['middleware' => 'auth:api'], function() {
     
     
     Route::post('connectWithStripe', 'API\ApiController@connectWithStripe');
+    
+    Route::post('game/twitch', 'API\TournamentsController@getVideosByTwitchId');
+    Route::post('game/teams', 'API\TournamentsController@teamList');
+    Route::post('game/clubs', 'API\TournamentsController@clubList');
+    Route::post('game/players', 'API\TournamentsController@playerList');
 });
 Route::post('testing-push', 'API\ConfigurationController@testingPush');
-    Route::post('game/twitch', 'API\TournamentsController@getVideosByTwitchId');
+    

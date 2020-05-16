@@ -159,6 +159,70 @@ class TournamentsController extends ApiController {
         }
     }
 
+    public function teamList(Request $request) {
+//        dd('s');
+        $rules = ['search' => ''];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+
+            $teams = new \App\Team();
+            $teams = $teams->select('id', 'team_name', 'league_name', 'image');
+
+            $perPage = isset($request->limit) ? $request->limit : 20;
+            if (isset($request->search)) {
+                $teams = $teams->where(function($query) use ($request) {
+                    $query->where('team_name', 'LIKE', "%$request->search%")
+                            ->orWhere('league_name', 'LIKE', "%$request->search%");
+                });
+            }
+//            $tournament = $tournament->with(['players']);
+            $teams = $teams->orderby('id', 'desc');
+
+            return parent::success($teams->paginate($perPage));
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    public function playerList(Request $request) {
+//        dd('st');
+        $rules = ['search' => ''];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+
+            $players = new User();
+            $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
+                    'roles', function($q) {
+                $q->where('name', 'Customer');
+            }
+            );
+            $players = $players->where('id', '!=', \Auth::id());
+
+
+            $perPage = isset($request->limit) ? $request->limit : 20;
+            if (isset($request->search)) {
+                $players = $players->where(function($query) use ($request) {
+                    $query->where('username', 'LIKE', "%$request->search%")
+                            ->orWhere('email', 'LIKE', "%$request->search%");
+                });
+            }
+//            $tournament = $tournament->with(['players']);
+            $players = $players->orderby('id', 'desc');
+
+            return parent::success($players->paginate($perPage));
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
     public function findFriend(Request $request) {
 
         $rules = ['search' => ''];
@@ -169,9 +233,9 @@ class TournamentsController extends ApiController {
         try {
             $players = new User();
 
-            $players = $players->select('first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
+            $players = $players->select('id', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
 
-//            $players = $players->where("id", \Auth::id());
+            $players = $players->where("id", '!=', \Auth::id());
             $players = $players->wherein('id', \DB::table('role_user')->where('role_id', '2')->pluck('user_id'));
 
             $perPage = isset($request->limit) ? $request->limit : 20;
@@ -198,8 +262,17 @@ class TournamentsController extends ApiController {
             $errors = self::formatValidator($validator);
             return parent::error($errors);
         }
-        $friendsdata = \App\UserFriend::where('user_id', '=', \Auth::id())->where('friend_id', '=', $request->friend_id)->where('status', '=', 'pending')->get();
-//        dd($friendsdata->toArray());
+        $friendsdata = \App\UserFriend::where('status', '=', 'pending');
+
+        $friendsdata = $friendsdata->where(function($query) use ($request) {
+            $query->where('user_id', \Auth::id());
+            $query->where('friend_id', $request->friend_id);
+        });
+        $friendsdata = $friendsdata->orWhere(function($query) use ($request) {
+                    $query->where('friend_id', \Auth::id());
+                    $query->where('user_id', $request->friend_id);
+                })->get();
+//        dd(count($friendsdata));
         if (count($friendsdata) > 0) {
             return parent::error(['message' => 'Friend request already sent']);
         }
@@ -210,6 +283,8 @@ class TournamentsController extends ApiController {
 
 
         $userfriends = \App\UserFriend::create($input);
+
+        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You received one Friend Request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
 
         return parent::success(['message' => 'Your friend request has been sent', 'userfriends' => $userfriends]);
     }
@@ -223,12 +298,14 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $user = \App\User::findOrFail(\Auth::id());
-
             $myfriends = new \App\UserFriend();
             $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
-
-            $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted");
-
+            $myfriends = $myfriends->where(function($query) use ($request) {
+                $query->where('user_id', \Auth::id());
+                $query->orWhere('friend_id', \Auth::id());
+            });
+            $myfriends = $myfriends->where("status", "accepted");
+            $myfriends = $myfriends->with(['userDetails']);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $myfriends = $myfriends->where(function($query) use ($request) {
@@ -236,9 +313,7 @@ class TournamentsController extends ApiController {
                             ->orWhere('user_id', 'LIKE', "%$request->search%");
                 });
             }
-
             $myfriends = $myfriends->orderby('id', 'desc');
-
             return parent::success($myfriends->paginate($perPage));
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
@@ -276,6 +351,84 @@ class TournamentsController extends ApiController {
         }
     }
 
+    public function acceptRejectRequests(Request $request) {
+//        dd(\Auth::id());
+        $rules = ['friend_id' => 'required|exists:users,id', 'status' => 'required|in:accepted,rejected'];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+
+            $friends = new \App\UserFriend();
+            $friends = $friends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
+
+            $friends = $friends->where("user_id", $request->friend_id)->where("friend_id", \Auth::id())->where("status", "pending")->get();
+//            dd($friends);
+            if (count($friends) < 1):
+                return parent::error(['message' => 'Request not found for this player']);
+            endif;
+            $frienddata = \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
+
+
+//            parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You received one Friend Request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+
+            return parent::success(['message' => 'Status updated', 'friendFound' => $friends]);
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    public function clubList(Request $request) {
+
+        $rules = [];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+
+        //ends
+
+        $a = [];
+        $a[] = self::getClubsCurl('https://fut.best/api/clubs?page=1&limit=5');
+        $clubs = $a[0]['data']->clubs;
+        foreach ($clubs as $club):
+            if (\App\Team::where('team_name', $club->name)->get()->isEmpty()):
+                $input['team_name'] = $club->name;
+                $input['image'] = $club->Image->url;
+                $club = \App\Team::create($input);
+            endif;
+        endforeach;
+    }
+
+    private static function getClubsCurl($url) {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+//            echo $response;
+        }
+//        dd($response);
+        return (array) json_decode($response);
+    }
+
     public function getVideosByTwitchId(Request $request) {
 //        dd('s');
         $rules = [];
@@ -283,9 +436,26 @@ class TournamentsController extends ApiController {
         if ($validateAttributes):
             return $validateAttributes;
         endif;
+
+        //mycode for channel id    
+
+        $myfriends = new \App\UserFriend();
+        $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
+        $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted")->get();
+        $friendsChannelId = [];
+        foreach ($myfriends as $friends):
+            $friendsData = User::select('video_stream_id')->where("id", $friends->friend_id)->where("video_stream", "twitch")->get();
+            foreach ($friendsData as $data):
+                $friendsChannelId[] = $data->video_stream_id;
+            endforeach;
+        endforeach;
+//        dd($friendsChannelId);
+        //ends
+
         $a = [];
-        foreach (['44322889', '150314191'] as $chanelId):
-            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/' . $chanelId . '/videos')['videos'];
+        foreach ($friendsChannelId as $chanelId):
+//            dd($chanelId);
+            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/' . $chanelId . '/videos')['videos'][0];
         endforeach;
         dd($a);
     }
@@ -354,6 +524,34 @@ class TournamentsController extends ApiController {
             dd(json_decode($response)->access_token);
             dd();
             return json_decode($response);
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    public function notifications(Request $request) {
+        $rules = ['search' => '', 'limit' => ''];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+
+            $model = new \App\Notification();
+            $perPage = isset($request->limit) ? $request->limit : 20;
+
+            if (isset($request->search))
+                $model = $model->Where('title', 'LIKE', "%$request->search%")
+                        ->orWhere('body', 'LIKE', "%$request->search%")
+                        ->orWhere('data', 'LIKE', "%$request->search%");
+
+//            $model = $model->where('target_id', \Auth::id());
+            \App\Notification::whereIn('id', $model->get()->pluck('id'))->update(['is_read' => '1']);
+
+            $model = $model->where('target_id', \Auth::id())->select('id', 'title', 'body', 'data', 'target_id', 'is_read', 'params', 'state');
+//            $model = $model->with('userDetail')->orderBy('created_at', 'desc');
+            return parent::success($model->paginate($perPage));
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }

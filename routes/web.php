@@ -18,12 +18,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/success', 'HomeController@forgotsuccess')->name('success');
-
+Route::get('forget/success', 'HomeController@forgetsuccess')->name('forget.success');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' => ['Super-Admin']], function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('users/role/{role_id}', 'Admin\UsersController@indexByRoleId')->name('users-role');
+    Route::get('tournamentFixture/{tournament_id}', 'Admin\TournamentController@showTournamentFixture');
     Route::get('/', 'Admin\AdminController@index');
     Route::resource('roles', 'Admin\RolesController');
     Route::resource('permissions', 'Admin\PermissionsController');
@@ -38,7 +38,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
     ]);
     Route::resource('settings', 'Admin\SettingsController');
     Route::post('user/change-status', 'Admin\UsersController@changeStatus')->name('user.changeStatus');
-
+    Route::resource('teams', 'Admin\\TeamsController');
     Route::resource('configuration', 'Admin\ConfigurationController');
     Route::get('configuration', 'Admin\ConfigurationController@customEdit');
     Route::resource('tournament', 'Admin\\TournamentController');

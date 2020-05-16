@@ -8,8 +8,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
-class UserFriend extends Model
-{
+class UserFriend extends Model {
+
     use HasApiTokens,
         Notifiable,
         HasRoles;
@@ -20,6 +20,10 @@ class UserFriend extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id','friend_id','status'];
+        'user_id', 'friend_id', 'status'];
+
+    public function UserDetails() {
+        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'username', 'image');
+    }
 
 }

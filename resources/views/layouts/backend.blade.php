@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE HTML>
 <html>
      <head>
@@ -11,7 +9,9 @@
         <!-- Bootstrap Core CSS -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <!-- Custom CSS -->
+          <link href="{{ asset('template/css/style-new.css') }} " rel='stylesheet' type='text/css' />
         <link href="{{ asset('template/css/style.css') }} " rel='stylesheet' type='text/css' />
+
         <!-- Graph CSS -->
         <link href="{{ asset('template/css/font-awesome.css') }}" rel="stylesheet">
         
@@ -136,6 +136,8 @@
 <?php endforeach; ?>
                         </ul>
                     </li>
+                    <li><a href="{{ url('admin/teams')}}"><i class="fa fa-users"></i> <span>Teams</span></a></li>
+                    <li><a href="{{ url('admin/tournament')}}"><i class="fa fa-gamepad"></i> <span>Tournaments</span></a></li>
                     
                    
 
@@ -172,15 +174,7 @@
             }
         });
     </script>
-    <!--js 
-    {{--        <script src="{{ asset('template/js/jquery.nicescroll.js') }} "></script>--}}
-{{--        <script src="{{ asset('template/js/scripts.js') }} "></script>--}}
-{{--        <!-- Bootstrap Core JavaScript -->--}}
-<script src="{{ asset('template/js/bootstrap.min.js') }} "></script>
-{{--        <!-- /Bootstrap Core JavaScript -->--}}
-{{--        <!-- real-time -->--}}
-{{--        <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script>--}}
-{{--        <script src="{{ asset('template/js/jquery.fn.gantt.js') }} "></script>--}}
+
 <script src="{{ asset('template/js/menu_jquery.js') }}  "></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>

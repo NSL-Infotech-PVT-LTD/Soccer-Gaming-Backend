@@ -7,9 +7,9 @@
 
             <div class="col-md-9">
                 <div class="card">
-                    <div class="card-header">Edit User</div>
+                    <div class="card-header">Create New Team</div>
                     <div class="card-body">
-                        <a href="{{ redirect()->back()->getTargetUrl() }}" title="Back"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
+                        <a href="{{ url('/admin/teams') }}" title="Back"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
                         <br />
                         <br />
 
@@ -21,13 +21,9 @@
                             </ul>
                         @endif
 
-                        {!! Form::model($user, [
-                            'method' => 'PATCH',
-                            'url' => ['/admin/users', $user->id],
-                            'class' => 'form-horizontal'
-                        ]) !!}
+                        {!! Form::open(['url' => '/admin/teams', 'class' => 'form-horizontal', 'files' => true]) !!}
 
-                        @include ('admin.users.form', ['formMode' => 'edit'])
+                        @include ('admin.teams.form', ['formMode' => 'create'])
 
                         {!! Form::close() !!}
 

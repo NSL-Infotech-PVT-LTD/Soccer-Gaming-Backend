@@ -1,0 +1,145 @@
+/*
+Author: W3layout
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+*/
+
+ .top_nav {display: none;}
+ .log img {
+    max-width: 180px;
+    margin: auto;
+    display: block;
+}
+
+.log {
+    text-align: center;
+}
+.main_log input {
+    height: 40px;
+    border: 1px solid #163551;
+    border-radius: 0;
+    box-shadow: 1px 4px 4px -2px #c5c5c5;
+}
+input#remember {
+    height: auto;
+}
+
+.rem {
+    text-align: right;
+}
+.main_log button.btn.btn-primary {
+    width: 100%;
+    background: #163551;
+    border: 0;
+    font-size: 17px;
+        border-radius: 50px;
+}
+
+a.btn.btn-link {
+    color: #e70204;
+    font-weight: bold;
+    font-size: 16px;
+    padding-top: 15px;
+}
+
+label.form-check-label {
+    color: #e70204;
+    font-weight: bold;
+    font-size: 16px;
+    padding-top: 0px;
+}
+.main_log {
+    width: 40%;
+    margin: auto;
+    background: #eef2f5;
+    padding: 40px 10px 15px;
+    border-bottom: 4px solid #163551;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%)
+}
+div#app {
+    background: url(/tournie/public/banner.jpg);
+    background-size: cover;
+    height: 100vh;
+    background-position: center;
+}
+
+
+.main_log .card-header {
+    text-align: center;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #f00809;
+}
+
+.ch {
+    background: #f00809;
+    padding: 10px 0;
+    color: #fff !IMPORTANT;
+    letter-spacing: 0px;
+    font-size: 11px !IMPORTANT;
+}
+.main_log.ch {
+    background: #f00809;
+    padding: 33px 0;
+    width: 50%;
+}
+.card-header.ch {
+    font-size: 15px !IMPORTANT;
+    background: #fff;
+    color: #f00809 !IMPORTANT;
+}
+
+ .top_bg {
+    background: #eceae9 !IMPORTANT;
+}
+.top_left a {
+    background: #163551;
+    padding: 9px 20px;
+    text-transform: uppercase;
+}
+
+.card {
+    border: 0;
+}
+
+.card-header {
+    border: 0;
+}
+
+@media(max-width:767px){.main_log {
+   width: 100% !IMPORTANT;
+    padding: 40px 0px;
+
+}
+label.form-check-label {
+    font-size: 13px;
+}
+a.btn.btn-link {
+    font-size: 13px;
+  
+}
+
+}
+
+@media(min-width:768px) and (max-width: 1200px){
+  .main_log {
+   width: 80%;
+    padding: 40px 0px;
+
+}
+label.form-check-label {
+    font-size: 13px;
+}
+a.btn.btn-link {
+    font-size: 13px;
+  
+}
+
+}
