@@ -364,12 +364,12 @@ class TournamentsController extends ApiController {
             $friends = new \App\UserFriend();
             $friends = $friends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
 
-            $friends = $friends->where("user_id", \Auth::id())->where("friend_id", $request->friend_id)->where("status", "pending")->get();
+            $friends = $friends->where("user_id", $request->friend_id)->where("friend_id", \Auth::id())->where("status", "pending")->get();
 //            dd($friends);
             if (count($friends) < 1):
                 return parent::error(['message' => 'Request not found for this player']);
             endif;
-            $frienddata = \App\UserFriend::where([['user_id', \Auth::id()], ['friend_id', $request->friend_id]])->update(['status' => $request->status]);
+            $frienddata = \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
 
 
 //            parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You received one Friend Request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
