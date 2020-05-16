@@ -266,11 +266,11 @@ class TournamentsController extends ApiController {
 
         $friendsdata = $friendsdata->where(function($query) use ($request) {
             $query->where('user_id', \Auth::id());
-            $query->orWhere('friend_id', $request->friend_id);
+            $query->where('friend_id', $request->friend_id);
         });
         $friendsdata = $friendsdata->orWhere(function($query) use ($request) {
                     $query->where('friend_id', \Auth::id());
-                    $query->orWhere('user_id', $request->friend_id);
+                    $query->where('user_id', $request->friend_id);
                 })->get();
 //        dd(count($friendsdata));
         if (count($friendsdata) > 0) {
