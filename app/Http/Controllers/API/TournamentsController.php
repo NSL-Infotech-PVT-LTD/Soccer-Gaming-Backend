@@ -538,7 +538,7 @@ class TournamentsController extends ApiController {
                         ->orWhere('body', 'LIKE', "%$request->search%")
                         ->orWhere('data', 'LIKE', "%$request->search%");
 
-            $model = $model->where('target_id', \Auth::id());
+//            $model = $model->where('target_id', \Auth::id());
             \App\Notification::whereIn('id', $model->get()->pluck('id'))->update(['is_read' => '1']);
 
             $model = $model->where('target_id', \Auth::id())->select('id', 'title', 'body', 'data', 'target_id', 'is_read', 'params', 'state');
