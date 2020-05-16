@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('friends/store', 'API\TournamentsController@addFriend');
     Route::post('friends', 'API\TournamentsController@myFriends');
     Route::post('friends/requests', 'API\TournamentsController@pendingRequests');
+    Route::post('friends/accept', 'API\TournamentsController@acceptRejectRequests');
     
     Route::post('chat/store', 'API\MessageController@store');
     Route::post('chat/getItems', 'API\MessageController@getItems');

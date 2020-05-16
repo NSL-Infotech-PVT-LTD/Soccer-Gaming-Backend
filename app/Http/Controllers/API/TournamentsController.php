@@ -235,7 +235,7 @@ class TournamentsController extends ApiController {
 
             $players = $players->select('id', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
 
-            $players = $players->where("id",'!=', \Auth::id());
+            $players = $players->where("id", '!=', \Auth::id());
             $players = $players->wherein('id', \DB::table('role_user')->where('role_id', '2')->pluck('user_id'));
 
             $perPage = isset($request->limit) ? $request->limit : 20;
@@ -338,6 +338,35 @@ class TournamentsController extends ApiController {
             $myfriends = $myfriends->orderby('id', 'desc');
 
             return parent::success($myfriends->paginate($perPage));
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    public function acceptRejectRequests(Request $request) {
+//        dd(\Auth::id());
+        $rules = ['friend_id' => 'required|exists:users,id', 'status' => 'required|in:accepted,rejected'];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+
+            $friends = new \App\UserFriend();
+            $friends = $friends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
+
+            $friends = $friends->where("user_id", \Auth::id())->where("friend_id", $request->friend_id)->where("status", "pending")->get();
+//            dd($friends);
+            if (count($friends) < 1):
+                return parent::error(['message' => 'Request not found for this player']);
+            endif;
+            $frienddata = \App\UserFriend::where([['user_id', \Auth::id()],['friend_id', $request->friend_id]])->update(['status' => $request->status]);    
+          
+
+//            parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You received one Friend Request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+
+            return parent::success(['message' => 'Status updated', 'friendFound' => $friends]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
@@ -500,7 +529,7 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $user = \App\User::findOrFail(\Auth::id());
-            
+
             $model = new \App\Notification();
             $perPage = isset($request->limit) ? $request->limit : 20;
 
