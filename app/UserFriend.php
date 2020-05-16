@@ -23,7 +23,8 @@ class UserFriend extends Model {
     protected $appends = ['user_details'];
 
     public function getUserDetailsAttribute() {
-        return User::where('id', $this->user_id)->select('id', 'username', 'image')->first();
+        $id = ($this->user_id == \Auth::id()) ? $this->friend_id : $this->user_id;
+        return User::where('id', $id)->select('id', 'username', 'image')->first();
 //        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'username', 'image');
     }
 
