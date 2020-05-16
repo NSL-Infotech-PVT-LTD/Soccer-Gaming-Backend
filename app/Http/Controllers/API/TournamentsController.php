@@ -268,10 +268,11 @@ class TournamentsController extends ApiController {
             $query->where('user_id', \Auth::id());
             $query->orWhere('friend_id', $request->friend_id);
         });
-        $friendsdata = $friendsdata->where(function($query) use ($request) {
-            $query->where('friend_id', \Auth::id());
-            $query->orWhere('user_id', $request->friend_id);
-        })->get();
+        $friendsdata = $friendsdata->orWhere(function($query) use ($request) {
+                    $query->where('friend_id', \Auth::id());
+                    $query->orWhere('user_id', $request->friend_id);
+                })->get();
+//        dd(count($friendsdata));
         if (count($friendsdata) > 0) {
             return parent::error(['message' => 'Friend request already sent']);
         }
@@ -297,11 +298,13 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $user = \App\User::findOrFail(\Auth::id());
-
             $myfriends = new \App\UserFriend();
             $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
-
-            $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted");
+            $myfriends = $myfriends->where(function($query) use ($request) {
+                $query->where('user_id', \Auth::id());
+                $query->orWhere('friend_id', \Auth::id());
+            });
+            $myfriends = $myfriends->where("status", "accepted");
             $myfriends = $myfriends->with(['userDetails']);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
@@ -310,10 +313,7 @@ class TournamentsController extends ApiController {
                             ->orWhere('user_id', 'LIKE', "%$request->search%");
                 });
             }
-
-
             $myfriends = $myfriends->orderby('id', 'desc');
-
             return parent::success($myfriends->paginate($perPage));
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
