@@ -20,7 +20,7 @@ class CreateTournamentPlayerTeamsTable extends Migration {
             $table->bigInteger('player_id')->unsigned()->index();
             $table->foreign('player_id')->references('id')->on('users')->onDelete('cascade');
             
-            $table->integer('team_id')->nullable();
+            $table->string('team_id')->nullable();
             \App\Helpers\DbExtender::defaultParams($table);
         });
     }

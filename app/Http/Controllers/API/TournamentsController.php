@@ -556,5 +556,23 @@ class TournamentsController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
+    
+    public function notificationCount(Request $request) {
+
+        $rules = ['search' => '',];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+            $model = new \App\Notification();
+            $model = $model->where('target_id', \Auth::id())->where('is_read', '0')->count();
+            return parent::success('notification_count' => $model);
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+    
 
 }

@@ -30,7 +30,7 @@ class Notification extends Model {
      * @var array
      */
     protected $fillable = ['title', 'body', 'data', 'target_id', 'is_read'];
-    protected $appends = ['friend_request'];
+    protected $appends = ['friend_request', 'notification_come_from'];
 
     /**
      * Change activity log event description
@@ -64,6 +64,10 @@ class Notification extends Model {
         } catch (\Exception $ex) {
             return 0;
         }
+    }
+    public function getnotificationComeFromAttribute() {
+            return $this->data->target_id;
+        
     }
 
 }
