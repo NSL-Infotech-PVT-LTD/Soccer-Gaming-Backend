@@ -7,7 +7,7 @@
 
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Tournament</div>
+                <div class="card-header">Tournament Fixtures</div>
                 <div class="card-body">
                     <br/>
                     <br/>
