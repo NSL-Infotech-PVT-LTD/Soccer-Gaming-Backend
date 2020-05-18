@@ -19,11 +19,16 @@ class UserFriend extends Model {
      *
      * @var array
      */
-    protected $fillable = [
-        'user_id', 'friend_id', 'status'];
+    protected $fillable = ['user_id', 'friend_id', 'status'];
+    protected $appends = ['user_details'];
 
-    public function UserDetails() {
-        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'username', 'image');
+    public function getUserDetailsAttribute() {
+        $id = ($this->user_id == \Auth::id()) ? $this->friend_id : $this->user_id;
+        return User::where('id', $id)->select('id', 'username', 'image')->first();
+//        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'username', 'image');
     }
 
+//    public function UserDetails() {
+//        return $this->hasOne(User::class, 'id', 'user_id')->select('id', 'username', 'image');
+//    }
 }
