@@ -48,8 +48,8 @@
                 <div class="card-body">
 
                     <br/>
-                    <div class="table-responsive">
-                        <table class="table table-borderless">
+                    <div class="">
+                        <table class="mytable">
                             <thead>
                                 <tr>
                                     <th>#</th><th>Player Name</th><th>Team</th><th>Image</th>
@@ -75,6 +75,11 @@
                                 </tr>
                                 @endforeach
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>#</th><th>Player Name</th><th>Team</th><th>Image</th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
 
@@ -83,4 +88,9 @@
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function () {
+        $('.mytable').DataTable();
+    });
+</script>
 @endsection

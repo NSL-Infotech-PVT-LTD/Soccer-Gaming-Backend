@@ -4,37 +4,56 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
 use App\Tournament;
 use Illuminate\Http\Request;
+use DataTables;
 
-class TournamentController extends Controller
-{
+class TournamentController extends Controller {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
-    {
-        $keyword = $request->get('search');
-        $perPage = 25;
+//    public function index(Request $request)
+//    {
+//        $keyword = $request->get('search');
+//        $perPage = 25;
+//
+//        if (!empty($keyword)) {
+//            $tournament = Tournament::where('name', 'LIKE', "%$keyword%")
+//                ->orWhere('type', 'LIKE', "%$keyword%")
+//                ->orWhere('number_of_players', 'LIKE', "%$keyword%")
+//                ->orWhere('number_of_teams_per_player', 'LIKE', "%$keyword%")
+//                ->orWhere('number_of_plays_against_each_team', 'LIKE', "%$keyword%")
+//                ->orWhere('number_of_players_that_will_be_in_the_knockout_stage', 'LIKE', "%$keyword%")
+//                ->orWhere('legs_per_match_in_knockout_stage', 'LIKE', "%$keyword%")
+//                ->orWhere('number_of_legs_in_final', 'LIKE', "%$keyword%")
+//                ->latest()->paginate($perPage);
+//        } else {
+//            $tournament = Tournament::latest()->paginate($perPage);
+//        }
+//
+//        return view('admin.tournament.index', compact('tournament'));
+//    }
 
-        if (!empty($keyword)) {
-            $tournament = Tournament::where('name', 'LIKE', "%$keyword%")
-                ->orWhere('type', 'LIKE', "%$keyword%")
-                ->orWhere('number_of_players', 'LIKE', "%$keyword%")
-                ->orWhere('number_of_teams_per_player', 'LIKE', "%$keyword%")
-                ->orWhere('number_of_plays_against_each_team', 'LIKE', "%$keyword%")
-                ->orWhere('number_of_players_that_will_be_in_the_knockout_stage', 'LIKE', "%$keyword%")
-                ->orWhere('legs_per_match_in_knockout_stage', 'LIKE', "%$keyword%")
-                ->orWhere('number_of_legs_in_final', 'LIKE', "%$keyword%")
-                ->latest()->paginate($perPage);
-        } else {
-            $tournament = Tournament::latest()->paginate($perPage);
+    protected $__rulesforindex = ['name' => 'required', 'type' => 'required', 'number_of_players' => 'required', 'number_of_teams_per_player' => 'required'];
+
+    public function index(Request $request) {
+        if ($request->ajax()) {
+            $tournament = Tournament::all();
+            return Datatables::of($tournament)
+                            ->addIndexColumn()
+                            ->addColumn('action', function($item) {
+                                $return = '';
+                                $return .= " <a href=" . url('/admin/tournament/' . $item->id) . " title='View Tournament'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
+                                $return .= " <a href=" . url('/admin/tournamentFixture/' . $item->id) . " title='View Tournament'><button class='btn btn-info btn-sm'><i class='fa fa-gamepad' aria-hidden='true'></i></button></a>";
+                                return $return;
+                            })
+                            ->rawColumns(['action', 'image'])
+                            ->make(true);
         }
-
-        return view('admin.tournament.index', compact('tournament'));
+        return view('admin.tournament.index', ['rules' => array_keys($this->__rulesforindex)]);
     }
 
     /**
@@ -42,8 +61,7 @@ class TournamentController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
-    {
+    public function create() {
         return view('admin.tournament.create');
     }
 
@@ -54,16 +72,15 @@ class TournamentController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $this->validate($request, [
-			'name' => 'required',
-			'type' => 'required',
-			'number_of_players' => 'required',
-			'number_of_teams_per_player' => 'required'
-		]);
+            'name' => 'required',
+            'type' => 'required',
+            'number_of_players' => 'required',
+            'number_of_teams_per_player' => 'required'
+        ]);
         $requestData = $request->all();
-        
+
         Tournament::create($requestData);
 
         return redirect('admin/tournament')->with('flash_message', 'Tournament added!');
@@ -76,17 +93,15 @@ class TournamentController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function show($id)
-    {
+    public function show($id) {
         $tournament = Tournament::findOrFail($id);
 
         return view('admin.tournament.show', compact('tournament'));
     }
     
-    public function showTournamentFixture($tournament_id)
-    {
+    public function showTournamentFixture($tournament_id) {
 //        dd($tournament_id);
-        $tournamentfixtures = \App\TournamentFixture::where('tournament_id',$tournament_id)->get();
+        $tournamentfixtures = \App\TournamentFixture::where('tournament_id', $tournament_id)->get();
 
         return view('admin.tournament.showfixtures', compact('tournamentfixtures'));
     }
@@ -98,8 +113,7 @@ class TournamentController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $tournament = Tournament::findOrFail($id);
 
         return view('admin.tournament.edit', compact('tournament'));
@@ -113,16 +127,15 @@ class TournamentController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $this->validate($request, [
-			'name' => 'required',
-			'type' => 'required',
-			'number_of_players' => 'required',
-			'number_of_teams_per_player' => 'required'
-		]);
+            'name' => 'required',
+            'type' => 'required',
+            'number_of_players' => 'required',
+            'number_of_teams_per_player' => 'required'
+        ]);
         $requestData = $request->all();
-        
+
         $tournament = Tournament::findOrFail($id);
         $tournament->update($requestData);
 
@@ -136,10 +149,10 @@ class TournamentController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         Tournament::destroy($id);
 
         return redirect('admin/tournament')->with('flash_message', 'Tournament deleted!');
     }
+
 }

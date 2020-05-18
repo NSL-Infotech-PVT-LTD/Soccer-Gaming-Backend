@@ -12,7 +12,7 @@
                     <br/>
                     <br/>
                     <div class="table-responsive">
-                        <table class="table table-borderless">
+                        <table class="mytable">
                             <thead>
                                 <tr>
                                     <th>#</th><th>Player1 Name</th><th>Player1 Score</th><th>Player2 Name</th><th>Player2 Score</th><th>Actions</th>
@@ -62,4 +62,9 @@
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function () {
+        $('.mytable').DataTable();
+    });
+</script>
 @endsection
