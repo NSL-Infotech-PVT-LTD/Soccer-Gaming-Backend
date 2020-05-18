@@ -568,7 +568,7 @@ class TournamentsController extends ApiController {
             $user = \App\User::findOrFail(\Auth::id());
             $model = new \App\Notification();
             $model = $model->where('target_id', \Auth::id())->where('is_read', '0')->count();
-            return parent::success('notification_count' => $model);
+            return parent::success($model);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
