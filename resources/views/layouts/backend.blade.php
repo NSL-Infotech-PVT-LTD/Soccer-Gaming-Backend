@@ -131,7 +131,9 @@
                         <ul>
 <?php foreach (\App\Role::all() as $role): ?>
                                 <li  id='demo'>
-                                    <a href="{{ url('admin/users/role/'.$role->id) }}">{{$role->name}}<span class=""></span></a>
+                                    <a href="{{ url('admin/users/role/'.$role->id) }}">
+                                        <?= ($role->name=='Customer')?'Players':$role->name?>
+                                        <span class=""></span></a>
                                 </li>  
 <?php endforeach; ?>
                         </ul>

@@ -70,9 +70,10 @@
         <div class="col-md-12">
             <div class="card">
                 <?php
-                $user = \App\Role::whereId($role_id)->first()->name . ' User';
+                $user = \App\Role::whereId($role_id)->first()->name 
+                        
                 ?>
-                <div class="card-header text-center"><h3 >{{ucfirst($user)}}</h3></div>
+                <div class="card-header text-center"><h3><?= ($user=='Customer')?'Players':$user?></h3></div>
                 <div class="card-body">
                     <?php if (isset($role_id)): ?>
                         <?php if ($role_id === "1"): ?>

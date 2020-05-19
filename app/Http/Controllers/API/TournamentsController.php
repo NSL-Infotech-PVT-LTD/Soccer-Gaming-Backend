@@ -123,26 +123,20 @@ class TournamentsController extends ApiController {
     }
 
     public function addScoreToTournament(Request $request) {
-
-        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required|integer', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required|integer', 'player_id_2_score' => 'required|integer'];
+//        dd($request->player_id_2_team_id);
+        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer'];
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $errors = self::formatValidator($validator);
             return parent::error($errors, 200);
         }
+        if (\App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->where('player_id', $request->player_id_1)->where('team_id', $request->player_id_1_team_id)->get()->isEmpty())
+            return parent::error('Players one are not available in the tournament');
+        if (\App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->where('player_id', $request->player_id_2)->where('team_id', $request->player_id_2_team_id)->get()->isEmpty())
+            return parent::error('Players two are not available in the tournament');
 
-        $playerdata = \App\TournamentPlayerTeam::where('tournament_id', '=', $request->tournament_id)->get();
-//        dd($playerdata->toArray());
-        $i = 0;
-        foreach ($playerdata as $data):
-            if ($data->player_id == $request->player_id_1 || $data->player_id == $request->player_id_2) {
-                $i++;
-                if ($i != '2') {
-                    return parent::error('Players are not available in the tournament');
-                }
-            }
-        endforeach;
+//        dd($i);
         $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->get();
         //                dd($tournamentfixtured);
         if (count($tournamentfixtured) > 0) {
@@ -153,7 +147,7 @@ class TournamentsController extends ApiController {
 
             $input['created_by'] = \Auth::id();
             $input['updated_by'] = \Auth::id();
-            //            dd($input);
+//                dd($input);
             $TournamnetFixed = \App\TournamentFixture::create($input);
             return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
         }
@@ -556,7 +550,7 @@ class TournamentsController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
-    
+
     public function notificationCount(Request $request) {
 
         $rules = ['search' => ''];
@@ -573,6 +567,5 @@ class TournamentsController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
-    
 
 }
