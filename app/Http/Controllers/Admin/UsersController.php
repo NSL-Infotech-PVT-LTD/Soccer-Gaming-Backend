@@ -18,6 +18,7 @@ class UsersController extends Controller {
      * @return void
      */
     protected $__rulesforindex = ['username' => 'required', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required'];
+    protected $__rulesforindexadmin = ['first_name' => 'required', 'last_name' => 'required', 'email' => 'required'];
 
     public function index(Request $request) {
         $keyword = $request->get('search');
@@ -55,16 +56,16 @@ class UsersController extends Controller {
                             ->addColumn('action', function($item)use($role_id) {
 //                                $return = 'return confirm("Confirm delete?")';
                                 $return = '';
-                                if ($role_id == '1') {
+//                                if ($role_id == '1') {
                                     $return .= " <a href=" . url('/admin/users/' . $item->id . '/edit') . " title='Edit User'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></a>";
-                                }
-                                if ($role_id != '1'):
-                                    if ($item->state == '0'):
-                                        $return .= "<button class='btn btn-danger btn-sm changeStatus' title='UnBlock'  data-id=" . $item->id . " data-status='UnBlock'><i class='fa fa-unlock' aria-hidden='true'></i></button>";
+//                                }
+//                                if ($role_id != '1'):
+                                    if ($item->state == '1'):
+                                        $return .= "<button class='btn btn-success btn-sm changeStatus' title='Unblock'  data-id=" . $item->id . " data-status='UnBlock'><i class='fa fa-unlock' aria-hidden='true'></i></button>";
                                     else:
-                                        $return .= "<button class='btn btn-success btn-sm changeStatus' title='Block' data-id=" . $item->id . " data-status='Block' ><i class='fa fa-ban' aria-hidden='true'></i></button>";
+                                        $return .= "<button class='btn btn-danger btn-sm changeStatus' title='Block' data-id=" . $item->id . " data-status='Block' ><i class='fa fa-ban' aria-hidden='true'></i></button>";
                                     endif;
-                                endif;
+//                                endif;
                                 $return .= " <a href=" . url('/admin/users/' . $item->id) . " title='View User'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
 
                                 return $return;
@@ -72,7 +73,12 @@ class UsersController extends Controller {
                             ->rawColumns(['action'])
                             ->make(true);
         }
-        return view('admin.users.index', ['rules' => array_keys($this->__rulesforindex), 'role_id' => $role_id]);
+        if ($role_id == '1') {
+            return view('admin.users.index', ['rules' => array_keys($this->__rulesforindexadmin), 'role_id' => $role_id]);
+        }else{
+            return view('admin.users.index', ['rules' => array_keys($this->__rulesforindex), 'role_id' => $role_id]);
+        }
+//        return view('admin.users.index', ['rules' => array_keys($this->__rulesforindex), 'role_id' => $role_id]);
     }
 
     /**
@@ -225,7 +231,7 @@ class UsersController extends Controller {
 
     public function changeStatus(Request $request) {
         $user = User::findOrFail($request->id);
-        $user->state = $request->status == 'Block' ? '0' : '1';
+        $user->state = $request->status == 'Block' ? '1' : '0';
         $user->save();
         return response()->json(["success" => true, 'message' => 'User updated!']);
     }

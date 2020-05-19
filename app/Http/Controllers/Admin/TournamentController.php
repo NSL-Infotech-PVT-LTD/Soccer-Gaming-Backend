@@ -47,7 +47,7 @@ class TournamentController extends Controller {
                             ->addColumn('action', function($item) {
                                 $return = '';
                                 $return .= " <a href=" . url('/admin/tournament/' . $item->id) . " title='View Tournament'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
-                                $return .= " <a href=" . url('/admin/tournamentFixture/' . $item->id) . " title='View Tournament'><button class='btn btn-info btn-sm'><i class='fa fa-gamepad' aria-hidden='true'></i></button></a>";
+                                $return .= " <a href=" . url('/admin/tournamentFixture/' . $item->id) . " title='View Tournament Fixtures'><button class='btn btn-info btn-sm'><i class='fa fa-gamepad' aria-hidden='true'></i></button></a>";
                                 return $return;
                             })
                             ->rawColumns(['action', 'image'])

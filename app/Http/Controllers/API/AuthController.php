@@ -42,15 +42,15 @@ class AuthController extends ApiController {
             // Add user device details for firbase
             parent::addUserDeviceData($user, $request);
 
-    //send mail to user as a feedback    
-    $dataM = ['subject' => 'Register Notification', 'name' => $request->username, 'to' => $request->email];
+            //send mail to user as a feedback    
+            $dataM = ['subject' => 'Register Notification', 'name' => $request->username, 'to' => $request->email];
 
-    Mail::send('emails.notify', $dataM, function($message) use ($dataM) {
-        $message->from('info@tournie.com');
-        $message->to($dataM['to']);
-        $message->subject($dataM['subject']);
-    });
-    //ENDS
+            Mail::send('emails.notify', $dataM, function($message) use ($dataM) {
+                $message->from('info@tournie.com');
+                $message->to($dataM['to']);
+                $message->subject($dataM['subject']);
+            });
+            //ENDS
 
             return parent::successCreated(['message' => 'Created Successfully', 'token' => $token, 'user' => $user]);
         } catch (\Exception $ex) {
@@ -109,6 +109,8 @@ class AuthController extends ApiController {
                 $user->save();
                 $token = $user->createToken('netscape')->accessToken;
                 parent::addUserDeviceData($user, $request);
+                if (\App\User::whereId(Auth::user()->id)->where('state', '0')->get()->isEmpty())
+                    return parent::error("Your account has not activated yet");
                 return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
             } elseif (Auth::attempt(['username' => request('email'), 'password' => request('password')])) {
 //                dd('st');
@@ -116,6 +118,8 @@ class AuthController extends ApiController {
                 $user->save();
                 $token = $user->createToken('netscape')->accessToken;
                 parent::addUserDeviceData($user, $request);
+                if (\App\User::whereId(Auth::user()->id)->where('state', '0')->get()->isEmpty())
+                    return parent::error("Your account has not activated yet");
                 return parent::successCreated(['message' => 'Login Successfully', 'token' => $token, 'user' => $user]);
             } else {
                 return parent::error("User credentials doesn't matched");
