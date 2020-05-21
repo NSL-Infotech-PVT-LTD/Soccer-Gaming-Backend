@@ -15,7 +15,8 @@
                         <table class="mytable">
                             <thead>
                                 <tr>
-                                    <th>#</th><th>Player1 Name</th><th>Player1 Score</th><th>Player2 Name</th><th>Player2 Score</th><th>Actions</th>
+                                    <th>#</th><th>Player1 Name</th><th>Player1 Score</th><th>Player2 Name</th><th>Player2 Score</th>
+                                    <!--<th>Actions</th>-->
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,7 +36,7 @@
                                         ?>
                                     </td>
                                     <td>{{ $item->player_id_2_score }}</td>
-                                    <td>
+<!--                                    <td>
 
                                         {!! Form::open([
                                         'method' => 'DELETE',
@@ -49,13 +50,14 @@
                                         'onclick'=>'return confirm("Confirm delete?")'
                                         )) !!}
                                         {!! Form::close() !!}
-                                    </td>
+                                    </td>-->
                                 </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>#</th><th>Player1 Name</th><th>Player1 Score</th><th>Player2 Name</th><th>Player2 Score</th><th>Actions</th>
+                                    <th>#</th><th>Player1 Name</th><th>Player1 Score</th><th>Player2 Name</th><th>Player2 Score</th>
+                                    <!--<th>Actions</th>-->
                                 </tr>
                             </tfoot>
                         </table>

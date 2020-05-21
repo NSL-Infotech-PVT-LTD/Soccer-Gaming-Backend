@@ -89,8 +89,18 @@
     </div>
 </div>
 <script>
-$(document).ready(function () {
-        $('.mytable').DataTable();
+    $(document).ready(function () {
+        $('.mytable').DataTable({
+            'columns': [
+                {data: 'first_name'}, // index - 0
+                {data: 'team_name'}, // index - 1
+                {data: 'image'}  // index - 2
+            ],
+            'columnDefs': [{
+                    'targets': [0,1,2], // column index (start from 0)
+                    'orderable': false, // set orderable false for selected columns
+                }]
+        });
     });
 </script>
 @endsection

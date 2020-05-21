@@ -56,14 +56,14 @@ class UsersController extends Controller {
                             ->addColumn('action', function($item)use($role_id) {
 //                                $return = 'return confirm("Confirm delete?")';
                                 $return = '';
-//                                if ($role_id == '1') {
+                                if ($role_id == '1') {
                                     $return .= " <a href=" . url('/admin/users/' . $item->id . '/edit') . " title='Edit User'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></a>";
-//                                }
+                                }
 //                                if ($role_id != '1'):
                                     if ($item->state == '1'):
-                                        $return .= "<button class='btn btn-success btn-sm changeStatus' title='Unblock'  data-id=" . $item->id . " data-status='UnBlock'><i class='fa fa-unlock' aria-hidden='true'></i></button>";
+                                        $return .= "&nbsp;<button class='btn btn-success btn-sm changeStatus' title='Unblock'  data-id=" . $item->id . " data-status='UnBlock'><i class='fa fa-unlock' aria-hidden='true'></i></button>";
                                     else:
-                                        $return .= "<button class='btn btn-danger btn-sm changeStatus' title='Block' data-id=" . $item->id . " data-status='Block' ><i class='fa fa-ban' aria-hidden='true'></i></button>";
+                                        $return .= "&nbsp;<button class='btn btn-danger btn-sm changeStatus' title='Block' data-id=" . $item->id . " data-status='Block' ><i class='fa fa-ban' aria-hidden='true'></i></button>";
                                     endif;
 //                                endif;
                                 $return .= " <a href=" . url('/admin/users/' . $item->id) . " title='View User'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
