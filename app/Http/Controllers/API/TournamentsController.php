@@ -258,17 +258,17 @@ class TournamentsController extends ApiController {
             return $validateAttributes;
         endif;
         try {
-            $myfriends = new \App\UserFriend();
-//            $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
-            $myfriends = $myfriends->Where('user_id', \Auth::id());
-
-            $myfriends = $myfriends->where("status", "accepted")->pluck('friend_id')->toArray();
-//            $myfriends = $players->wherein('id', \DB::table('role_user')->where('role_id', '2')->pluck('user_id'));
-//            dd($myfriends);
+//            $myfriends = new \App\UserFriend();
+//
+//            $myfriends = $myfriends->Where('user_id', \Auth::id());
+//
+//            $myfriends = $myfriends->where("status", "accepted")->pluck('friend_id')->toArray();
 
             $players = new User();
 
-            $players = $players->select('id', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state')->whereNotIn('id', $myfriends);
+//            $players = $players->select('id', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state')->whereNotIn('id', $myfriends);
+            
+            $players = $players->select('id', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
 
             $players = $players->where("id", '!=', \Auth::id());
             $players = $players->wherein('id', \DB::table('role_user')->where('role_id', '2')->pluck('user_id'));
