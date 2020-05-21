@@ -69,6 +69,8 @@ class TournamentsController extends ApiController {
             $key = 'player_' . $i;
             if (!isset($request->$key))
                 return parent::error('Player ' . $i . ' is required');
+            if (User::where('id', $request->$key)->get()->isEmpty())
+                return parent::error('Players one does not exist');
         endfor;
         for ($i = 1; $i <= $request->number_of_players; $i++):
             $key = 'player_' . $i . '_teams';
@@ -87,7 +89,7 @@ class TournamentsController extends ApiController {
         $tournamentPlayer = [];
         for ($i = 1; $i <= $request->number_of_players; $i++):
             $key = 'player_' . $i;
-            $teamkey = 'player_' . $i.'_teams';
+            $teamkey = 'player_' . $i . '_teams';
             $data = (array) json_decode($request->$teamkey, false);
 //            dd($data);
             foreach ($data as $k => $team_id):
