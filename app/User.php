@@ -31,7 +31,7 @@ class User extends Authenticatable {
     protected $hidden = [
         'password', 'remember_token',
     ];
-    protected $appends = ['friend_request_sent'];
+    protected $appends = ['friend_request_sent','friend_request_sent_status'];
 
     /**
      * The attributes that should be cast to native types.
@@ -84,11 +84,29 @@ class User extends Authenticatable {
     }
 
     public function getFriendRequestSentAttribute() {
-        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id',$this->id)->where('status','pending')->get();
+//        dd();
+        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id',$this->id)->get();
+        
         if ($model->isEmpty() !== true):
             return true;
         else:
             return false;
+        endif;
+    }
+    public function getFriendRequestSentStatusAttribute() {
+//        dd();
+        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id',$this->id)->get();
+        
+        if ($model->isEmpty() !== true):
+            if($model->first()->status == 'accepted'):
+                return 'accepted';
+            elseif($model->first()->status == 'rejected'):
+                return 'rejected';
+            elseif($model->first()->status == 'pending'):
+                return 'pending';
+            endif;
+        else:
+            return 'not_sent';
         endif;
     }
 
