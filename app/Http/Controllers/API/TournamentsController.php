@@ -57,7 +57,7 @@ class TournamentsController extends ApiController {
 
     public function createTournaments(Request $request) {
 
-        $rules = ['name' => 'required|string', 'type' => 'required|in:league,league_and_knockout,knockout', 'number_of_players' => 'required|integer|min:1|max:32', 'number_of_teams_per_player' => 'required|integer|min:1|max:4', 'number_of_plays_against_each_team' => 'required_if:type,league_and_knockout,league|integer|min:1|max:2', 'number_of_players_that_will_be_in_the_knockout_stage' => 'required_if:type,knockout|in:16_player,8_player,4_player,2_player', 'legs_per_match_in_knockout_stage' => 'required_if:type,==,knockout|integer|min:1|max:2', 'number_of_legs_in_final' => 'required_if:type,==,knockout|integer|min:1|max:2']; 
+        $rules = ['name' => 'required|string', 'type' => 'required|in:league,league_and_knockout,knockout', 'number_of_players' => 'required|integer|min:1|max:32', 'number_of_teams_per_player' => 'required|integer|min:1|max:4', 'number_of_plays_against_each_team' => 'required_if:type,league_and_knockout,league|integer|min:1|max:2', 'number_of_players_that_will_be_in_the_knockout_stage' => 'required_if:type,knockout|in:16_player,8_player,4_player,2_player', 'legs_per_match_in_knockout_stage' => 'required_if:type,==,knockout|integer|min:1|max:2', 'number_of_legs_in_final' => 'required_if:type,==,knockout|integer|min:1|max:2'];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $errors = self::formatValidator($validator);
@@ -69,11 +69,17 @@ class TournamentsController extends ApiController {
             $key = 'player_' . $i;
             if (!isset($request->$key))
                 return parent::error('Player ' . $i . ' is required');
+        endfor;
+        for ($i = 1; $i <= $request->number_of_players; $i++):
+            $key = 'player_' . $i . '_teams';
+            if (!isset($request->$key))
+                return parent::error('Player ' . $i . ' teams is required');
             $data = (array) json_decode($request->$key, false);
-            if (count($data[array_keys($data)['0']]) != $request->number_of_teams_per_player)
+//            dd($data);
+            if (count($data) != $request->number_of_teams_per_player)
                 return parent::error('Numbers of team provided in Player ' . $i . ' does not match with count');
         endfor;
-//        dd(array_keys($input));
+//        dd($input);
 //        dd($input['number_of_players']);
         $input['created_by'] = \Auth::id();
         $input['updated_by'] = \Auth::id();
@@ -81,9 +87,11 @@ class TournamentsController extends ApiController {
         $tournamentPlayer = [];
         for ($i = 1; $i <= $request->number_of_players; $i++):
             $key = 'player_' . $i;
-            $data = (array) json_decode($request->$key, false);
-            foreach ($data[array_keys($data)['0']] as $k => $team_id):
-                $tournamentPlayer[$i][$k] = ['tournament_id' => $tournament->id, 'player_id' => array_keys($data)['0'], 'team_id' => $team_id];
+            $teamkey = 'player_' . $i.'_teams';
+            $data = (array) json_decode($request->$teamkey, false);
+//            dd($data);
+            foreach ($data as $k => $team_id):
+                $tournamentPlayer[$i][$k] = ['tournament_id' => $tournament->id, 'player_id' => $request->$key, 'team_id' => $team_id];
             endforeach;
 //            dd($tournamentPlayer[$i]);
             \App\TournamentPlayerTeam::insert($tournamentPlayer[$i]);
@@ -228,11 +236,11 @@ class TournamentsController extends ApiController {
             $myfriends = new \App\UserFriend();
 //            $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
             $myfriends = $myfriends->Where('user_id', \Auth::id());
-          
+
             $myfriends = $myfriends->where("status", "accepted")->pluck('friend_id')->toArray();
 //            $myfriends = $players->wherein('id', \DB::table('role_user')->where('role_id', '2')->pluck('user_id'));
 //            dd($myfriends);
-            
+
             $players = new User();
 
             $players = $players->select('id', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state')->whereNotIn('id', $myfriends);
