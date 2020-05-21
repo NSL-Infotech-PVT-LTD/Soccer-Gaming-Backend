@@ -77,6 +77,8 @@ class TournamentsController extends ApiController {
             if (!isset($request->$key))
                 return parent::error('Player ' . $i . ' teams is required');
             $data = (array) json_decode($request->$key, false);
+            if (!is_array($data))
+                parent::error('Numbers of team provided in Player ' . $i . ' does not Seralized');
 //            dd($data);
             if (count($data) != $request->number_of_teams_per_player)
                 return parent::error('Numbers of team provided in Player ' . $i . ' does not match with count');
@@ -131,6 +133,34 @@ class TournamentsController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
+    
+        public function getTournament(Request $request) {
+        $rules = ['search' => '', 'tournament_id' => 'required|exists:tournaments,id'];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+
+            $tournament = new Tournament();
+            $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
+            $tournament = $tournament->where("id", $request->tournament_id);
+            if (isset($request->search)) {
+                $tournament = $tournament->where(function($query) use ($request) {
+                    $query->where('name', 'LIKE', "%$request->search%")
+                            ->orWhere('type', 'LIKE', "%$request->search%");
+                });
+            }
+            $tournament = $tournament->with(['players']);
+            $tournament = $tournament->orderby('id', 'desc');
+
+            return parent::success($tournament->first());
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+    
 
     public function addScoreToTournament(Request $request) {
 //        dd($request->player_id_2_team_id);

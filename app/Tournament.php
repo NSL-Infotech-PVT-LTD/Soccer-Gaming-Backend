@@ -43,8 +43,7 @@ class Tournament extends Model {
         return __CLASS__ . " model has been {$eventName}";
     }
 
-    public function players() {
-        
+    public function players() {        
         return $this->hasMany('\App\TournamentPlayerTeam', 'tournament_id', 'id')->select('tournament_id', 'player_id')->groupBY('player_id')->with(['player']);
     }
 

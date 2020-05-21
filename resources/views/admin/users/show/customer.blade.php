@@ -35,6 +35,11 @@
                                         <td>{{ $user->id }}</td>
                                     </tr>
                                     <tr>
+                                        <th>Image</th>
+                                        <td><img width="50" src="<?= url('uploads/image/'.$user->image); ?>" style="
+                                             margin-bottom: 4px;"></td>
+                                    </tr>
+                                    <tr>
                                         <th>Username</th>
                                         <td>{{ $user->username }}</td>
                                     </tr>
@@ -65,11 +70,6 @@
                                     <tr>
                                         <th>Video stream Id</th>
                                         <td>{{ $user->video_stream_id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Image</th>
-                                        <td><img width="50" src="<?= url('uploads/image/'.$user->image); ?>" style="
-                                             margin-bottom: 4px;"></td>
                                     </tr>
                                 </tbody>
                             </table>
