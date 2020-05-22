@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\User;
 
 class TournamentFixture extends Model {
 
@@ -42,5 +42,22 @@ class TournamentFixture extends Model {
     public function getDescriptionForEvent($eventName) {
         return __CLASS__ . " model has been {$eventName}";
     }
+    
+    public function playerId1Details() {
+        return $this->hasOne(User::class, 'id', 'player_id_1')->select('id', 'username', 'email', 'image');
+    }
+    
+    public function playerId2Details() {
+        return $this->hasOne(User::class, 'id', 'player_id_2')->select('id', 'username', 'email', 'image');
+    }
+    
+    public function playerId1teamIdDetails() {
+        return $this->hasOne(Team::class, 'id', 'player_id_1_team_id')->select('id', 'team_name', 'image');
+    }
+    
+    public function playerId2teamIdDetails() {
+        return $this->hasOne(Team::class, 'id', 'player_id_2_team_id')->select('id', 'team_name', 'image');
+    }
+    
 
 }
