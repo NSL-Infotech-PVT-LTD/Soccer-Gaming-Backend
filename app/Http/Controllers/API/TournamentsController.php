@@ -121,7 +121,7 @@ class TournamentsController extends ApiController {
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
 //            if ($request->show_my == 'my')
             $tournament = $tournament->where("created_by", \Auth::id());
-
+            $tournament = $tournament->whereId("id", \App\TournamentPlayerTeam::where('player_id',\Auth::id())->get()->pluck('tournament_id')->toArray());
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $tournament = $tournament->where(function($query) use ($request) {
