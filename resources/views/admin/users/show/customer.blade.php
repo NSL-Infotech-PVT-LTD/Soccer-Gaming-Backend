@@ -35,8 +35,8 @@
                                         <td>{{ $user->id }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Image</th>
-                                        <td><img width="50" src="<?= url('uploads/image/'.$user->image); ?>" style="
+                                        <th>Profile Image</th>
+                                        <td><img width="60" src="<?= url('uploads/image/'.$user->image); ?>" style="
                                              margin-bottom: 4px;"></td>
                                     </tr>
                                     <tr>

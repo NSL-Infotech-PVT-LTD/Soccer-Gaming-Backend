@@ -41,9 +41,9 @@
     <?php if ($rule == 'type'): ?>
                     {data: 'type', name: 'type', orderable: false, searchable: false},
     <?php elseif ($rule == 'number_of_players'): ?>
-                    {data: 'number_of_players', name: 'type', orderable: false, searchable: false},
+                    {data: 'number_of_players', name: 'number_of_players', orderable: false, searchable: false,  className: "text-center"},
     <?php elseif ($rule == 'number_of_teams_per_player'): ?>
-                    {data: 'number_of_teams_per_player', name: 'type', orderable: false, searchable: false},
+                    {data: 'number_of_teams_per_player', name: 'number_of_teams_per_player', orderable: false, searchable: false, className: "text-center"},
     <?php else: ?>
                     {data: "{{$rule}}", name: "{{$rule}}"},
     <?php endif; ?>
