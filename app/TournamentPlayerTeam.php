@@ -44,7 +44,7 @@ class TournamentPlayerTeam extends Model {
     }
 
     public function player() {
-        return $this->hasOne('\App\User', 'id', 'player_id')->select('id', 'first_name', 'last_name', 'image', 'email');
+        return $this->hasOne('\App\User', 'id', 'player_id')->select('id', 'username', 'first_name', 'last_name', 'image', 'email');
     }
 
     public function getTeamsAttribute($value) {
@@ -97,8 +97,8 @@ class TournamentPlayerTeam extends Model {
             endforeach;
 
             $points = $won * 3 + $draw * 1;
-
-            $return[$team_id] = ['played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points];
+            
+            $return[] = ['team' =>Team::where('id',$team_id)->select('id', 'team_name', 'image')->first(), 'played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points];
             $played = 0;
             $won = 0;
             $draw = 0;
