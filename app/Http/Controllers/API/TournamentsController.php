@@ -109,7 +109,7 @@ class TournamentsController extends ApiController {
 
     public function tournamentList(Request $request) {
 
-        $rules = ['search' => '', 'show_my' => ''];
+        $rules = ['search' => ''];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -119,8 +119,8 @@ class TournamentsController extends ApiController {
 
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
-            if ($request->show_my == 'my')
-                $tournament = $tournament->where("created_by", \Auth::id());
+//            if ($request->show_my == 'my')
+            $tournament = $tournament->where("created_by", \Auth::id());
 
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
@@ -268,7 +268,7 @@ class TournamentsController extends ApiController {
             $players = new User();
 
 //            $players = $players->select('id', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state')->whereNotIn('id', $myfriends);
-            
+
             $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
 
             $players = $players->where("id", '!=', \Auth::id());
