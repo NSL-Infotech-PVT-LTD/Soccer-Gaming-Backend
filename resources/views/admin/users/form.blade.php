@@ -9,7 +9,7 @@
     {!! $errors->first('first_name', '<p class="help-block">:message</p>') !!}
 </div>
 <div class="form-group{{ $errors->has('last_name') ? ' has-error' : ''}}">
-    {!! Form::label('last_name', 'Second Name: ', ['class' => 'control-label']) !!}
+    {!! Form::label('last_name', 'Last Name: ', ['class' => 'control-label']) !!}
     {!! Form::text('last_name', null, ['class' => 'form-control', 'required' => 'required']) !!}
     {!! $errors->first('last_name', '<p class="help-block">:message</p>') !!}
 </div>
