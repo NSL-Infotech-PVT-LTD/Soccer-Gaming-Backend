@@ -51,26 +51,36 @@
                                         <th>Last Name</th>
                                         <td> {{ $user->last_name }} </td>
                                     </tr>
+                                    
                                     <tr>
                                         <th>Email</th>
                                         <td> {{ $user->email }} </td>
                                     </tr>
+                                    
+                                    <?php if($user->xbox_id != null): ?>
                                     <tr>
-                                        <th>Field to play</th>
-                                        <td> {{ $user->field_to_play }} </td>
+                                        <th>xbox Id</th>
+                                        <td> {{ $user->xbox_id }} </td>
                                     </tr>
+                                    <?php endif; ?>
+                                    <?php if($user->ps4_id != null): ?>
                                     <tr>
-                                        <th>Field to play ID</th>
-                                        <td> {{ $user->field_to_play_id }} </td>
+                                        <th>ps4 Id</th>
+                                        <td> {{ $user->ps4_id }} </td>
                                     </tr>
+                                    <?php endif; ?>
+                                    <?php if($user->youtube_id != null): ?>
                                     <tr>
-                                        <th>Video stream</th>
-                                        <td>{{ $user->video_stream }}</td>
+                                        <th>Youtube Id</th>
+                                        <td>{{ $user->youtube_id }}</td>
                                     </tr>
+                                    <?php endif; ?>
+                                    <?php if($user->twitch_id != null): ?>
                                     <tr>
-                                        <th>Video stream Id</th>
-                                        <td>{{ $user->video_stream_id }}</td>
+                                        <th>Twitch Id</th>
+                                        <td>{{ $user->twitch_id }}</td>
                                     </tr>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>

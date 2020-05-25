@@ -56,7 +56,7 @@ class TournamentsController extends ApiController {
     }
 
     public function createTournaments(Request $request) {
-
+//        dd($request->Player_.$i);
         $rules = ['name' => 'required|string', 'type' => 'required|in:league,league_and_knockout,knockout', 'number_of_players' => 'required|integer|min:1|max:32', 'number_of_teams_per_player' => 'required|integer|min:1|max:4', 'number_of_plays_against_each_team' => 'required_if:type,league_and_knockout,league|integer|min:1|max:2', 'number_of_players_that_will_be_in_the_knockout_stage' => 'required_if:type,knockout|in:16_player,8_player,4_player,2_player', 'legs_per_match_in_knockout_stage' => 'required_if:type,==,knockout|integer|min:1|max:2', 'number_of_legs_in_final' => 'required_if:type,==,knockout|integer|min:1|max:2'];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -104,6 +104,14 @@ class TournamentsController extends ApiController {
         $tournamentGet = $tournamentGet->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
         $tournamentGet = $tournamentGet->where("id", $tournament->id);
         $tournamentGet = $tournamentGet->with(['players']);
+        
+        
+        for ($i = 1; $i <= $request->number_of_players; $i++):
+            $key = 'player_' . $i;
+            parent::pushNotifications(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']], $request->$key , TRUE);
+        endfor;
+        
+        
         return parent::success(['message' => 'Your Tournaments has been successfully created', 'tournaments' => $tournamentGet->first()]);
     }
 
@@ -207,8 +215,8 @@ class TournamentsController extends ApiController {
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $teams = $teams->where(function($query) use ($request) {
-                    $query->where('team_name', 'LIKE', "%$request->search%")
-                            ->orWhere('league_name', 'LIKE', "%$request->search%");
+                    $query->where('team_name', 'LIKE', "$request->search%")
+                            ->orWhere('league_name', 'LIKE', "$request->search%");
                 });
             }
 //            $tournament = $tournament->with(['players']);
@@ -324,10 +332,7 @@ class TournamentsController extends ApiController {
 
 
         $userfriends = \App\UserFriend::create($input);
-        
-        $username = \Auth::user()->name;
-        
-        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You have a friend request from '.$username.'', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You have a friend request from', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
 
         return parent::success(['message' => 'Your friend request has been sent', 'userfriends' => $userfriends]);
     }
