@@ -231,7 +231,7 @@ class TournamentsController extends ApiController {
             $user = \App\User::findOrFail(\Auth::id());
 
             $players = new User();
-            $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
+            $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
                     'roles', function($q) {
                 $q->where('name', 'Customer');
             }
@@ -271,17 +271,18 @@ class TournamentsController extends ApiController {
 
             $players = new User();
 
-//            $players = $players->select('id', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state')->whereNotIn('id', $myfriends);
+//            $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state')->whereNotIn('id', $myfriends);
 
-            $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id', 'is_login', 'is_notify', 'params', 'state');
+            $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state');
 
-            $players = $players->where("id", '!=', \Auth::id());
+//            $players = $players->where("id", '!=', \Auth::id());
             $players = $players->wherein('id', \DB::table('role_user')->where('role_id', '2')->pluck('user_id'));
 
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $players = $players->where(function($query) use ($request) {
-                    $query->where('first_name', 'LIKE', "%$request->search%")
+                    $query->where('username', 'LIKE', "%$request->search%")
+                            ->orWhere('first_name', 'LIKE', "%$request->search%")
                             ->orWhere('email', 'LIKE', "%$request->search%");
                 });
             }
@@ -323,8 +324,10 @@ class TournamentsController extends ApiController {
 
 
         $userfriends = \App\UserFriend::create($input);
-
-        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You received one Friend Request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+        
+        $username = \Auth::user()->name;
+        
+        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You have a friend request from '.$username.'', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
 
         return parent::success(['message' => 'Your friend request has been sent', 'userfriends' => $userfriends]);
     }
@@ -484,9 +487,9 @@ class TournamentsController extends ApiController {
         $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted")->get();
         $friendsChannelId = [];
         foreach ($myfriends as $friends):
-            $friendsData = User::select('video_stream_id')->where("id", $friends->friend_id)->where("video_stream", "twitch")->get();
+            $friendsData = User::select('twitch_id')->where("id", $friends->friend_id)->get();
             foreach ($friendsData as $data):
-                $friendsChannelId[] = $data->video_stream_id;
+                $friendsChannelId[] = $data->twitch_id;
             endforeach;
         endforeach;
 //        dd($friendsChannelId);

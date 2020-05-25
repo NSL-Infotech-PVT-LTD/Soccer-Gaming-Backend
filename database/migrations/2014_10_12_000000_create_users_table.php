@@ -20,10 +20,10 @@ class CreateUsersTable extends Migration {
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('image')->nullable();
-            $table->enum('field_to_play', ['xbox', 'ps4'])->nullable();
-            $table->string('field_to_play_id')->nullable();
-            $table->enum('video_stream', ['youtube', 'twitch'])->nullable();
-            $table->string('video_stream_id')->nullable();
+            $table->string('xbox_id')->nullable();
+            $table->string('ps4_id')->nullable();
+            $table->string('youtube_id')->nullable();
+            $table->string('twitch_id')->nullable();
             $table->enum('is_login', ['0', '1'])->default('0');
             $table->enum('is_notify', ['0', '1'])->default('1');
             App\Helpers\DbExtender::defaultParams($table);

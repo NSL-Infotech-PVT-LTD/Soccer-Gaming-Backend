@@ -21,7 +21,7 @@ class AuthController extends ApiController {
 
     public function register(Request $request) {
 
-        $rules = ['username' => 'required|string|max:255|unique:users', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required|email|unique:users', 'password' => 'required', 'image' => 'required', 'field_to_play' => '', 'field_to_play_id' => '', 'video_stream' => '', 'video_stream_id' => ''];
+        $rules = ['username' => 'required|string|max:255|unique:users', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required|email|unique:users', 'password' => 'required', 'image' => 'required', 'xbox_id' => '', 'ps4_id' => '', 'youtube_id' => '', 'twitch_id' => ''];
         $rules = array_merge($this->requiredParams, $rules);
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
@@ -210,7 +210,7 @@ class AuthController extends ApiController {
     public function Update(Request $request) {
         $user = \App\User::findOrFail(\Auth::id());
 
-        $rules = ['first_name' => '', 'last_name' => '', 'image' => '', 'field_to_play' => '', 'field_to_play_id' => '', 'video_stream' => '', 'video_stream_id' => ''];
+        $rules = ['first_name' => '', 'last_name' => '', 'image' => '', 'xbox_id' => '', 'ps4_id' => '', 'youtube_id' => '', 'twitch_id' => ''];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -224,7 +224,7 @@ class AuthController extends ApiController {
             $user->fill($input);
             $user->save();
 
-            $user = \App\User::whereId($user->id)->select('id', 'first_name', 'last_name', 'email', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id')->first();
+            $user = \App\User::whereId($user->id)->select('id', 'first_name', 'last_name', 'email', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id')->first();
             return parent::successCreated(['message' => 'Updated Successfully', 'user' => $user]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
@@ -242,7 +242,7 @@ class AuthController extends ApiController {
             $model = new \App\User();
             $roleusersSA = \DB::table('role_user')->where('role_id', \App\Role::where('name', 'Customer')->first()->id)->pluck('user_id');
             $model = $model->wherein('users.id', $roleusersSA)
-                    ->Select('id', 'username', 'first_name', 'last_name', 'email', 'image', 'field_to_play', 'field_to_play_id', 'video_stream', 'video_stream_id');
+                    ->Select('id', 'username', 'first_name', 'last_name', 'email', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id');
             $model = $model->groupBy('users.id');
             $model = $model->where('users.id', \Auth::id());
             if (isset($request->search))
