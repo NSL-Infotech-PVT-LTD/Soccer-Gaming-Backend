@@ -90,7 +90,7 @@ class User extends Authenticatable {
         if ($model->isEmpty() !== true):
             return true;
         else:
-            return false;
+            return false; 
         endif;
     }
     public function getFriendRequestSentStatusAttribute() {
