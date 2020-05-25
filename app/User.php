@@ -94,11 +94,11 @@ class User extends Authenticatable {
         endif;
     }
     public function getFriendRequestSentStatusAttribute() {
-//        dd();
+//        dd(\Auth::id());
         $model = UserFriend::where('user_id', \Auth::id())->where('friend_id',$this->id)->get();
         
         if ($model->isEmpty() !== true):
-            if($model->first()->status == 'accepted'):
+            if($model->first()->status == 'accepted' || $this->id == \Auth::id()):
                 return 'accepted';
             elseif($model->first()->status == 'rejected'):
                 return 'rejected';
