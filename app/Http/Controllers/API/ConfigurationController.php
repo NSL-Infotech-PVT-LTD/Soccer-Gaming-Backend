@@ -80,9 +80,24 @@ class ConfigurationController extends ApiController {
         }
     }
 
+//    public function testingPush(Request $request) {
+//        parent::pushNotifications(['title' => 'testing', 'body' => 'testing body', 'data' => ['target_id' => '1', 'target_model' => 'UserJob', 'data_type' => 'proposal']], '214');
+//        return parent::success('test');
+//    }
+    
     public function testingPush(Request $request) {
-        parent::pushNotifications(['title' => 'testing', 'body' => 'testing body', 'data' => ['target_id' => '1', 'target_model' => 'UserJob', 'data_type' => 'proposal']], '214');
-        return parent::success('test');
+        $rules = ['id' => 'required'];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            parent::pushNotifications(['title' => 'Test', 'body' => 'Test Body', 'data' => ['target_id' => $request->id, 'target_model' => 'Test', 'data_type' => 'Test']], $request->id, FALSE);
+            return parent::success(['Message' => 'Notification Sent']);
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
     }
+    
 
 }
