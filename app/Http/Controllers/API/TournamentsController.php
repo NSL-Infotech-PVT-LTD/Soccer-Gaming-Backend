@@ -510,7 +510,7 @@ class TournamentsController extends ApiController {
         $a = [];
         foreach ($friendsChannelId as $chanelId):
 //            dd($chanelId);
-            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/'.$chanelId.'/videos')['videos']['0'];
+            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/'.$chanelId.'/videos');
         endforeach;
         dd($a);
     }
