@@ -510,10 +510,12 @@ class TournamentsController extends ApiController {
         $a = [];
         foreach ($friendsChannelId as $chanelId):
 //            dd($chanelId);
-            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/'.$chanelId.'/videos');
+            $video = self::getCurl('https://api.twitch.tv/kraken/channels/'.$chanelId.'/videos');
+        
+            $a[] = (isset($video['videos']['0']))?$video['videos']['0']:[];
         endforeach;
 //        dd(json_encode($a));
-        return parent::success(['message' => 'videos found', 'videos' => json_encode($a)]);
+        return parent::success($a);
     }
 
     private static function getCurl($url) {
