@@ -489,10 +489,17 @@ class TournamentsController extends ApiController {
 
         $myfriends = new \App\UserFriend();
         $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
-        $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted")->get();
+//        $myfriends = $myfriends->where("user_id", \Auth::id())->where("status", "accepted")->get();
+        $myfriends = $myfriends->where(function($query) use ($request) {
+            $query->where('user_id', \Auth::id());
+            $query->orWhere('friend_id', \Auth::id());
+        });
+        $myfriends = $myfriends->where("status", "accepted")->get();
+//        dd($myfriends->get()->toArray());
         $friendsChannelId = [];
         foreach ($myfriends as $friends):
-            $friendsData = User::select('twitch_id')->where("id", $friends->friend_id)->get();
+            $id = ($friends->friend_id == \Auth::id())? $friends->user_id:$friends->friend_id;
+            $friendsData = User::select('twitch_id')->where("id", $id)->get();
             foreach ($friendsData as $data):
                 $friendsChannelId[] = $data->twitch_id;
             endforeach;
@@ -503,7 +510,7 @@ class TournamentsController extends ApiController {
         $a = [];
         foreach ($friendsChannelId as $chanelId):
 //            dd($chanelId);
-            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/' . $chanelId . '/videos')['videos'][0];
+            $a[$chanelId] = self::getCurl('https://api.twitch.tv/kraken/channels/'.$chanelId.'/videos')['videos']['0'];
         endforeach;
         dd($a);
     }
