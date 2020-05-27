@@ -208,10 +208,8 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $user = \App\User::findOrFail(\Auth::id());
-
             $teams = new \App\Team();
             $teams = $teams->select('id', 'team_name', 'league_name', 'image');
-
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $teams = $teams->where(function($query) use ($request) {
@@ -332,7 +330,7 @@ class TournamentsController extends ApiController {
 
 
         $userfriends = \App\UserFriend::create($input);
-        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You have a friend request from', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You have a friend request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
 
         return parent::success(['message' => 'Your friend request has been sent', 'userfriends' => $userfriends]);
     }
@@ -512,7 +510,7 @@ class TournamentsController extends ApiController {
 //            dd($chanelId);
             $video = self::getCurl('https://api.twitch.tv/kraken/channels/'.$chanelId.'/videos');
         
-            $a[] = (isset($video['videos']['0']))?$video['videos']['0']:[];
+            $a = (isset($video['videos']['0']))?$video['videos']['0']:[];
         endforeach;
 //        dd(json_encode($a));
         return parent::success($a);

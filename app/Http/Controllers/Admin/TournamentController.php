@@ -37,11 +37,11 @@ class TournamentController extends Controller {
 //        return view('admin.tournament.index', compact('tournament'));
 //    }
 
-    protected $__rulesforindex = ['name' => 'required', 'type' => 'required', 'number_of_players' => 'required', 'number_of_teams_per_player' => 'required'];
+    protected $__rulesforindex = ['name' => 'required', 'type' => 'required', 'number_of_players' => 'required', 'number_of_teams_per_player' => 'required', 'created_at' => 'required'];
 
     public function index(Request $request) {
         if ($request->ajax()) {
-            $tournament = Tournament::all();
+            $tournament = Tournament::latest();
             return Datatables::of($tournament)
                             ->addIndexColumn()
                             ->addColumn('action', function($item) {

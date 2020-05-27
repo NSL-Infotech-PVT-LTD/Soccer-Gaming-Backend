@@ -17,7 +17,7 @@ class UsersController extends Controller {
      *
      * @return void
      */
-    protected $__rulesforindex = ['username' => 'required', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required'];
+    protected $__rulesforindex = ['username' => 'required', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required', 'created_at' => 'required'];
     protected $__rulesforindexadmin = ['first_name' => 'required', 'last_name' => 'required', 'email' => 'required'];
 
     public function index(Request $request) {
@@ -60,13 +60,14 @@ class UsersController extends Controller {
                                     $return .= " <a href=" . url('/admin/users/' . $item->id . '/edit') . " title='Edit User'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></a>";
                                 }
 //                                if ($role_id != '1'):
-                                    if ($item->state == '1'):
-                                        $return .= "&nbsp;<button class='btn btn-success btn-sm changeStatus' title='Unblock'  data-id=" . $item->id . " data-status='UnBlock'><i class='fa fa-unlock' aria-hidden='true'></i></button>";
-                                    else:
-                                        $return .= "&nbsp;<button class='btn btn-danger btn-sm changeStatus' title='Block' data-id=" . $item->id . " data-status='Block' ><i class='fa fa-ban' aria-hidden='true'></i></button>";
-                                    endif;
+                                if ($item->state == '1'):
+                                    $return .= "&nbsp;<button class='btn btn-success btn-sm changeStatus' title='Unblock'  data-id=" . $item->id . " data-status='UnBlock'><i class='fa fa-unlock' aria-hidden='true'></i></button>";
+                                else:
+                                    $return .= "&nbsp;<button class='btn btn-danger btn-sm changeStatus' title='Block' data-id=" . $item->id . " data-status='Block' ><i class='fa fa-ban' aria-hidden='true'></i></button>";
+                                endif;
 //                                endif;
-                                $return .= " <a href=" . url('/admin/users/' . $item->id) . " title='View User'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
+                                $return .= " <a href=" . url('/admin/users/' . $item->id) . " title='View Player'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
+                                $return .= " <a href=" . url('/admin/playerfriends/' . $item->id) . " title='Player friends'><button class='btn btn-warning btn-sm'><i class='fa fa-users' aria-hidden='true'></i></button></a>";
 
                                 return $return;
                             })
@@ -75,7 +76,7 @@ class UsersController extends Controller {
         }
         if ($role_id == '1') {
             return view('admin.users.index', ['rules' => array_keys($this->__rulesforindexadmin), 'role_id' => $role_id]);
-        }else{
+        } else {
             return view('admin.users.index', ['rules' => array_keys($this->__rulesforindex), 'role_id' => $role_id]);
         }
 //        return view('admin.users.index', ['rules' => array_keys($this->__rulesforindex), 'role_id' => $role_id]);
@@ -130,6 +131,18 @@ class UsersController extends Controller {
         endif;
     }
 
+    public function showPlayerFriends($user_id) {
+//        dd($user_id);
+        $playerfriends = new \App\UserFriend();
+        $playerfriends = $playerfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
+        $playerfriends = $playerfriends->where(function($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+            $query->orWhere('friend_id', $user_id);
+        });
+        $playerfriends = $playerfriends->where("status", "accepted");
+        return view('admin.users.show.showplayerfriend', compact('playerfriends'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -173,7 +186,7 @@ class UsersController extends Controller {
     public function edit($id) {
         $roles = Role::select('id', 'name', 'label')->get();
         $roles = $roles->pluck('label', 'name');
-        $user = User::with('roles')->select('id', 'first_name','last_name', 'email', 'password')->findOrFail($id);
+        $user = User::with('roles')->select('id', 'first_name', 'last_name', 'email', 'password')->findOrFail($id);
         $user_roles = [];
         foreach ($user->roles as $role) {
             $user_roles[] = $role->name;

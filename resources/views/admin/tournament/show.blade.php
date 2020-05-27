@@ -67,8 +67,13 @@
                                     </td>
                                     <td>
                                         <?php
-                                        $teams = DB::table('teams')->where('id', $item->team_id)->first();
-                                        echo $teams->team_name;
+//                                        dd($item->team_id);
+                                        if (is_numeric($item->team_id)):
+                                            $teams = DB::table('teams')->where('id', $item->team_id)->first();
+                                            echo $teams->team_name;
+                                        else:
+                                            echo $item->team_id;
+                                        endif;
                                         ?> 
                                     </td>
                                     <td><img width='50' src="{{$teams->image}}"></td>
@@ -97,7 +102,7 @@
                 {data: 'image'}  // index - 2
             ],
             'columnDefs': [{
-                    'targets': [0,1,2], // column index (start from 0)
+                    'targets': [0, 1, 2], // column index (start from 0)
                     'orderable': false, // set orderable false for selected columns
                 }]
         });
