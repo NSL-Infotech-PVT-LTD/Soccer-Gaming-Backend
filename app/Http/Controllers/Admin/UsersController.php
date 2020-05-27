@@ -15,7 +15,7 @@ class UsersController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return void 
+     * @return void  
      */
     protected $__rulesforindex = ['username' => 'required', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required', 'created_at' => 'required'];
     protected $__rulesforindexadmin = ['first_name' => 'required', 'last_name' => 'required', 'email' => 'required'];
