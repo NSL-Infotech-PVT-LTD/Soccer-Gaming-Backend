@@ -76,19 +76,14 @@
                                         ?> 
                                     </td>
                                     <td>
-
-                                    </td>
-                                    <td>
-                                        <img width='50' src="
-                                             <?php
-                                             if (is_numeric($item->team_id)):
-                                                 $teams = DB::table('teams')->where('id', $item->team_id)->first();
-                                                 echo $teams->image;
-                                             else:
-                                                 echo 'NA';
-                                             endif;
-                                             ?>
-                                             ">
+                                        <?php
+                                        if (is_numeric($item->team_id)):
+                                            $teams = DB::table('teams')->where('id', $item->team_id)->first();
+                                            echo "<img width='50' src=".$teams->image.">";
+                                        else:
+                                            echo 'NA';
+                                        endif;
+                                        ?>    
                                     </td>
                                 </tr>
                                 @endforeach
