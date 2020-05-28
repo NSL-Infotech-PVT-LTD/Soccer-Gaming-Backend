@@ -164,7 +164,7 @@
     </div>
 </div>
 <script>
-$(document).ready(function () {
+    $(document).ready(function () {
         $('.mytable').DataTable();
     });
 </script>

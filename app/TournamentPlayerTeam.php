@@ -46,7 +46,10 @@ class TournamentPlayerTeam extends Model {
     public function player() {
         return $this->hasOne('\App\User', 'id', 'player_id')->select('id', 'username', 'first_name', 'last_name', 'image', 'email');
     }
-
+//    public function getplayerTeamsAttribute($value) {
+//        $arr = TournamentPlayerTeam::where('tournament_id', $this->tournament_id)->where('player_id', $this->player_id)->get()->toArray();
+//        return $arr;
+//    }
     public function getTeamsAttribute($value) {
         $arr = TournamentPlayerTeam::where('tournament_id', $this->tournament_id)->where('player_id', $this->player_id)->get()->pluck('team_id')->toArray();
 

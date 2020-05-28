@@ -89,17 +89,22 @@ class TournamentsController extends ApiController {
         $input['updated_by'] = \Auth::id();
         $tournament = Tournament::create($input);
         $tournamentPlayer = [];
+        $playerteams = [];
         for ($i = 1; $i <= $request->number_of_players; $i++):
             $key = 'player_' . $i;
             $teamkey = 'player_' . $i . '_teams';
             $data = (array) json_decode($request->$teamkey, false);
-//            dd($data);
+//            array_push($playerteams,$data);
             foreach ($data as $k => $team_id):
                 $tournamentPlayer[$i][$k] = ['tournament_id' => $tournament->id, 'player_id' => $request->$key, 'team_id' => $team_id];
+//                array_push($playerteams, ['team_id' => $team_id]);
             endforeach;
-//            dd($tournamentPlayer[$i]);
+
             \App\TournamentPlayerTeam::insert($tournamentPlayer[$i]);
         endfor;
+//        $product = self::cartesian($playerteams);
+//        dd($product);
+//        dd($tournamentPlayer[$i][$k]);
         $tournamentGet = new Tournament();
         $tournamentGet = $tournamentGet->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
         $tournamentGet = $tournamentGet->where("id", $tournament->id);
@@ -114,6 +119,25 @@ class TournamentsController extends ApiController {
 
         return parent::success(['message' => 'Your Tournaments has been successfully created', 'tournaments' => $tournamentGet->first()]);
     }
+
+//    public static function cartesian($input) {
+//        $result = array(array());
+//
+//        foreach ($input as $key => $values) {
+//            $append = array();
+//
+//            foreach ($result as $product) {
+//                foreach ($values as $item) {
+//                    $product[$key] = $item;
+//                    $append[] = $product;
+//                }
+//            }
+//
+//            $result = $append;
+//        }
+//
+//        return $result;
+//    }
 
     public function tournamentList(Request $request) {
 
@@ -496,7 +520,7 @@ class TournamentsController extends ApiController {
 //        dd($myfriends->get()->toArray());
         $friendsChannelId = [];
         foreach ($myfriends as $friends):
-            $id = ($friends->friend_id == \Auth::id())? $friends->user_id:$friends->friend_id;
+            $id = ($friends->friend_id == \Auth::id()) ? $friends->user_id : $friends->friend_id;
             $friendsData = User::select('twitch_id')->where("id", $id)->get();
             foreach ($friendsData as $data):
                 $friendsChannelId[] = $data->twitch_id;
@@ -508,9 +532,9 @@ class TournamentsController extends ApiController {
         $a = [];
         foreach ($friendsChannelId as $chanelId):
 //            dd($chanelId);
-            $video = self::getCurl('https://api.twitch.tv/kraken/channels/'.$chanelId.'/videos');
-        
-            $a = (isset($video['videos']['0']))?$video['videos']['0']:[];
+            $video = self::getCurl('https://api.twitch.tv/kraken/channels/' . $chanelId . '/videos');
+
+            $a = (isset($video['videos']['0'])) ? $video['videos']['0'] : [];
         endforeach;
 //        dd(json_encode($a));
         return parent::success($a);

@@ -71,7 +71,7 @@ class Notification extends Model {
         try {
             $model = User::select('id', 'username', 'email')->where('id', $this->data->target_id)->first();
 //            dd($model);
-            return $model;
+            return $this->model;
         } catch (\Exception $ex) {
             return null;
         }
