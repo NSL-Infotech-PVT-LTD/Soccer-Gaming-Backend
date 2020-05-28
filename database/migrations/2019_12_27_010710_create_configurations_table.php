@@ -15,11 +15,11 @@ class CreateConfigurationsTable extends Migration {
         Schema::create('configurations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('terms_and_conditions_customer');
-            $table->string('terms_and_conditions_service_provider');
+            $table->string('terms_and_conditions_service_provider')->nullable();
             $table->string('private_policy_customer');
-            $table->string('private_policy_service_provider');
+            $table->string('private_policy_service_provider')->nullable();
             $table->string('about_us_customer');
-            $table->string('about_us_service_provider');
+            $table->string('about_us_service_provider')->nullable();
             App\Helpers\DbExtender::defaultParams($table);
         });
     }

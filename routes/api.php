@@ -60,5 +60,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('notification/list', 'API\TournamentsController@notifications');
     Route::post('notification/count', 'API\TournamentsController@notificationCount');
 });
+Route::get('player-config/{column}', 'API\ConfigurationController@getConfigurationPlayer');
+Route::get('service-config/{column}', 'API\ConfigurationController@getConfigurationService');
 Route::post('testing-push', 'API\ConfigurationController@testingPush');
     

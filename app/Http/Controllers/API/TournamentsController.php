@@ -606,7 +606,7 @@ class TournamentsController extends ApiController {
             \App\Notification::whereIn('id', $model->get()->pluck('id'))->update(['is_read' => '1']);
 
             $model = $model->where('target_id', \Auth::id())->select('id', 'title', 'body', 'data', 'target_id', 'is_read', 'params', 'state');
-//            $model = $model->with('userDetail')->orderBy('created_at', 'desc');
+            $model = $model->orderBy('id', 'desc');
             return parent::success($model->paginate($perPage));
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());

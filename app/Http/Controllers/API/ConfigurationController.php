@@ -44,7 +44,7 @@ class ConfigurationController extends ApiController {
         }
     }
 
-    public function getConfigurationCustomer(Request $request, $column) {
+    public function getConfigurationPlayer(Request $request, $column) {
         $rules = [];
         $validateAttributes = parent::validateAttributes($request, 'GET', $rules, array_keys($rules), false);
         if ($validateAttributes):

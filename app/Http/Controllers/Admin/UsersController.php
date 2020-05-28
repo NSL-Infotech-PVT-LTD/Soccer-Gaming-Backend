@@ -17,7 +17,7 @@ class UsersController extends Controller {
      *
      * @return void  
      */
-    protected $__rulesforindex = ['username' => 'required', 'first_name' => 'required', 'last_name' => 'required', 'email' => 'required', 'created_at' => 'required'];
+    protected $__rulesforindex = ['username' => 'required', 'email' => 'required', 'created_at' => 'required'];
     protected $__rulesforindexadmin = ['first_name' => 'required', 'last_name' => 'required', 'email' => 'required'];
 
     public function index(Request $request) {
@@ -67,7 +67,7 @@ class UsersController extends Controller {
                                 endif;
 //                                endif;
                                 $return .= " <a href=" . url('/admin/users/' . $item->id) . " title='View Player'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
-                                $return .= " <a href=" . url('/admin/playerfriends/' . $item->id) . " title='Player friends'><button class='btn btn-warning btn-sm'><i class='fa fa-users' aria-hidden='true'></i></button></a>";
+//                                $return .= " <a href=" . url('/admin/playerfriends/' . $item->id) . " title='Player friends'><button class='btn btn-warning btn-sm'><i class='fa fa-users' aria-hidden='true'></i></button></a>";
 
                                 return $return;
                             })

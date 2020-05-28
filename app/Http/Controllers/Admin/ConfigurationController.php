@@ -52,11 +52,11 @@ class ConfigurationController extends Controller {
     public function store(Request $request) {
         $this->validate($request, [
             'about_us_customer' => 'required',
-            'about_us_service_provider' => 'required',
+            'about_us_service_provider' => '',
             'terms_and_conditions_customer' => 'required',
-            'terms_and_conditions_service_provider' => 'required',
+            'terms_and_conditions_service_provider' => '',
             'private_policy_customer' => 'required',
-            'private_policy_service_provider' => 'required'
+            'private_policy_service_provider' => ''
         ]);
         $requestData = $request->all();
 
@@ -109,11 +109,11 @@ class ConfigurationController extends Controller {
     public function update(Request $request, $id) {
         $this->validate($request, [
             'about_us_customer' => 'required',
-            'about_us_service_provider' => 'required',
+            'about_us_service_provider' => '',
             'terms_and_conditions_customer' => 'required',
-            'terms_and_conditions_service_provider' => 'required',
+            'terms_and_conditions_service_provider' => '',
             'private_policy_customer' => 'required',
-            'private_policy_service_provider' => 'required'
+            'private_policy_service_provider' => ''
         ]);
         $requestData = $request->all();
 
