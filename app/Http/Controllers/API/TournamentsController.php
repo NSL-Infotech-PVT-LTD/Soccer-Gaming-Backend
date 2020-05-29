@@ -233,10 +233,13 @@ class TournamentsController extends ApiController {
             return parent::error('Players two are not available in the tournament');
 
 //        dd($i);
-        $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->get();
+        $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->first();
         //                dd($tournamentfixtured);
-        if (count($tournamentfixtured) > 0) {
-            return parent::error(['message' => 'Score already Added']);
+        if(\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->get()->isEmpty() === true)
+                return parent::error('fixture does not exist');
+        
+        if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null) {
+            return parent::error(['message' => 'Score already Updated']);
         } else {
             //            dd('s');
             $input = $request->all();
@@ -244,7 +247,10 @@ class TournamentsController extends ApiController {
             $input['created_by'] = \Auth::id();
             $input['updated_by'] = \Auth::id();
 //                dd($input);
-            $TournamnetFixed = \App\TournamentFixture::create($input);
+//            $TournamnetFixed = \App\TournamentFixture::create($input);
+            $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
+            $TournamnetFixed->fill($input);
+            $TournamnetFixed->save();
             return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
         }
     }
