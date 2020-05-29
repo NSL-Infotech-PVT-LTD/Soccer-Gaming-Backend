@@ -89,26 +89,46 @@ class TournamentsController extends ApiController {
         $input['updated_by'] = \Auth::id();
         $tournament = Tournament::create($input);
         $tournamentPlayer = [];
-        $playerteams = [];
         for ($i = 1; $i <= $request->number_of_players; $i++):
             $key = 'player_' . $i;
             $teamkey = 'player_' . $i . '_teams';
             $data = (array) json_decode($request->$teamkey, false);
-//            array_push($playerteams,$data);
             foreach ($data as $k => $team_id):
                 $tournamentPlayer[$i][$k] = ['tournament_id' => $tournament->id, 'player_id' => $request->$key, 'team_id' => $team_id];
-//                array_push($playerteams, ['team_id' => $team_id]);
+                ;
             endforeach;
-
             \App\TournamentPlayerTeam::insert($tournamentPlayer[$i]);
         endfor;
 //        $product = self::cartesian($playerteams);
-//        dd($product);
-//        dd($tournamentPlayer[$i][$k]);
+//        dd($playerteams);
+        /*         * ***********************************Fixture Add Start** */
+        $fixture = [];
+        for ($i = 1; $i <= $request->number_of_players; $i++):
+            ${'key' . $i} = 'player_' . $i;
+            $teamkey = 'player_' . $i . '_teams';
+            ${'data' . $i} = (array) json_decode($request->$teamkey, false);
+        endfor;
+        foreach ($data1 as $k => $team_id1):
+            foreach ($data2 as $team_id2):
+                $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key2, 'player_id_2_team_id' => $team_id2];
+            endforeach;
+            if (isset($request->$key3)):
+                foreach ($data3 as $team_id3):
+                    $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key3, 'player_id_2_team_id' => $team_id3];
+                endforeach;
+            endif;
+            if (isset($request->$key4)):
+                foreach ($data4 as $team_id4):
+                    $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key4, 'player_id_2_team_id' => $team_id4];
+                endforeach;
+            endif;
+        endforeach;
+        \App\TournamentFixture::insert($fixture);
+        /*         * ***********************************Fixture Add End** */
         $tournamentGet = new Tournament();
         $tournamentGet = $tournamentGet->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
         $tournamentGet = $tournamentGet->where("id", $tournament->id);
-        $tournamentGet = $tournamentGet->with(['players']);
+        $tournamentGet = $tournamentGet->with(['players','fixtures']);
 
 
         for ($i = 1; $i <= $request->number_of_players; $i++):
