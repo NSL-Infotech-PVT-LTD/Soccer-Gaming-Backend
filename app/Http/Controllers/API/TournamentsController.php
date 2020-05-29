@@ -112,23 +112,29 @@ class TournamentsController extends ApiController {
             foreach ($data2 as $team_id2):
                 $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key2, 'player_id_2_team_id' => $team_id2];
             endforeach;
-            if (isset($request->$key3)):
-                foreach ($data3 as $team_id3):
-                    $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key3, 'player_id_2_team_id' => $team_id3];
-                endforeach;
+
+            if ($request->number_of_players > 2):
+                if (isset($request->$key3)):
+                    foreach ($data3 as $team_id3):
+                        $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key3, 'player_id_2_team_id' => $team_id3];
+                    endforeach;
+                endif;
             endif;
-            if (isset($request->$key4)):
-                foreach ($data4 as $team_id4):
-                    $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key4, 'player_id_2_team_id' => $team_id4];
-                endforeach;
+            if ($request->number_of_players > 3):
+                if (isset($request->$key4)):
+                    foreach ($data4 as $team_id4):
+                        $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key4, 'player_id_2_team_id' => $team_id4];
+                    endforeach;
+                endif;
             endif;
+
         endforeach;
         \App\TournamentFixture::insert($fixture);
         /*         * ***********************************Fixture Add End** */
         $tournamentGet = new Tournament();
         $tournamentGet = $tournamentGet->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
         $tournamentGet = $tournamentGet->where("id", $tournament->id);
-        $tournamentGet = $tournamentGet->with(['players','fixtures']);
+        $tournamentGet = $tournamentGet->with(['players', 'fixtures']);
 
 
         for ($i = 1; $i <= $request->number_of_players; $i++):
