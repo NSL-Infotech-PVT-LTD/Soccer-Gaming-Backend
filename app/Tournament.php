@@ -43,10 +43,13 @@ class Tournament extends Model {
         return __CLASS__ . " model has been {$eventName}";
     }
 
-    public function players() {        
+    public function players() {
         return $this->hasMany('\App\TournamentPlayerTeam', 'tournament_id', 'id')->select('tournament_id', 'player_id')->groupBY('player_id')->with(['player']);
     }
-    public function fixtures() {        
-        return $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->select('tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score')->with(['playerId_1','playerId_2','playerId_1TeamId','playerId_2TeamId']);
+
+    public function fixtures() {
+        $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->select('tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score')->with(['playerId_1', 'playerId_2']);
+        return $data;
     }
+
 }

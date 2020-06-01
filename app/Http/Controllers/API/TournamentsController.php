@@ -143,7 +143,7 @@ class TournamentsController extends ApiController {
         endfor;
 
 
-        return parent::success(['message' => 'Your Tournaments has been successfully created', 'tournaments' => $tournamentGet->first()]);
+        return parent::success(['message' => 'Your Tournament has been successfully created', 'tournaments' => $tournamentGet->first()]);
     }
 
 //    public static function cartesian($input) {

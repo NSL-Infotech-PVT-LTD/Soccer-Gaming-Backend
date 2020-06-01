@@ -28,14 +28,15 @@
                                         $user = DB::table('users')->where('id', $item->player_id_1)->first();
                                         echo $user->username;
                                         ?>
-                                    </td><td>{{ $item->player_id_1_score }}</td>
+                                    </td>
+                                    <td><?=($item->player_id_1_score != null)?$item->player_id_1_score:"-" ?></td>
                                     <td>
                                         <?php
                                         $user = DB::table('users')->where('id', $item->player_id_2)->first();
                                         echo $user->username;
                                         ?>
                                     </td>
-                                    <td>{{ $item->player_id_2_score }}</td>
+                                    <td><?=($item->player_id_2_score != null)?$item->player_id_2_score:"-" ?></td>
 <!--                                    <td>
 
                                         {!! Form::open([

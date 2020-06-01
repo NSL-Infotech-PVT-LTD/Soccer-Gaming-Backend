@@ -2,25 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/opt/lampp/htdocs/tournie/app/Tournament.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/Admin/TournamentController.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/admin/tournament/index.blade.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/admin/tournament/show.blade.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/TournamentFixture.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/API/ApiController.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/admin/users/form.blade.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/home.blade.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/routes/web.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/admin/users/show/showplayerfriend.blade.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/admin/users/index.blade.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/Admin/UsersController.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/routes/api.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/TournamentPlayerTeam.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/Notification.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/User.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/API/AuthController.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/API/TournamentsController.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
