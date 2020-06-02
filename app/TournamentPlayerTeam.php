@@ -101,7 +101,7 @@ class TournamentPlayerTeam extends Model {
 
             $points = $won * 3 + $draw * 1;
             
-            $return[] = ['team' =>Team::where('id',$team_id)->select('id', 'team_name', 'image')->first(), 'played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points];
+            $return[] = ['team' =>(Team::where('id',$team_id)->get()->isEmpty() != true)?Team::where('id',$team_id)->select('id', 'team_name', 'image')->first():(['team_name' => $team_id]), 'played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points];
             $played = 0;
             $won = 0;
             $draw = 0;
