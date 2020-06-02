@@ -64,10 +64,8 @@ class TournamentFixture extends Model {
         $model = Team::where('id',$this->player_id_2_team_id);
         if ($model->get()->isEmpty() != true)
             return $model->select('id', 'team_name', 'image')->where('id',$this->player_id_2_team_id)->first();
-        return $this->player_id_1_team_id;
-//        $team_name = [];
-//        array_push($team_name,$this->player_id_2_team_id);
-//        return $team_name;
+//        return $this->player_id_2_team_id;
+        return (['team_name' => $this->player_id_2_team_id]);
     }
 
 //    public function playerId_2TeamId() {
