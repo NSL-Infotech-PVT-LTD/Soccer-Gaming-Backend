@@ -37,7 +37,7 @@ class Message extends Model {
      *
      * @return string
      */
-    protected $appends = array('target_id', 'receiver_details');
+    protected $appends = array('target_id', 'receiver_details', 'sender_details');
 //
 //    public function getDescriptionForEvent($eventName) {
 //        return _CLASS_ . " model has been {$eventName}";
@@ -49,6 +49,9 @@ class Message extends Model {
 
     public function getReceiverDetailsAttribute() {
         return User::where('id', $this->target_id)->select('id', 'first_name', 'image')->first();
+    }
+    public function getSenderDetailsAttribute() {
+        return User::where('id', $this->sender_id)->select('id', 'first_name', 'image')->first();
     }
 
     public function receiverDetails() {

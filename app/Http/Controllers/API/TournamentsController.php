@@ -103,32 +103,20 @@ class TournamentsController extends ApiController {
 //        dd($playerteams);
         /*         * ***********************************Fixture Add Start** */
         $fixture = [];
-        for ($i = 1; $i <= $request->number_of_players; $i++):
-            ${'key' . $i} = 'player_' . $i;
-            $teamkey = 'player_' . $i . '_teams';
-            ${'data' . $i} = (array) json_decode($request->$teamkey, false);
-        endfor;
+        $key1 = 'player_1';
+        $teamkey = 'player_1_teams';
+        $data1 = (array) json_decode($request->$teamkey, false);
         foreach ($data1 as $k => $team_id1):
-            foreach ($data2 as $team_id2):
-                $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key2, 'player_id_2_team_id' => $team_id2];
-            endforeach;
-
-            if ($request->number_of_players > 2):
-                if (isset($request->$key3)):
-                    foreach ($data3 as $team_id3):
-                        $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key3, 'player_id_2_team_id' => $team_id3];
-                    endforeach;
-                endif;
-            endif;
-            if ($request->number_of_players > 3):
-                if (isset($request->$key4)):
-                    foreach ($data4 as $team_id4):
-                        $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->$key4, 'player_id_2_team_id' => $team_id4];
-                    endforeach;
-                endif;
-            endif;
-
+            for ($i = 2; $i <= $request->number_of_players; $i++):
+                ${'key' . $i} = 'player_' . $i;
+                $teamkey = 'player_' . $i . '_teams';
+                ${'data' . $i} = (array) json_decode($request->$teamkey, false);
+                foreach ((array) json_decode($request->$teamkey, false) as $team_id):
+                    $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key1, 'player_id_1_team_id' => $team_id1, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id];
+                endforeach;
+            endfor;
         endforeach;
+//        dd($fixture);
         \App\TournamentFixture::insert($fixture);
         /*         * ***********************************Fixture Add End** */
         $tournamentGet = new Tournament();
@@ -235,9 +223,9 @@ class TournamentsController extends ApiController {
 //        dd($i);
         $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->first();
         //                dd($tournamentfixtured);
-        if(\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->get()->isEmpty() === true)
-                return parent::error('fixture does not exist');
-        
+        if (\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->get()->isEmpty() === true)
+            return parent::error('fixture does not exist');
+
         if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null) {
             return parent::error(['message' => 'Score already Updated']);
         } else {
