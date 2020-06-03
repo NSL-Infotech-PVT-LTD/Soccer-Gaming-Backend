@@ -65,6 +65,7 @@ class TournamentsController extends ApiController {
         }
 
         $input = $request->all();
+        
         for ($i = 1; $i <= $request->number_of_players; $i++):
             $key = 'player_' . $i;
             if (!isset($request->$key))
