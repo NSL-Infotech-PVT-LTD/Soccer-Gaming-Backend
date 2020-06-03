@@ -48,10 +48,10 @@ class Message extends Model {
     }
 
     public function getReceiverDetailsAttribute() {
-        return User::where('id', $this->target_id)->select('id', 'first_name', 'image')->first();
+        return User::where('id', $this->target_id)->select('id', 'username', 'first_name', 'image')->first();
     }
     public function getSenderDetailsAttribute() {
-        return User::where('id', $this->sender_id)->select('id', 'first_name', 'image')->first();
+        return User::where('id', $this->sender_id)->select('id', 'username', 'first_name', 'image')->first();
     }
 
     public function receiverDetails() {
