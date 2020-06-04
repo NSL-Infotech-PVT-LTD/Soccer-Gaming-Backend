@@ -42,6 +42,11 @@ class BannerController extends Controller {
                             })
                             ->addColumn('action', function($item) {
                                 $return = '';
+                                if ($item->state == '1'):
+                                    $return .= "&nbsp;<button class='btn btn-success btn-sm changeStatus' title='Unblock'  data-id=" . $item->id . " data-status='UnBlock'><i class='fa fa-unlock' aria-hidden='true'></i></button>";
+                                else:
+                                    $return .= "&nbsp;<button class='btn btn-danger btn-sm changeStatus' title='Block' data-id=" . $item->id . " data-status='Block' ><i class='fa fa-ban' aria-hidden='true'></i></button>";
+                                endif;
                                 $return .= " <a href=" . url('/admin/banner/' . $item->id) . " title='View Banner'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
                                 $return .= " <a href=" . url('/admin/banner/' . $item->id . '/edit') . " title='Edit Banner'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></a>";
 
@@ -153,6 +158,13 @@ class BannerController extends Controller {
             $data = 'Failed';
         }
         return response()->json($data);
+    }
+
+    public function changeStatus(Request $request) {
+        $banner = Banner::findOrFail($request->id);
+        $banner->state = $request->status == 'Block' ? '1' : '0';
+        $banner->save();
+        return response()->json(["success" => true, 'message' => 'Banner state updated!']);
     }
 
 }
