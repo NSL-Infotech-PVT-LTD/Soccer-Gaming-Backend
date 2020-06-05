@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
+use DB;
 
 class Message extends Model {
 
@@ -38,6 +39,7 @@ class Message extends Model {
      * @return string
      */
     protected $appends = array('target_id', 'receiver_details', 'sender_details');
+
 //
 //    public function getDescriptionForEvent($eventName) {
 //        return _CLASS_ . " model has been {$eventName}";
@@ -50,6 +52,7 @@ class Message extends Model {
     public function getReceiverDetailsAttribute() {
         return User::where('id', $this->target_id)->select('id', 'username', 'first_name', 'image')->first();
     }
+
     public function getSenderDetailsAttribute() {
         return User::where('id', $this->sender_id)->select('id', 'username', 'first_name', 'image')->first();
     }

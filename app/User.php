@@ -31,7 +31,7 @@ class User extends Authenticatable {
     protected $hidden = [
         'password', 'remember_token',
     ];
-    protected $appends = ['friend_request_sent','friend_request_sent_status'];
+    protected $appends = ['friend_request_sent', 'friend_request_sent_status', 'unread_message'];
 
     /**
      * The attributes that should be cast to native types.
@@ -85,31 +85,44 @@ class User extends Authenticatable {
 
     public function getFriendRequestSentAttribute() {
 //        dd();
-        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id',$this->id)->get();
-        
+        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id', $this->id)->get();
+
         if ($model->isEmpty() !== true):
             return true;
         else:
-            return false; 
+            return false;
         endif;
     }
+
     public function getFriendRequestSentStatusAttribute() {
 //        dd($this->username);
-        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id',$this->id)->get();
-            if($this->id == \Auth::id()):
+        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id', $this->id)->get();
+        if ($this->id == \Auth::id()):
+            return 'accepted';
+        endif;
+        if ($model->isEmpty() !== true):
+            if ($model->first()->status == 'accepted'):
                 return 'accepted';
+            elseif ($model->first()->status == 'rejected'):
+                return 'rejected';
+            elseif ($model->first()->status == 'pending'):
+                return 'pending';
             endif;
-            if ($model->isEmpty() !== true):
-                if($model->first()->status == 'accepted'):
-                    return 'accepted';
-                elseif($model->first()->status == 'rejected'):
-                    return 'rejected';
-                elseif($model->first()->status == 'pending'):
-                    return 'pending';
-                endif;
-            else:
-                return 'not_sent';
-            endif;
+        else:
+            return 'not_sent';
+        endif;
+    }
+
+    public function getUnreadMessageAttribute() {
+        $authId = \Auth::id();
+        try {
+            $model = Message::where('receiver_id', $authId)->where('is_read_customer', '0')->where('sender_id', $this->id)->get();
+            if ($model->isEmpty() !== true)
+                return $model->count();
+            return 0;
+        } catch (Exception $ex) {
+            return 0;
+        }
     }
 
 }
