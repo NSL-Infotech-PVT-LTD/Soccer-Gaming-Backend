@@ -122,7 +122,7 @@ class TournamentsController extends ApiController {
                 endfor;
             endforeach;
         endfor;
-        dd($fixture);
+//        dd($fixture);
         \App\TournamentFixture::insert($fixture);
         /*         * ***********************************Fixture Add End** */
         $tournamentGet = new Tournament();
