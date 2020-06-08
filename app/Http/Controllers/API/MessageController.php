@@ -24,7 +24,8 @@ class MessageController extends ApiController {
         if ($validateAttributes):
             return $validateAttributes;
         endif;
-        
+        if ($request->receiver_id == \Auth::id())
+            return parent::error('You cannot send message to yourself');
         try {
             $data = ['sender_id' => "" . \Auth::id() . "", 'receiver_id' => $request->receiver_id, 'message' => $request->message, 'replied_by_customer' => '1'];
             
@@ -32,7 +33,7 @@ class MessageController extends ApiController {
             $model = MyModel::create($data);
 // dd($model);
 
-            parent::pushNotifications(['title' => 'New Message Received', 'body' => $request->message, 'data' => ['target_id' => \Auth::id(), 'target_model' => 'Message', 'data_type' => 'message']], $request->receiver_id, \Auth::id());
+            parent::pushNotifications(['title' => 'New Message Received', 'body' => $request->message, 'data' => ['target_id' => \Auth::id(), 'target_model' => 'Message', 'data_type' => 'message']], $request->receiver_id);
 
 
             return parent::success(['message' => 'Sent Successfully', 'model_data' => $model]);
