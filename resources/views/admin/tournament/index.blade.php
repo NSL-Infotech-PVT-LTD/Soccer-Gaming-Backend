@@ -40,11 +40,13 @@
             {data: 'id', name: 'id'},
 <?php foreach ($rules as $rule): ?>
     <?php if ($rule == 'type'): ?>
-                    {data: 'type', name: 'type', orderable: false, searchable: false},
+                    {data: 'type', name: 'type', orderable: false},
     <?php elseif ($rule == 'number_of_players'): ?>
                     {data: 'number_of_players', name: 'number_of_players', orderable: false, searchable: false,  className: "text-center"},
     <?php elseif ($rule == 'number_of_teams_per_player'): ?>
                     {data: 'number_of_teams_per_player', name: 'number_of_teams_per_player', orderable: false, searchable: false, className: "text-center"},
+    <?php elseif ($rule == 'created_at'): ?>
+                    {data: 'created_at', name: 'created_at', orderable: false, className: "text-center"},
     <?php else: ?>
                     {data: "{{$rule}}", name: "{{$rule}}"},
     <?php endif; ?>

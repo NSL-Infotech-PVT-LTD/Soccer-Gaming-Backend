@@ -47,7 +47,7 @@ class TournamentController extends Controller {
                             ->addColumn('action', function($item) {
                                 $return = '';
                                 $return .= " <a href=" . url('/admin/tournament/' . $item->id) . " title='View Tournament'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
-                                $return .= " <a href=" . url('/admin/tournamentFixture/' . $item->id) . " title='View Tournament Fixtures'><button class='btn btn-info btn-sm'><i class='fa fa-gamepad' aria-hidden='true'></i></button></a>";
+                                $return .= " <a href=" . url('/admin/tournamentPlayers/' . $item->id) . " title='View Tournament Players'><button class='btn btn-info btn-sm'><i class='fa fa-gamepad' aria-hidden='true'></i></button></a>";
                                 return $return;
                             })
                             ->rawColumns(['action', 'image'])
@@ -99,8 +99,15 @@ class TournamentController extends Controller {
         return view('admin.tournament.show', compact('tournament'));
     }
     
-    public function showTournamentFixture($tournament_id) {
-//        dd($tournament_id);
+    public function showTournamentPlayers($tournament_id) {
+
+        $tournamentPlayers = \App\TournamentPlayerTeam::where('tournament_id', $tournament_id)->groupBy('player_id')->get();
+
+        return view('admin.tournament.showplayers', compact('tournamentPlayers'));
+    }
+    
+    public function showTournamentPlayerFixtures($tournament_id) {
+
         $tournamentfixtures = \App\TournamentFixture::where('tournament_id', $tournament_id)->get();
 
         return view('admin.tournament.showfixtures', compact('tournamentfixtures'));

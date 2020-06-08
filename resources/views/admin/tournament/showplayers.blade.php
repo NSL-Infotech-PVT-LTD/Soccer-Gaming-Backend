@@ -8,7 +8,8 @@
         <div class="col-md-12">
             <a href="{{ url(url()->previous()) }}" title="Back"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
             <div class="card">
-                <div class="card-header">Tournament Fixtures</div>
+
+                <div class="card-header">Tournament Players</div>
                 <div class="card-body">
                     <br/>
                     <br/>
@@ -16,28 +17,30 @@
                         <table class="mytable">
                             <thead>
                                 <tr>
-                                    <th>#</th><th>Player1 Name</th><th>Player1 Score</th><th>Player2 Name</th><th>Player2 Score</th>
-                                    <!--<th>Actions</th>-->
+                                    <th>#</th><th>Tournament Name</th><th>Player Name</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($tournamentfixtures as $item)
+                                <?php $i = 1; ?>
+                                @foreach($tournamentPlayers as $item)
                                 <tr>
-                                    <td>{{ $item->id }}</td>
+                                    <td>{{ $i++ }}</td>
+
                                     <td>
                                         <?php
-                                        $user = DB::table('users')->where('id', $item->player_id_1)->first();
+                                        $tournament = DB::table('tournaments')->where('id', $item->tournament_id)->first();
+                                        echo $tournament->name;
+                                        ?>
+                                    </td>
+
+                                    <td>
+                                        <?php
+                                        $user = DB::table('users')->where('id', $item->player_id)->first();
                                         echo $user->username;
                                         ?>
                                     </td>
-                                    <td><?= ($item->player_id_1_score != null) ? $item->player_id_1_score : "-" ?></td>
-                                    <td>
-                                        <?php
-                                        $user = DB::table('users')->where('id', $item->player_id_2)->first();
-                                        echo $user->username;
-                                        ?>
-                                    </td>
-                                    <td><?= ($item->player_id_2_score != null) ? $item->player_id_2_score : "-" ?></td>
+                                    <td><a href="{{url('/admin/playerFixtures/' . $item->player_id)}}" title='View Fixtures'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a></td>
 <!--                                    <td>
 
                                         {!! Form::open([
@@ -58,8 +61,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>#</th><th>Player1 Name</th><th>Player1 Score</th><th>Player2 Name</th><th>Player2 Score</th>
-                                    <!--<th>Actions</th>-->
+                                    <th>#</th><th>Tournament Name</th><th>Player Name</th>
+                                    <th>Actions</th>
                                 </tr>
                             </tfoot>
                         </table>
