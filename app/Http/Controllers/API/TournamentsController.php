@@ -259,7 +259,7 @@ class TournamentsController extends ApiController {
         try {
             $user = \App\User::findOrFail(\Auth::id());
             $teams = new \App\Team();
-            $teams = $teams->select('id', 'team_name', 'league_name', 'image');
+            $teams = $teams->select('id', 'team_name', 'league_name', 'image')->orderBy('team_name');
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $teams = $teams->where(function($query) use ($request) {

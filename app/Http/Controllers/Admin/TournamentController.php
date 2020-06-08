@@ -106,9 +106,9 @@ class TournamentController extends Controller {
         return view('admin.tournament.showplayers', compact('tournamentPlayers'));
     }
     
-    public function showTournamentPlayerFixtures($tournament_id) {
+    public function showTournamentPlayerFixtures($player_id) {
 
-        $tournamentfixtures = \App\TournamentFixture::where('tournament_id', $tournament_id)->get();
+        $tournamentfixtures = \App\TournamentFixture::where('player_id_1', $player_id)->orWhere('player_id_2', $player_id)->get();
 
         return view('admin.tournament.showfixtures', compact('tournamentfixtures'));
     }
