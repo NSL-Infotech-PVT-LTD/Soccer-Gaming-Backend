@@ -132,9 +132,9 @@ class TournamentsController extends ApiController {
                 \App\TournamentFixture::insert($fixture);
         endif;
         
-        if($request->type == 'league'):
-            
-        endif;
+//        if($request->type == 'league'):
+//            
+//        endif;
         
         
         /*         * ***********************************Fixture Add End** */
