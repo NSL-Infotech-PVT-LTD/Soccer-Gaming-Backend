@@ -105,29 +105,38 @@ class TournamentsController extends ApiController {
 //        $product = self::cartesian($playerteams);
 //        dd($playerteams);
         /*         * ***********************************Fixture Add Start** */
-        $fixture = [];
+        
+        if($request->type == 'knockout'):
+            $fixture = [];
 
-        for ($j = 1; $j < $request->number_of_players; $j++):
-            $key_one = 'player_' . $j;
-            $teamkey = 'player_' . $j . '_teams';
-            $data = (array) json_decode($request->$teamkey, false);
-            foreach ($data as $k => $team_id_one):
-                for ($i = $j + 1; $i <= $request->number_of_players; $i++):
-                    if($i != $j):
-                        ${'key' . $i} = 'player_' . $i;
-                        $teamkey = 'player_' . $i . '_teams';
-                        ${'data' . $i} = (array) json_decode($request->$teamkey, false);
-                        foreach ((array) json_decode($request->$teamkey, false) as $team_id_two):
-                            $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two];
-                        endforeach;
-                    endif;  
-                endfor;
-            endforeach;
-        endfor;
-//        dd($fixture);
-        \App\TournamentFixture::insert($fixture);
-        if($request->number_of_plays_against_each_team == '2')
+            for ($j = 1; $j < $request->number_of_players; $j++):
+                $key_one = 'player_' . $j;
+                $teamkey = 'player_' . $j . '_teams';
+                $data = (array) json_decode($request->$teamkey, false);
+                foreach ($data as $k => $team_id_one):
+                    for ($i = $j + 1; $i <= $request->number_of_players; $i++):
+                        if($i != $j):
+                            ${'key' . $i} = 'player_' . $i;
+                            $teamkey = 'player_' . $i . '_teams';
+                            ${'data' . $i} = (array) json_decode($request->$teamkey, false);
+                            foreach ((array) json_decode($request->$teamkey, false) as $team_id_two):
+                                $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two];
+                            endforeach;
+                        endif;  
+                    endfor;
+                endforeach;
+            endfor;
+    //        dd($fixture);
             \App\TournamentFixture::insert($fixture);
+            if($request->number_of_plays_against_each_team == '2')
+                \App\TournamentFixture::insert($fixture);
+        endif;
+        
+        if($request->type == 'league'):
+            
+        endif;
+        
+        
         /*         * ***********************************Fixture Add End** */
         $tournamentGet = new Tournament();
         $tournamentGet = $tournamentGet->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
