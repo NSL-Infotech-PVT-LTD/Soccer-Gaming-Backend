@@ -33,7 +33,7 @@ class MessageController extends ApiController {
             $model = MyModel::create($data);
 // dd($model);
 
-            parent::pushNotifications(['title' => 'New Message Received', 'body' => $request->message, 'data' => ['target_id' => $request->receiver_id, 'target_model' => 'Message', 'data_type' => 'message']], \Auth::id());
+            parent::pushNotifications(['title' => 'New Message Received', 'body' => $request->message, 'data' => ['target_id' => \Auth::id(), 'target_model' => 'Message', 'data_type' => 'message']], $request->receiver_id);
 
 
             return parent::success(['message' => 'Sent Successfully', 'model_data' => $model]);
