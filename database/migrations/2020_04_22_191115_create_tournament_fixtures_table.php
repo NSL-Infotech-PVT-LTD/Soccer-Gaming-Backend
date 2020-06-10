@@ -27,6 +27,7 @@ class CreateTournamentFixturesTable extends Migration
             $table->foreign('player_id_2')->references('id')->on('users')->onDelete('cascade');            
             $table->integer('player_id_2_score')->nullable();
             $table->string('player_id_2_team_id')->nullable();
+            $table->string('stage')->nullable();
             
             \App\Helpers\DbExtender::defaultParams($table, true);
         });

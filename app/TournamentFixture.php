@@ -30,7 +30,7 @@ class TournamentFixture extends Model {
      *
      * @var array
      */
-    protected $fillable = ['tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score', 'created_by', 'updated_by'];
+    protected $fillable = ['tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score', 'stage', 'created_by', 'updated_by'];
     
     protected $appends = ['player_id_one_team_id','player_id_two_team_id'];
 

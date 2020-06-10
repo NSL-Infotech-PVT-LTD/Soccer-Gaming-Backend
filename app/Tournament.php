@@ -48,7 +48,7 @@ class Tournament extends Model {
     }
 
     public function fixtures() {
-        $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->select('tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score', 'created_at')->with(['playerId_1', 'playerId_2']);
+        $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->select('tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score', 'stage', 'created_at')->with(['playerId_1', 'playerId_2']);
         return $data;
     }
 
