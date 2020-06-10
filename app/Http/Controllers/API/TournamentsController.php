@@ -120,8 +120,8 @@ class TournamentsController extends ApiController {
                             $teamkey = 'player_' . $i . '_teams';
                             ${'data' . $i} = (array) json_decode($request->$teamkey, false);
                             foreach ((array) json_decode($request->$teamkey, false) as $team_id_two):
-                                $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2') ? 'round-1' : null];
-                                $fixture2[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2') ? 'round-2' : null];
+                                $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2') ? 'round-1' : 'no-round'];
+                                $fixture2[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2') ? 'round-2' : 'no-round'];
                             endforeach;
                         endif;
                     endfor;
@@ -267,7 +267,7 @@ class TournamentsController extends ApiController {
 
     public function addScoreToTournament(Request $request) {
 //        dd($request->player_id_2_team_id);
-        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => 'required_if:type,league|in:round-1,round-2'];
+        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => ''];
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -280,16 +280,18 @@ class TournamentsController extends ApiController {
             return parent::error('Players two are not available in the tournament');
 
 //        dd($i);
-
-        $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->first();
+//        if($request->stage != 'round-1' || $request->stage != 'round-1' || $request->stage != ''):
+//            return parent::error('The selected stage is invalid.');
+//        endif;
+        $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
 //                        dd($tournamentfixtured->stage);
-        if (isset($request->stage)):
-            $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
-        endif;
-        if (\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->get()->isEmpty() === true)
+//        if (isset($request->stage)):
+//            $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
+//        endif;
+        if (\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get()->isEmpty() === true)
             return parent::error('fixture does not exist');
 
-        if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null && ($request->stage != 'round-1' || $request->stage != 'round-2')):
+        if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null):
 //            dd('s');
             return parent::error(['message' => 'Score already Updated']);
         endif;
