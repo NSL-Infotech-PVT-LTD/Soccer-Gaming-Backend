@@ -120,8 +120,8 @@ class TournamentsController extends ApiController {
                             $teamkey = 'player_' . $i . '_teams';
                             ${'data' . $i} = (array) json_decode($request->$teamkey, false);
                             foreach ((array) json_decode($request->$teamkey, false) as $team_id_two):
-                                $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2')?'round-1':null];
-                                $fixture2[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2')?'round-2':null];
+                                $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2') ? 'round-1' : null];
+                                $fixture2[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2') ? 'round-2' : null];
                             endforeach;
                         endif;
                     endfor;
@@ -267,7 +267,7 @@ class TournamentsController extends ApiController {
 
     public function addScoreToTournament(Request $request) {
 //        dd($request->player_id_2_team_id);
-        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer'];
+        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => 'required_if:type,league|in:round-1,round-2'];
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -280,25 +280,33 @@ class TournamentsController extends ApiController {
             return parent::error('Players two are not available in the tournament');
 
 //        dd($i);
+
         $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->first();
 //                        dd($tournamentfixtured->stage);
+        if (isset($request->stage)):
+            $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
+        endif;
         if (\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->get()->isEmpty() === true)
             return parent::error('fixture does not exist');
 
-        if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null):
+        if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null && ($request->stage != 'round-1' || $request->stage != 'round-2')):
+//            dd('s');
             return parent::error(['message' => 'Score already Updated']);
         endif;
 
+//        if($tournamentfixtured->stage != 'round-1'):
+//            
+//        endif;
 //        if ($tournamentfixtured->stage == null):
-            $input = $request->all();
-            $input['created_by'] = \Auth::id();
-            $input['updated_by'] = \Auth::id();
+        $input = $request->all();
+        $input['created_by'] = \Auth::id();
+        $input['updated_by'] = \Auth::id();
 //                dd($input);
 //            $TournamnetFixed = \App\TournamentFixture::create($input);
-            $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
-            $TournamnetFixed->fill($input);
-            $TournamnetFixed->save();
-            return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
+        $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
+        $TournamnetFixed->fill($input);
+        $TournamnetFixed->save();
+        return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
 //        else:
 //            if ($tournamentfixtured->stage == 'semi-final'):
 //                $input = $request->all();
@@ -309,8 +317,7 @@ class TournamentsController extends ApiController {
 //                $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
 //                $TournamnetFixed->fill($input);
 //                $TournamnetFixed->save();
-                
-                //creating fixture for final
+        //creating fixture for final
 //                if($request->player_id_1_score > $request->player_id_2_score):
 //                    $player_id_1 = $request->player_id_1;
 //                    $player_id_1_team_id = $request->player_id_1_team_id;
@@ -321,10 +328,8 @@ class TournamentsController extends ApiController {
 //                $fixture[] = ['tournament_id' => $tournamentfixtured->id, 'player_id_1' => $player_id_1, 'player_id_1_team_id' => $player_id_1_team_id, 'player_id_2' => 'sfw2', 'player_id_2_team_id' => 'sfwt2', 'stage' => 'final'];
 //                \App\TournamentFixture::insert($fixture);
 //                return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
-                
 //            elseif():
 //            elseif():
-
 //            else:
 //
 //            endif;
@@ -735,11 +740,32 @@ class TournamentsController extends ApiController {
                         ->orWhere('data', 'LIKE', "%$request->search%");
 
 //            $model = $model->where('target_id', \Auth::id());
-            \App\Notification::whereIn('id', $model->get()->pluck('id'))->update(['is_read' => '1']);
+//            \App\Notification::whereIn('id', $model->get()->pluck('id'))->update(['is_read' => '1']);
 
             $model = $model->where('target_id', \Auth::id())->select('id', 'title', 'body', 'data', 'target_id', 'is_read', 'params', 'state');
             $model = $model->orderBy('id', 'desc');
             return parent::success($model->paginate($perPage));
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    public function notificationRead(Request $request) {
+//        dd('s');
+        $rules = ['notification_id' => 'required|exists:notifications,id'];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+
+            $model = new \App\Notification();
+            $perPage = isset($request->limit) ? $request->limit : 20;
+            
+            $notificationread = \App\Notification::where('id', $request->notification_id)->update(['is_read' => '1']);
+
+            return parent::success(['message' => 'Notification mark Read', 'notification' => $notificationread]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
