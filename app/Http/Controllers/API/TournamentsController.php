@@ -385,7 +385,7 @@ class TournamentsController extends ApiController {
 
             $players = new User();
 
-            $myfriends = User::where('id', '!=', \Auth::id())->wherein('id', \DB::table('user_friends')->where('user_id', \Auth::id())->orWhere('friend_id', \Auth::id())->where('status', 'accepted')->pluck('friend_id'))->get()->toArray();
+            $myfriends = User::where('id', '!=', \Auth::id())->wherein('id', \DB::table('user_friends')->where('status', 'accepted')->where('user_id', \Auth::id())->orWhere('friend_id', \Auth::id())->pluck('friend_id'))->get()->toArray();
 
 //            dd($myfriends);
             $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
@@ -394,7 +394,7 @@ class TournamentsController extends ApiController {
             }
             );
             $players = $players->where('id', '!=', \Auth::id());
-            $players = $players->whereNotIn('id', \DB::table('user_friends')->where('user_id', \Auth::id())->where('status', 'accepted')->pluck('friend_id'))->orderBy('id', 'DESC')->get()->toArray();
+            $players = $players->whereNotIn('id', \DB::table('user_friends')->where('status', 'accepted')->where('user_id', \Auth::id())->orWhere('friend_id', \Auth::id())->pluck('friend_id'))->orderBy('id', 'DESC')->get()->toArray();
             $players = array_merge($myfriends, $players);
             
 //            $players = $myfriends;
