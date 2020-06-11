@@ -384,7 +384,9 @@ class TournamentsController extends ApiController {
 
 
             $players = new User();
-//            $myfriends = User::wherein('id', \DB::table('user_friends')->where('user_id', \Auth::id())->where('status', 'accepted')->pluck('friend_id'))->get()->toArray();
+
+            $myfriends = User::where('id', '!=', \Auth::id())->wherein('id', \DB::table('user_friends')->where('user_id', \Auth::id())->orWhere('friend_id', \Auth::id())->where('status', 'accepted')->pluck('friend_id'))->get()->toArray();
+
 //            dd($myfriends);
             $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
                     'roles', function($q) {
@@ -392,21 +394,23 @@ class TournamentsController extends ApiController {
             }
             );
             $players = $players->where('id', '!=', \Auth::id());
-//            $players = $players->whereNotIn('id', \DB::table('user_friends')->where('user_id', \Auth::id())->where('status', 'accepted')->pluck('friend_id'));
-//            dd($players);
+            $players = $players->whereNotIn('id', \DB::table('user_friends')->where('user_id', \Auth::id())->where('status', 'accepted')->pluck('friend_id'))->orderBy('id', 'DESC')->get()->toArray();
+            $players = array_merge($myfriends, $players);
+            
+//            $players = $myfriends;
 
-            $perPage = isset($request->limit) ? $request->limit : 20;
-            if (isset($request->search)) {
-                $players = $players->where(function($query) use ($request) {
-                    $query->where('username', 'LIKE', "%$request->search%")
-                            ->orWhere('email', 'LIKE', "%$request->search%");
-                });
-            }
+//            $perPage = isset($request->limit) ? $request->limit : 20;
+//            if (isset($request->search)) {
+//                $players = $players->where(function($query) use ($request) {
+//                    $query->where('username', 'LIKE', "%$request->search%")
+//                            ->orWhere('email', 'LIKE', "%$request->search%");
+//                });
+//            }
 //            $tournament = $tournament->with(['players']);
-            $players = $players->orderBy('id', 'DESC');
-//            $result = array_push($myfriends, $players);
+//            $players = $players->orderBy('id', 'DESC');
 //            dd($result);
-            return parent::success($players->paginate($perPage));
+            return parent::success($players);
+//            return parent::success($players->paginate($perPage));
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
