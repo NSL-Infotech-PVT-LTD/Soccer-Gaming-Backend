@@ -184,10 +184,10 @@ class TournamentsController extends ApiController {
         $tournamentGet = $tournamentGet->with(['players', 'fixtures']);
 
 
-        for ($i = 1; $i <= $request->number_of_players; $i++):
-            $key = 'player_' . $i;
-            parent::pushNotifications(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']], $request->$key, TRUE);
-        endfor;
+//        for ($i = 1; $i <= $request->number_of_players; $i++):
+//            $key = 'player_' . $i;
+//            parent::pushNotifications(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']], $request->$key, TRUE);
+//        endfor;
 
 
         return parent::success(['message' => 'Your Tournament has been successfully created', 'tournaments' => $tournamentGet->first()]);
