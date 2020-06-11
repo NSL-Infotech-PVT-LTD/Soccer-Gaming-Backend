@@ -374,23 +374,26 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $user = \App\User::findOrFail(\Auth::id());
-            $myfriends = new \App\UserFriend();
-            $myfriends = $myfriends->select('id', 'user_id', 'friend_id');
-            $myfriends = $myfriends->where(function($query) use ($request) {
-                $query->where('user_id', \Auth::id());
-                $query->orWhere('friend_id', \Auth::id());
-            });
-            $myfriends = $myfriends->where("status", "accepted")->get()->toArray();
-            dd($myfriends);
-            
+//            $myfriends = new \App\UserFriend();
+//            $myfriends = $myfriends->select('id', 'user_id', 'friend_id');
+//            $myfriends = $myfriends->where(function($query) use ($request) {
+//                $query->where('user_id', \Auth::id());
+//                $query->orWhere('friend_id', \Auth::id());
+//            });
+//            $myfriends = $myfriends->where("status", "accepted")->pluck('user_id')->get()->toArray();
+
+
             $players = new User();
+//            $myfriends = User::wherein('id', \DB::table('user_friends')->where('user_id', \Auth::id())->where('status', 'accepted')->pluck('friend_id'))->get()->toArray();
+//            dd($myfriends);
             $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
                     'roles', function($q) {
                 $q->where('name', 'Customer');
             }
             );
             $players = $players->where('id', '!=', \Auth::id());
-
+//            $players = $players->whereNotIn('id', \DB::table('user_friends')->where('user_id', \Auth::id())->where('status', 'accepted')->pluck('friend_id'));
+//            dd($players);
 
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
@@ -400,8 +403,9 @@ class TournamentsController extends ApiController {
                 });
             }
 //            $tournament = $tournament->with(['players']);
-            $players = $players->orderby('id', 'desc');
-
+            $players = $players->orderBy('id', 'DESC');
+//            $result = array_push($myfriends, $players);
+//            dd($result);
             return parent::success($players->paginate($perPage));
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
@@ -772,7 +776,7 @@ class TournamentsController extends ApiController {
 
             $model = new \App\Notification();
             $perPage = isset($request->limit) ? $request->limit : 20;
-            
+
             $notificationread = \App\Notification::where('id', $request->notification_id)->update(['is_read' => '1']);
 
             return parent::success(['message' => 'Notification mark Read', 'notification' => $notificationread]);
