@@ -183,13 +183,12 @@ class TournamentsController extends ApiController {
         $tournamentGet = $tournamentGet->where("id", $tournament->id);
         $tournamentGet = $tournamentGet->with(['players', 'fixtures']);
 
-        $playerIDs = [];
+        $playerIDs=[];
         for ($i = 1; $i <= $request->number_of_players; $i++):
             $key = 'player_' . $i;
-            $playerIDs[] = $request->$key;
-            parent::pushNotifications(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']], $request->$key, TRUE);
+            $playerIDs[]=$request->$key;
         endfor;
-
+        parent::pushNotifications(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']],$playerIDs , TRUE);
 
         return parent::success(['message' => 'Your Tournament has been successfully created', 'tournaments' => $tournamentGet->first()]);
     }
@@ -397,8 +396,9 @@ class TournamentsController extends ApiController {
             $players = $players->where('id', '!=', \Auth::id());
             $players = $players->whereNotIn('id', \DB::table('user_friends')->where('status', 'accepted')->where('user_id', \Auth::id())->orWhere('friend_id', \Auth::id())->pluck('friend_id'))->orderBy('id', 'DESC')->get()->toArray();
             $players = array_merge($myfriends, $players);
-
+            
 //            $players = $myfriends;
+
 //            $perPage = isset($request->limit) ? $request->limit : 20;
 //            if (isset($request->search)) {
 //                $players = $players->where(function($query) use ($request) {

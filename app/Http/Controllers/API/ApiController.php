@@ -269,6 +269,21 @@ class ApiController extends \App\Http\Controllers\Controller {
         return true;
     }
 
+    public static function pushNotificationMultiple($data = [], $userIds, $saveNotification = true) {
+        $tokens = [];
+        foreach ($userIds as $userId):
+            if ($saveNotification) {
+                self::savePushNotification($data, $userId);
+            }
+            foreach (\App\UserDevice::whereUserId($userId)->get() as $userDevice):
+                $tokens[] = $userDevice->token;
+            endforeach;
+        endforeach;
+//        dd($tokens);
+        self::pushNotofication($data, $tokens);
+        return true;
+    }
+
     private static function savePushNotification($data, $userId) {
         try {
 
