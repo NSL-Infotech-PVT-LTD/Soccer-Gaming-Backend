@@ -206,25 +206,61 @@ class ApiController extends \App\Http\Controllers\Controller {
         }
     }
 
-    public static function pushNotofication($data = [], $deviceToken) {
+//    public static function pushNotofication($data = [], $deviceToken) {
+//
+//        $optionBuilder = new OptionsBuilder();
+//        // $optionBuilder->setTimeToLive(60 * 20);
+//        $notificationBuilder = new PayloadNotificationBuilder($data['title']);
+//        $notificationBuilder->setBody($data['body'])->setSound('default');
+//        $dataBuilder = new PayloadDataBuilder();
+//        $dataBuilder->addData(['target_id' => $data['data']['target_id']]);
+//        $dataBuilder->addData(['target_model' => $data['data']['target_model']]);
+//        $dataBuilder->addData(['data_type' => $data['data']['data_type']]);
+//        $option = $optionBuilder->build();
+//        $notification = $notificationBuilder->build();
+//        $data = $dataBuilder->build();
+//
+////        $deviceToken = "ex3npcIRYQE:APA91bEud0nwwTSpmKYajm3nwMn5g5LS_dP0gGe2Zc94oRPhheeb4Gdhf0adFbAvpp8CqhycXjLt5VuWR95C8Su2pGCDKRzx3YzL6HZUF7AYO2lsBoTaG8xCJ-krRSCGHR4XrYeX3pMM";
+//
+//        $downstreamResponse = FCM::sendTo($deviceToken, $option, $notification, $data);
+////        $downstreamResponse->numberFailure();
+//        return $downstreamResponse->numberSuccess() == '1' ? true : false;
+//    }
 
-        $optionBuilder = new OptionsBuilder();
-        // $optionBuilder->setTimeToLive(60 * 20);
-        $notificationBuilder = new PayloadNotificationBuilder($data['title']);
-        $notificationBuilder->setBody($data['body'])->setSound('default');
-        $dataBuilder = new PayloadDataBuilder();
-        $dataBuilder->addData(['target_id' => $data['data']['target_id']]);
-        $dataBuilder->addData(['target_model' => $data['data']['target_model']]);
-        $dataBuilder->addData(['data_type' => $data['data']['data_type']]);
-        $option = $optionBuilder->build();
-        $notification = $notificationBuilder->build();
-        $data = $dataBuilder->build();
+    public static function pushNotofication($data = [], $deviceToken, $customData = null) {
+        try {
+            $url = "https://fcm.googleapis.com/fcm/send";
+            $token = $deviceToken;
+//            $token = "fsZ6rW-nE40:APA91bH2VkzS-wNbyM8yH-abRJfMrqfv2nOpaZ4qx_PlJUJW_ihD5pVhLTFHv55qyHjqRlJ39I500hn5iu1HP97xPXvrDddeLEn7_EETHggSe4bhtof5ZJZUGv4fDf6WBDTgWzUvHeu3";
+            $serverKey = env('FCM_SERVER_KEY');
+            $dataToSend = $data;
 
-//        $deviceToken = "ex3npcIRYQE:APA91bEud0nwwTSpmKYajm3nwMn5g5LS_dP0gGe2Zc94oRPhheeb4Gdhf0adFbAvpp8CqhycXjLt5VuWR95C8Su2pGCDKRzx3YzL6HZUF7AYO2lsBoTaG8xCJ-krRSCGHR4XrYeX3pMM";
-
-        $downstreamResponse = FCM::sendTo($deviceToken, $option, $notification, $data);
-//        $downstreamResponse->numberFailure();
-        return $downstreamResponse->numberSuccess() == '1' ? true : false;
+//            $title = $data['title'];
+//            $body = $data['body'];
+//        $notification = array('title' => $title, 'text' => $body, 'sound' => 'default', 'badge' => '1');
+//        $arrayToSend = array('to' => $token, 'notification' => $notification, 'priority' => 'high', 'data' => $dataToSend);
+            $arrayToSend = array('to' => $token, 'data' => $dataToSend);
+            $json = json_encode($arrayToSend);
+            $headers = array();
+            $headers[] = 'Content-Type: application/json';
+            $headers[] = 'Authorization: key=' . $serverKey;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            //Send the request
+            $response = curl_exec($ch);
+//            dd($ch);
+            //Close request
+            if ($response === FALSE) {
+                die('FCM Send Error: ' . curl_error($ch));
+            }
+            curl_close($ch);
+            return true;
+        } catch (\Exception $ex) {
+            return true;
+        }
     }
 
 //    public function pushNotificationiOS($data, $devicetokens, $customData = null) {
