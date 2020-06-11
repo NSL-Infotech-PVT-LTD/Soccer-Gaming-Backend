@@ -374,7 +374,15 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $user = \App\User::findOrFail(\Auth::id());
-
+            $myfriends = new \App\UserFriend();
+            $myfriends = $myfriends->select('id', 'user_id', 'friend_id');
+            $myfriends = $myfriends->where(function($query) use ($request) {
+                $query->where('user_id', \Auth::id());
+                $query->orWhere('friend_id', \Auth::id());
+            });
+            $myfriends = $myfriends->where("status", "accepted")->get()->toArray();
+            dd($myfriends);
+            
             $players = new User();
             $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
                     'roles', function($q) {
