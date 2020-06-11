@@ -234,7 +234,6 @@ class ApiController extends \App\Http\Controllers\Controller {
 //            $token = "fsZ6rW-nE40:APA91bH2VkzS-wNbyM8yH-abRJfMrqfv2nOpaZ4qx_PlJUJW_ihD5pVhLTFHv55qyHjqRlJ39I500hn5iu1HP97xPXvrDddeLEn7_EETHggSe4bhtof5ZJZUGv4fDf6WBDTgWzUvHeu3";
             $serverKey = env('FCM_SERVER_KEY');
             $dataToSend = $data;
-
 //            $title = $data['title'];
 //            $body = $data['body'];
 //        $notification = array('title' => $title, 'text' => $body, 'sound' => 'default', 'badge' => '1');
