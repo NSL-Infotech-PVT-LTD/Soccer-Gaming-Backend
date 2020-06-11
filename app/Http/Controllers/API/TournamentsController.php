@@ -188,7 +188,8 @@ class TournamentsController extends ApiController {
             $key = 'player_' . $i;
             $playerIDs[]=$request->$key;
         endfor;
-        parent::pushNotifications(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']],$playerIDs , TRUE);
+//        dd($playerIDs);
+        parent::pushNotificationMultiple(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']],$playerIDs , TRUE);
 
         return parent::success(['message' => 'Your Tournament has been successfully created', 'tournaments' => $tournamentGet->first()]);
     }
