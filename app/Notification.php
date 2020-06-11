@@ -68,7 +68,7 @@ class Notification extends Model {
 
     public function getnotificationComeFromAttribute() {
         try {
-            $model = User::select('id', 'username', 'email')->where('id', $this->data->target_id)->first();
+            $model = User::select('id', 'username', 'email', 'image')->where('id', $this->data->target_id)->first();
             return $model;
         } catch (\Exception $ex) {
             return null;
