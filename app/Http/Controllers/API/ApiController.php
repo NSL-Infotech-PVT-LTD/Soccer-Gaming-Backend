@@ -261,11 +261,11 @@ class ApiController extends \App\Http\Controllers\Controller {
         //   return true;
         // if (User::whereId($userId)->where('is_notify', '1')->get()->isEmpty() === true)
         //   return true;
-
+        $tokens = [];
         foreach (\App\UserDevice::whereUserId($userId)->get() as $userDevice):
-
-            self::pushNotofication($data, $userDevice->token);
+            $tokens[] = $userDevice->token;
         endforeach;
+        self::pushNotofication($data, $tokens);
         return true;
     }
 
