@@ -780,10 +780,17 @@ class TournamentsController extends ApiController {
             $user = \App\User::findOrFail(\Auth::id());
 
             $model = new \App\Notification();
+            
             $perPage = isset($request->limit) ? $request->limit : 20;
-
-            $notificationread = \App\Notification::where('title', $request->type)->where('target_id', \Auth::id())->update(['is_read' => '1']);
-
+           
+            $notificationread = \App\Notification::where('title', $request->type)->where('target_id', \Auth::id());
+            $not = $notificationread->get();
+            foreach ($not as $data):
+                if($data->data->target_id == $request->sender_id):
+                  $notificationId[] = $data->id;  
+                endif;
+            endforeach;
+            $notificationread = \App\Notification::whereIn('id',$notificationId)->update(['is_read' => '1']);
             return parent::success(['message' => 'Notification mark Read', 'notification' => $notificationread]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
