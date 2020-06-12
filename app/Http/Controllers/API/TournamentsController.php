@@ -771,7 +771,7 @@ class TournamentsController extends ApiController {
 
     public function notificationRead(Request $request) {
 //        dd('s');
-        $rules = ['notification_id' => 'required|exists:notifications,id'];
+        $rules = ['notification_id' => '','sender_id' => 'required|exists:users,id','type' => 'required'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -782,7 +782,7 @@ class TournamentsController extends ApiController {
             $model = new \App\Notification();
             $perPage = isset($request->limit) ? $request->limit : 20;
 
-            $notificationread = \App\Notification::where('id', $request->notification_id)->update(['is_read' => '1']);
+            $notificationread = \App\Notification::where('title', $request->type)->where('target_id', \Auth::id())->update(['is_read' => '1']);
 
             return parent::success(['message' => 'Notification mark Read', 'notification' => $notificationread]);
         } catch (\Exception $ex) {
