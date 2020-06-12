@@ -207,7 +207,7 @@ class ApiController extends \App\Http\Controllers\Controller {
     }
 
     public static function pushNotofication($data = [], $deviceToken) {
-        return true;
+//        return true;
         $optionBuilder = new OptionsBuilder();
         // $optionBuilder->setTimeToLive(60 * 20);
         $notificationBuilder = new PayloadNotificationBuilder($data['title']);
