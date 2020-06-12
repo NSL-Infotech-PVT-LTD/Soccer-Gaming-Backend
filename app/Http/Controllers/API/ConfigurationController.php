@@ -92,6 +92,7 @@ class ConfigurationController extends ApiController {
             return $validateAttributes;
         endif;
         try {
+//            dd($request->id);
             parent::pushNotifications(['title' => 'Test', 'body' => 'Test Body', 'data' => ['target_id' => $request->id, 'target_model' => 'Test', 'data_type' => 'Test']], $request->id, FALSE);
             return parent::success(['Message' => 'Notification Sent']);
         } catch (\Exception $ex) {

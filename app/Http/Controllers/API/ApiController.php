@@ -219,10 +219,10 @@ class ApiController extends \App\Http\Controllers\Controller {
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
-
 //        $deviceToken = "ex3npcIRYQE:APA91bEud0nwwTSpmKYajm3nwMn5g5LS_dP0gGe2Zc94oRPhheeb4Gdhf0adFbAvpp8CqhycXjLt5VuWR95C8Su2pGCDKRzx3YzL6HZUF7AYO2lsBoTaG8xCJ-krRSCGHR4XrYeX3pMM";
-
+//        dd($deviceToken);
         $downstreamResponse = FCM::sendTo($deviceToken, $option, $notification, $data);
+//        dd($downstreamResponse);
 //        $downstreamResponse->numberFailure();
         return $downstreamResponse->numberSuccess() == '1' ? true : false;
     }
@@ -265,7 +265,8 @@ class ApiController extends \App\Http\Controllers\Controller {
         foreach (\App\UserDevice::whereUserId($userId)->get() as $userDevice):
             $tokens[] = $userDevice->token;
         endforeach;
-        self::pushNotofication($data, $tokens);
+        if (count($tokens) > 0)
+            self::pushNotofication($data, $tokens);
         return true;
     }
 
