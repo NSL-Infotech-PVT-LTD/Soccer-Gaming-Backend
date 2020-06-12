@@ -223,6 +223,7 @@ class ApiController extends \App\Http\Controllers\Controller {
 //        dd($deviceToken);
         $downstreamResponse = FCM::sendTo($deviceToken, $option, $notification, $data);
 //        dd($downstreamResponse);
+//        
 //        $downstreamResponse->numberFailure();
         return $downstreamResponse->numberSuccess() == '1' ? true : false;
     }
