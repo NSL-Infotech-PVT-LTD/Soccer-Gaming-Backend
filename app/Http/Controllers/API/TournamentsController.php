@@ -267,7 +267,7 @@ class TournamentsController extends ApiController {
     }
 
     public function addScoreToTournament(Request $request) {
-//        dd($request->player_id_2_team_id);
+
         $rules = ['tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => ''];
 
         $validator = Validator::make($request->all(), $rules);
@@ -280,62 +280,62 @@ class TournamentsController extends ApiController {
         if (\App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->where('player_id', $request->player_id_2)->where('team_id', $request->player_id_2_team_id)->get()->isEmpty())
             return parent::error('Players two are not available in the tournament');
 
-//        dd($i);
-//        if($request->stage != 'round-1' || $request->stage != 'round-1' || $request->stage != ''):
-//            return parent::error('The selected stage is invalid.');
-//        endif;
         $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
-//                        dd($tournamentfixtured->stage);
-//        if (isset($request->stage)):
-//            $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
-//        endif;
+
         if (\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get()->isEmpty() === true)
             return parent::error('fixture does not exist');
 
         if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null):
-//            dd('s');
             return parent::error(['message' => 'Score already Updated']);
         endif;
 
-//        if($tournamentfixtured->stage != 'round-1'):
-//            
-//        endif;
-//        if ($tournamentfixtured->stage == null):
         $input = $request->all();
         $input['created_by'] = \Auth::id();
         $input['updated_by'] = \Auth::id();
-//                dd($input);
-//            $TournamnetFixed = \App\TournamentFixture::create($input);
         $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
         $TournamnetFixed->fill($input);
         $TournamnetFixed->save();
         return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
-//        else:
-//            if ($tournamentfixtured->stage == 'semi-final'):
-//                $input = $request->all();
-//                $input['created_by'] = \Auth::id();
-//                $input['updated_by'] = \Auth::id();
-//                dd($input);
-//            $TournamnetFixed = \App\TournamentFixture::create($input);
-//                $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
-//                $TournamnetFixed->fill($input);
-//                $TournamnetFixed->save();
-        //creating fixture for final
-//                if($request->player_id_1_score > $request->player_id_2_score):
-//                    $player_id_1 = $request->player_id_1;
-//                    $player_id_1_team_id = $request->player_id_1_team_id;
+        //------------------------if stage is semi-final--------------------------------------------     
+//        if ($tournamentfixtured->stage == 'semi-final'):
+//            if (\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('stage', '=', 'final')->get()->isEmpty() === true):
+//                if ($request->player_id_1_score > $request->player_id_2_score):
+////                    dd('semi-final');
+//                    $fixture[] = ['tournament_id' => $request->tournament_id, 'player_id_1' => $request->player_id_1, 'player_id_1_team_id' => $request->player_id_1_team_id, 'stage' => 'final'];
+//                    \App\TournamentFixture::insert($fixture);
+//                    return parent::success(['message' => 'Scores has been successfully Added for semi-final and fixture generated for final', 'tournamentFixtures' => $TournamnetFixed]);
 //                else:
-//                    $player_id_1 = $request->player_id_2;
-//                    $player_id_1_team_id = $request->player_id_2_team_id;   
+//                    $fixture[] = ['tournament_id' => $request->tournament_id, 'player_id_1' => $request->player_id_2, 'player_id_1_team_id' => $request->player_id_2_team_id, 'stage' => 'final'];
+//                    \App\TournamentFixture::insert($fixture);
+//                    return parent::success(['message' => 'Scores has been successfully Added for semi-final  and fixture generated for final', 'tournamentFixtures' => $TournamnetFixed]);
 //                endif;
-//                $fixture[] = ['tournament_id' => $tournamentfixtured->id, 'player_id_1' => $player_id_1, 'player_id_1_team_id' => $player_id_1_team_id, 'player_id_2' => 'sfw2', 'player_id_2_team_id' => 'sfwt2', 'stage' => 'final'];
-//                \App\TournamentFixture::insert($fixture);
-//                return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
-//            elseif():
-//            elseif():
 //            else:
-//
+//                if ($request->player_id_1_score > $request->player_id_2_score):
+//                    $input['player_id_2'] = $request->player_id_1_score;
+//                    $input['player_id_2_team_id'] = $request->player_id_1_team_id;
+//                    $input['created_by'] = \Auth::id();
+//                    $input['updated_by'] = \Auth::id();
+//                    $TournamnetFinal = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('stage', '=', 'final')->get();
+//                    $TournamnetFinal->fill($input);
+//                    $TournamnetFinal->save();
+//                    return parent::success(['message' => 'Scores has been successfully Added for final', 'tournamentFixtures' => $TournamnetFinal]);
+//                else:    
+//                    $input['player_id_2'] = $request->player_id_2_score;
+//                    $input['player_id_2_team_id'] = $request->player_id_2_team_id;
+//                    $input['created_by'] = \Auth::id();
+//                    $input['updated_by'] = \Auth::id();
+//                    $TournamnetFinal = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('stage', '=', 'final')->get();
+//                    $TournamnetFinal->fill($input);
+//                    $TournamnetFinal->save();
+//                    return parent::success(['message' => 'Scores has been successfully Added for final', 'tournamentFixtures' => $TournamnetFinal]);
+//                endif;
+//                    
 //            endif;
+
+//            elseif():
+//            elseif():
+//        else:
+//
 //        endif;
     }
 
@@ -397,9 +397,8 @@ class TournamentsController extends ApiController {
             $players = $players->where('id', '!=', \Auth::id());
             $players = $players->whereNotIn('id', \DB::table('user_friends')->where('status', 'accepted')->where('user_id', \Auth::id())->orWhere('friend_id', \Auth::id())->pluck('friend_id'))->orderBy('id', 'DESC')->get()->toArray();
             $players = array_merge($myfriends, $players);
-            
-//            $players = $myfriends;
 
+//            $players = $myfriends;
 //            $perPage = isset($request->limit) ? $request->limit : 20;
 //            if (isset($request->search)) {
 //                $players = $players->where(function($query) use ($request) {
@@ -771,7 +770,7 @@ class TournamentsController extends ApiController {
 
     public function notificationRead(Request $request) {
 //        dd('s');
-        $rules = ['notification_id' => '','sender_id' => 'required|exists:users,id','type' => 'required'];
+        $rules = ['notification_id' => '', 'sender_id' => 'required|exists:users,id', 'type' => 'required'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -780,17 +779,17 @@ class TournamentsController extends ApiController {
             $user = \App\User::findOrFail(\Auth::id());
 
             $model = new \App\Notification();
-            
+
             $perPage = isset($request->limit) ? $request->limit : 20;
-           
+
             $notificationread = \App\Notification::where('title', $request->type)->where('target_id', \Auth::id());
             $not = $notificationread->get();
             foreach ($not as $data):
-                if($data->data->target_id == $request->sender_id):
-                  $notificationId[] = $data->id;  
+                if ($data->data->target_id == $request->sender_id):
+                    $notificationId[] = $data->id;
                 endif;
             endforeach;
-            $notificationread = \App\Notification::whereIn('id',$notificationId)->update(['is_read' => '1']);
+            $notificationread = \App\Notification::whereIn('id', $notificationId)->update(['is_read' => '1']);
             return parent::success(['message' => 'Notification mark Read', 'notification' => $notificationread]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
