@@ -288,8 +288,8 @@ class TournamentsController extends ApiController {
         if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null):
             return parent::error(['message' => 'Score already Updated']);
         endif;
-// -------------------------------------if stage is round-1|| round-2 ----------------------------
-        if ($tournamentfixtured->stage == 'round-1' || $tournamentfixtured->stage == 'round-2'):
+// --------------------------------- if stage is round-1|| round-2 --------------------------
+        if ($tournamentfixtured->stage == 'round-1' || $tournamentfixtured->stage == 'round-2' || $tournamentfixtured->stage == 'final'):
             $input = $request->all();
             $input['created_by'] = \Auth::id();
             $input['updated_by'] = \Auth::id();
