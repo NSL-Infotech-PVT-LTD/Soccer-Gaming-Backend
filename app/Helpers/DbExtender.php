@@ -22,9 +22,9 @@ class DbExtender {
         $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         $table->softDeletes();
         if ($userParent):
-            $table->bigInteger('updated_by')->unsigned()->index();
+            $table->bigInteger('updated_by')->unsigned()->index()->nullable();
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
-            $table->bigInteger('created_by')->unsigned()->index();
+            $table->bigInteger('created_by')->unsigned()->index()->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
         endif;
     }

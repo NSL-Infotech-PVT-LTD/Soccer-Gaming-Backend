@@ -23,7 +23,7 @@ class CreateTournamentFixturesTable extends Migration
             $table->integer('player_id_1_score')->nullable();
             $table->string('player_id_1_team_id')->nullable();
             
-            $table->bigInteger('player_id_2')->unsigned()->index();
+            $table->bigInteger('player_id_2')->unsigned()->index()->nullable();
             $table->foreign('player_id_2')->references('id')->on('users')->onDelete('cascade');            
             $table->integer('player_id_2_score')->nullable();
             $table->string('player_id_2_team_id')->nullable();
