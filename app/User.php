@@ -85,7 +85,7 @@ class User extends Authenticatable {
 
     public function getFriendRequestSentAttribute() {
 //        dd();
-        $model = UserFriend::where('user_id', \Auth::id())->orWhere('friend_id', $this->id)->where('friend_id', $this->id)->orWhere('user_id', $this->id)->get();
+        $model = UserFriend::where('user_id', \Auth::id())->orWhere('friend_id', $this->id)->where('friend_id', \Auth::id())->orWhere('user_id', $this->id)->get();
         
         if ($model->isEmpty() !== true):
             return true;
@@ -96,7 +96,7 @@ class User extends Authenticatable {
 
     public function getFriendRequestSentStatusAttribute() {
 //        dd($this->username);
-        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id', $this->id)->get();
+        $model = UserFriend::where('user_id', \Auth::id())->orWhere('friend_id', \Auth::id())->where('friend_id', $this->id)->orWhere('user_id', $this->id)->get();
         if ($this->id == \Auth::id()):
             return 'accepted';
         endif;
