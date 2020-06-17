@@ -207,24 +207,28 @@ class ApiController extends \App\Http\Controllers\Controller {
     }
 
     public static function pushNotofication($data = [], $deviceToken) {
+        try {
 
-        $optionBuilder = new OptionsBuilder();
-        // $optionBuilder->setTimeToLive(60 * 20);
-        $notificationBuilder = new PayloadNotificationBuilder($data['title']);
-        $notificationBuilder->setBody($data['body'])->setSound('default');
-        $dataBuilder = new PayloadDataBuilder();
-        $dataBuilder->addData(['target_id' => $data['data']['target_id']]);
-        $dataBuilder->addData(['target_model' => $data['data']['target_model']]);
-        $dataBuilder->addData(['data_type' => $data['data']['data_type']]);
-        $option = $optionBuilder->build();
-        $notification = $notificationBuilder->build();
-        $data = $dataBuilder->build();
+            $optionBuilder = new OptionsBuilder();
+            // $optionBuilder->setTimeToLive(60 * 20);
+            $notificationBuilder = new PayloadNotificationBuilder($data['title']);
+            $notificationBuilder->setBody($data['body'])->setSound('default');
+            $dataBuilder = new PayloadDataBuilder();
+            $dataBuilder->addData(['target_id' => $data['data']['target_id']]);
+            $dataBuilder->addData(['target_model' => $data['data']['target_model']]);
+            $dataBuilder->addData(['data_type' => $data['data']['data_type']]);
+            $option = $optionBuilder->build();
+            $notification = $notificationBuilder->build();
+            $data = $dataBuilder->build();
 
 //        $deviceToken = "ex3npcIRYQE:APA91bEud0nwwTSpmKYajm3nwMn5g5LS_dP0gGe2Zc94oRPhheeb4Gdhf0adFbAvpp8CqhycXjLt5VuWR95C8Su2pGCDKRzx3YzL6HZUF7AYO2lsBoTaG8xCJ-krRSCGHR4XrYeX3pMM";
 
-        $downstreamResponse = FCM::sendTo($deviceToken, $option, $notification, $data);
+            $downstreamResponse = FCM::sendTo($deviceToken, $option, $notification, $data);
 //        $downstreamResponse->numberFailure();
-        return $downstreamResponse->numberSuccess() == '1' ? true : false;
+            return $downstreamResponse->numberSuccess() == '1' ? true : false;
+        } catch (Exception $ex) {
+            dd($ex->getMessage());
+        }
     }
 
 //    public function pushNotificationiOS($data, $devicetokens, $customData = null) {
@@ -265,7 +269,8 @@ class ApiController extends \App\Http\Controllers\Controller {
         foreach (\App\UserDevice::whereUserId($userId)->get() as $userDevice):
             $tokens[] = $userDevice->token;
         endforeach;
-        self::pushNotofication($data, $tokens);
+        if (count($tokens) > 0)
+            self::pushNotofication($data, $tokens);
         return true;
     }
 
