@@ -215,7 +215,7 @@ class TournamentsController extends ApiController {
 
     public function tournamentList(Request $request) {
 
-        $rules = ['search' => ''];
+        $rules = ['search' => '', 'show_my' => ''];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -225,12 +225,13 @@ class TournamentsController extends ApiController {
 
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
-            if ($request->show_my == 'my')
-            $tournament = $tournament->where("created_by", \Auth::id());
+//            if ($request->show_my == 'my')
+//            $tournament = $tournament->where("created_by", \Auth::id());
 
             $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
+//            dd($ids);
             $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
-
+//            dd($ids);
             $tournament = $tournament->whereIn("id", $ids);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
@@ -587,8 +588,10 @@ class TournamentsController extends ApiController {
             endif;
             $frienddata = \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
 
-
-//            parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You received one Friend Request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+        if($request->status == 'accepted'):
+            parent::pushNotifications(['title' => 'Friend Request', 'body' => 'Your Friend Request has been accepted', 'data' => ['target_id' => $request->friend_id, 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], \Auth::id(), TRUE);
+        endif;
+            
 
             return parent::success(['message' => 'Status updated', 'friendFound' => $friends]);
         } catch (\Exception $ex) {
