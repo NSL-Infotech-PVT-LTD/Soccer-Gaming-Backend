@@ -589,7 +589,7 @@ class TournamentsController extends ApiController {
             $frienddata = \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
 
         if($request->status == 'accepted'):
-            parent::pushNotifications(['title' => 'Friend Request', 'body' => 'Your Friend Request has been accepted', 'data' => ['target_id' => $request->friend_id, 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], \Auth::id(), TRUE);
+            parent::pushNotifications(['title' => 'Friend Request', 'body' => 'Your Friend Request has been accepted', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
         endif;
             
 
