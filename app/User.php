@@ -85,7 +85,7 @@ class User extends Authenticatable {
 
     public function getFriendRequestSentAttribute() {
 //        dd();
-        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id', \Auth::id())->get();
+        $model = UserFriend::where('user_id', \Auth::id())->where('friend_id', $this->id)->get();
         
         if ($model->isEmpty() !== true):
             return true;
