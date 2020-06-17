@@ -225,8 +225,8 @@ class TournamentsController extends ApiController {
 
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
-//            if ($request->show_my == 'my')
-//            $tournament = $tournament->where("created_by", \Auth::id());
+            if ($request->show_my == 'my')
+            $tournament = $tournament->where("created_by", \Auth::id());
 
             $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
             $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
@@ -289,7 +289,7 @@ class TournamentsController extends ApiController {
             return parent::error(['message' => 'Score already Updated']);
         endif;
 // --------------------------------- if stage is round-1|| round-2 --------------------------
-        if ($tournamentfixtured->stage == 'round-1' || $tournamentfixtured->stage == 'round-2' || $tournamentfixtured->stage == 'final'):
+        if ($tournamentfixtured->stage == 'round-1' || $tournamentfixtured->stage == 'round-2' || $tournamentfixtured->stage == 'final' || $tournamentfixtured->stage == 'no-round'):
             $input = $request->all();
             $input['created_by'] = \Auth::id();
             $input['updated_by'] = \Auth::id();
@@ -500,7 +500,7 @@ class TournamentsController extends ApiController {
 
 
         $userfriends = \App\UserFriend::create($input);
-//        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You have a friend request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You have a friend request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
 
         return parent::success(['message' => 'Your friend request has been sent', 'userfriends' => $userfriends]);
     }
