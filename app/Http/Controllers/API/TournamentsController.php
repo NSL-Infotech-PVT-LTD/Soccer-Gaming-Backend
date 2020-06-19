@@ -79,7 +79,7 @@ class TournamentsController extends ApiController {
                 return parent::error('Player ' . $i . ' teams is required');
             $data = (array) json_decode($request->$key, false);
             if (!is_array($data))
-                parent::error('Numbers of team provided in Player ' . $i . ' does not Seralized');
+                parent::error('Numbers of team provided in Player ' . $i . ' does not Serialized');
 //            dd($data);
             if (count($data) != $request->number_of_teams_per_player)
                 return parent::error('Numbers of team provided in Player ' . $i . ' does not match with count');
@@ -174,6 +174,9 @@ class TournamentsController extends ApiController {
             endfor;
             \App\TournamentFixture::insert($fixture);
 //            dd($fixture);
+            if ($request->legs_per_match_in_knockout_stage == '2'):
+                \App\TournamentFixture::insert($fixture);
+            endif;
         endif;
 
 
@@ -280,28 +283,52 @@ class TournamentsController extends ApiController {
             return parent::error('Players one are not available in the tournament');
         if (\App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->where('player_id', $request->player_id_2)->where('team_id', $request->player_id_2_team_id)->get()->isEmpty())
             return parent::error('Players two are not available in the tournament');
-
+        if($request->player_id_1_score == $request->player_id_2_score):
+            return parent::error('Equal scores will resultant into a Draw');
+        endif;
+        
         $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
+
+        $fixtureForLegs = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get();
+
+        $checkTournamentLegs = Tournament::where('id', '=', $request->tournament_id)->first();
+        $knockoutLegs = $checkTournamentLegs->legs_per_match_in_knockout_stage;
 
         if (\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get()->isEmpty() === true)
             return parent::error('fixture does not exist');
 
-        if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null):
-            return parent::error(['message' => 'Score already Updated']);
-        endif;
+//        if ($tournamentfixtured->player_id_1_score != null || $tournamentfixtured->player_id_2_score != null):
+//            return parent::error(['message' => 'Score already Updated']);
+//        endif;
 // --------------------------------- if stage is round-1|| round-2 --------------------------
-        if ($tournamentfixtured->stage == 'round-1' || $tournamentfixtured->stage == 'round-2' || $tournamentfixtured->stage == 'final' || $tournamentfixtured->stage == 'no-round'):
-            $input = $request->all();
-            $input['created_by'] = \Auth::id();
-            $input['updated_by'] = \Auth::id();
-            $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
-            $TournamnetFixed->fill($input);
-            $TournamnetFixed->save();
-            return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
-        endif;
-//-------------------------------------------code ends-------------------------------------       
+    if ($tournamentfixtured->stage == 'round-1' || $tournamentfixtured->stage == 'round-2' || $tournamentfixtured->stage == 'final' || $tournamentfixtured->stage == 'no-round'):
+        $input = $request->all();
+        $input['created_by'] = \Auth::id();
+        $input['updated_by'] = \Auth::id();
+        $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
+        $TournamnetFixed->fill($input);
+        $TournamnetFixed->save();
+        return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
+    endif;
+//-----------------------------------code ends-----------------------------------------       
+//--------------if stage is semi-final || Quarter-final || Pre-Quarter Final-----------
+//----if knockout has couple of legs   
+//    if ($knockoutLegs == '2'):
+//        foreach ($fixtureForLegs as $legs):
+//            if ($legs->player_id_1_score == null):
+//                $input = $request->all();
+//                $input['created_by'] = \Auth::id();
+//                $input['updated_by'] = \Auth::id();
+//                $TournamnetFixed = \App\TournamentFixture::findOrFail($legs->id);
+//                $TournamnetFixed->fill($input);
+//                $TournamnetFixed->save();
+//                break;
+//            endif;
+//        endforeach;
+//    endif;
+//        dd('return');
+//----ends-----           
 
-//-----------------if stage is semi-final || Quarter-final || Pre-Quarter Final----------------     
         if ($tournamentfixtured->stage == 'semi-final' || $tournamentfixtured->stage == 'quarter-final' || $tournamentfixtured->stage == 'pre-quarter-final'):
             $input = $request->all();
             $input['created_by'] = \Auth::id();
@@ -317,7 +344,9 @@ class TournamentsController extends ApiController {
             else:
                 $stage = 'final';
             endif;
-//        dd($stage);
+
+//------------------if number of legs per match in knockout stage is 1---------------------
+
             if ($request->player_id_1_score > $request->player_id_2_score):
                 if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL], ['player_id_2_team_id', '=', NULL]])->get()->isEmpty() === true):
                     $fixture[] = ['tournament_id' => $request->tournament_id, 'player_id_1' => $request->player_id_1, 'player_id_1_team_id' => $request->player_id_1_team_id, 'stage' => $stage];
@@ -352,7 +381,7 @@ class TournamentsController extends ApiController {
                 endif;
             endif;
         endif;
- //-------------------------------------------code ends-------------------------------------       
+        //-------------------------------------------code ends-------------------------------------       
     }
 
     public function teamList(Request $request) {
@@ -588,10 +617,10 @@ class TournamentsController extends ApiController {
             endif;
             $frienddata = \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
 
-        if($request->status == 'accepted'):
-            parent::pushNotifications(['body' => 'Your Friend Request has been accepted', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
-        endif;
-            
+            if ($request->status == 'accepted'):
+                parent::pushNotifications(['body' => 'Your Friend Request has been accepted', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+            endif;
+
 
             return parent::success(['message' => 'Status updated', 'friendFound' => $friends]);
         } catch (\Exception $ex) {

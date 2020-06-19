@@ -172,7 +172,7 @@ class TournamentPlayerTeam extends Model {
             $points = $won * 3 + $draw * 1;
 
             $fixtures = TournamentFixture::where('tournament_id', $this->tournament_id)->whereNotNull('player_id_1_score')->whereNotNull('player_id_2_score')->get();
-            $avgpoints = ($points > 0)?$points / count($fixtures):0; 
+            $avgpoints = ($points > 0)?$points / $played:0; 
 
 
         endforeach;
