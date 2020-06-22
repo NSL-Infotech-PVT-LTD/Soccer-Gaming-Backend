@@ -174,7 +174,10 @@ class TournamentsController extends ApiController {
             endfor;
             \App\TournamentFixture::insert($fixture);
 //            dd($fixture);
-            if ($request->legs_per_match_in_knockout_stage == '2'):
+            if ($request->legs_per_match_in_knockout_stage == '2' && $request->number_of_players != '2'):
+                \App\TournamentFixture::insert($fixture);
+            endif;
+            if ($request->number_of_players == '2' && $request->number_of_players_that_will_be_in_the_knockout_stage == '2'):
                 \App\TournamentFixture::insert($fixture);
             endif;
         endif;
@@ -329,6 +332,7 @@ class TournamentsController extends ApiController {
             $player1score = 0;
             $player2score = 0;
             if ($knockoutLegs == '2'):
+                $i = 1;
                 foreach ($fixtureForLegs as $legs):
                     if ($legs->player_id_1_score == null):
                         $input = $request->all();
@@ -337,11 +341,48 @@ class TournamentsController extends ApiController {
                         $TournamnetFixed = \App\TournamentFixture::findOrFail($legs->id);
                         $TournamnetFixed->fill($input);
                         $TournamnetFixed->save();
-                        break;
+                        if($i == '1')
+                            return parent::success(['message' => 'Scores has been successfully updated' , 'tournamentFixtures' => $TournamnetFixed]);
                     endif;
                     $player1score+= $legs->player_id_1_score;
                     $player2score+= $legs->player_id_2_score;
+                    $i++;
                 endforeach;
+                if ($player1score > $player2score):
+                    if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL], ['player_id_2_team_id', '=', NULL]])->get()->isEmpty() === true):
+                        $fixture[] = ['tournament_id' => $request->tournament_id, 'player_id_1' => $request->player_id_1, 'player_id_1_team_id' => $request->player_id_1_team_id, 'stage' => $stage];
+                        \App\TournamentFixture::insert($fixture);
+                        return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage]);
+                    else:
+                        $input1['player_id_2'] = $request->player_id_1;
+                        $input1['player_id_2_team_id'] = $request->player_id_1_team_id;
+                        $input1['stage'] = $stage;
+                        $input1['created_by'] = \Auth::id();
+                        $input1['updated_by'] = \Auth::id();
+                        $TournamnetFinal = \App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL]])->first();
+                        $TournamnetFinal->fill($input1);
+                        $TournamnetFinal->save();
+                        $TournamnetFinal->replicate();
+                        return parent::success(['message' => 'Scores has been successfully Added and 2 fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
+                    endif;
+                else:
+                    if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL], ['player_id_2_team_id', '=', NULL]])->get()->isEmpty() === true):
+                        $fixture[] = ['tournament_id' => $request->tournament_id, 'player_id_1' => $request->player_id_2, 'player_id_1_team_id' => $request->player_id_2_team_id, 'stage' => $stage];
+                        \App\TournamentFixture::insert($fixture);
+                        return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage]);
+                    else:
+                        $input2['player_id_2'] = $request->player_id_2;
+                        $input2['player_id_2_team_id'] = $request->player_id_2_team_id;
+                        $input2['stage'] = $stage;
+                        $input2['created_by'] = \Auth::id();
+                        $input2['updated_by'] = \Auth::id();
+                        $TournamnetFinal = \App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL]])->first();
+                        $TournamnetFinal->fill($input2);
+                        $TournamnetFinal->save();
+                        $TournamnetFinal->replicate();
+                        return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
+                    endif;
+                endif;
             else:
     //--------if number of legs per match in knockout stage is 1----------------
                 $input = $request->all();
@@ -359,7 +400,7 @@ class TournamentsController extends ApiController {
                     if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL], ['player_id_2_team_id', '=', NULL]])->get()->isEmpty() === true):
                         $fixture[] = ['tournament_id' => $request->tournament_id, 'player_id_1' => $request->player_id_1, 'player_id_1_team_id' => $request->player_id_1_team_id, 'stage' => $stage];
                         \App\TournamentFixture::insert($fixture);
-                        return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFixed]);
+                        return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage]);
                     else:
                         $input1['player_id_2'] = $request->player_id_1;
                         $input1['player_id_2_team_id'] = $request->player_id_1_team_id;
