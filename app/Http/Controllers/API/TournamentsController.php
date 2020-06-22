@@ -177,7 +177,7 @@ class TournamentsController extends ApiController {
             if ($request->legs_per_match_in_knockout_stage == '2' && $request->number_of_players != '2'):
                 \App\TournamentFixture::insert($fixture);
             endif;
-            if ($request->number_of_players == '2' && $request->number_of_players_that_will_be_in_the_knockout_stage == '2'):
+            if ($request->number_of_players == '2' && $request->number_of_legs_in_final == '2'):
                 \App\TournamentFixture::insert($fixture);
             endif;
         endif;
