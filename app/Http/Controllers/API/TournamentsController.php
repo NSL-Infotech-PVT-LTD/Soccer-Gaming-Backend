@@ -327,20 +327,30 @@ class TournamentsController extends ApiController {
             $tournament1 = new Tournament();
             $tournament1 = $tournament1->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final')->get();
 //            $tournament1 = $tournament1->where("type", $request->type);
-//            dd($tournament->toArray());
+//            dd($tournament1->toArray());
+            
             foreach ($tournament1 as $items):
+//                dd($items->id);
+                $scoreNullorNot = 'true';
                 if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
-                    if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === true):
-                        $completedTournamentIds[] = $items->id;
+                    foreach(\App\TournamentFixture::where('tournament_id', '=', $items->id)->get() as $fixtures):
+//                    dd($fixtures->player_id_1_score);
+                        if($fixtures->player_id_1_score != null):
+//                            dd('s');
+                            $scoreNullorNot = 'false';
+                        endif;
+                    endforeach;
+                    if($scoreNullorNot == 'true'):
+                        $upcomingTournamentIds[] = $items->id;
                     endif;
                 endif;
             endforeach;
-            if (!isset($completedTournamentIds))
-                return parent::error('No Upcoming Tournament has completed yet');
+            if (!isset($upcomingTournamentIds))
+                return parent::error('No Upcoming Tournament yet'); 
 
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final', 'created_at');
-            $tournament = $tournament->wherein('id', $completedTournamentIds);
+            $tournament = $tournament->wherein('id', $upcomingTournamentIds);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $tournament = $tournament->where(function($query) use ($request) {
