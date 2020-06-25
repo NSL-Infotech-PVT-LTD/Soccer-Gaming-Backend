@@ -367,7 +367,7 @@ class TournamentsController extends ApiController {
 
     public function tournamentFixtureReportToggle(Request $request) {
 //        dd('s');
-        $rules = ['id' => 'required|exists:tournaments,id'];
+        $rules = ['id' => 'required|exists:tournament_fixtures,id'];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $errors = self::formatValidator($validator);
