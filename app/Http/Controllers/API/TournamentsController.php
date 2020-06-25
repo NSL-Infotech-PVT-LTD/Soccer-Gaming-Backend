@@ -316,7 +316,7 @@ class TournamentsController extends ApiController {
     
     public function tournamentUpcoming(Request $request) {
 //       dd('s');
-        $rules = ['search' => '', 'type' => 'required|in:league,league_and_knockout,knockout'];
+        $rules = ['search' => '', 'type' => ''];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -336,7 +336,7 @@ class TournamentsController extends ApiController {
                 endif;
             endforeach;
             if(!isset($completedTournamentIds))
-                    return parent::error('No Upcoming Tournament yet');
+                    return parent::error('No Upcoming Tournament has completed yet');
                     
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final','created_at');
