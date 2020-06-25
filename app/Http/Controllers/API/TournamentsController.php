@@ -367,20 +367,15 @@ class TournamentsController extends ApiController {
 
     public function tournamentFixtureReportToggle(Request $request) {
 //        dd('s');
-        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'stage' => 'required'];
+        $rules = ['id' => 'required|exists:tournaments,id'];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $errors = self::formatValidator($validator);
             return parent::error($errors, 200);
         }
         try {
-            $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
-//            dd($tournamentfixtured->state);
-            $input = $request->all();
-            $input['created_by'] = \Auth::id();
-            $input['updated_by'] = \Auth::id();
-            $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
-            $TournamnetFixed->state = ((\App\TournamentFixture::whereId($tournamentfixtured->id)->first()->state === '1') ? '0' : '1');
+            $TournamnetFixed = \App\TournamentFixture::findOrFail($request->id);
+            $TournamnetFixed->state = ((\App\TournamentFixture::whereId($request->id)->first()->state === '1') ? '0' : '1');
             $TournamnetFixed->save();
             return parent::success(['message' => 'Report Status Updated Successfully', 'status' => $TournamnetFixed->state]);
         } catch (\Exception $ex) {
