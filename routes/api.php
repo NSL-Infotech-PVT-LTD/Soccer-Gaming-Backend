@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('tournament/list', 'API\TournamentsController@tournamentList');
     Route::post('tournament/history', 'API\TournamentsController@tournamentHistory');
     Route::post('tournament/upcoming', 'API\TournamentsController@tournamentUpcoming');
+    Route::post('tournament/report', 'API\TournamentsController@tournamentFixtureReportToggle');
     Route::post('tournament/score', 'API\TournamentsController@addScoreToTournament');
     Route::post('tournament', 'API\TournamentsController@getTournament');
     
