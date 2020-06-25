@@ -272,9 +272,9 @@ class TournamentsController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
-    
+
     public function tournamentHistory(Request $request) {
-       
+
         $rules = ['search' => '', 'type' => 'required|in:league,league_and_knockout,knockout'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
@@ -288,18 +288,18 @@ class TournamentsController extends ApiController {
             $tournament1 = $tournament1->where("type", $request->type)->get();
 //            dd($tournament->toArray());
             foreach ($tournament1 as $items):
-                if(\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
-                   if(\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === true):
+                if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
+                    if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === true):
                         $completedTournamentIds[] = $items->id;
-                    endif; 
+                    endif;
                 endif;
             endforeach;
-            if(!isset($completedTournamentIds))
-                    return parent::error('No Tournament has completed yet');
-                    
+            if (!isset($completedTournamentIds))
+                return parent::error('No Tournament has completed yet');
+
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
-            $tournament = $tournament->where("type", $request->type)->wherein('id',$completedTournamentIds);
+            $tournament = $tournament->where("type", $request->type)->wherein('id', $completedTournamentIds);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $tournament = $tournament->where(function($query) use ($request) {
@@ -313,7 +313,7 @@ class TournamentsController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
-    
+
     public function tournamentUpcoming(Request $request) {
 //       dd('s');
         $rules = ['search' => '', 'type' => ''];
@@ -329,18 +329,18 @@ class TournamentsController extends ApiController {
 //            $tournament1 = $tournament1->where("type", $request->type);
 //            dd($tournament->toArray());
             foreach ($tournament1 as $items):
-                if(\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
-                   if(\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === true):
+                if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
+                    if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === true):
                         $completedTournamentIds[] = $items->id;
-                    endif; 
+                    endif;
                 endif;
             endforeach;
-            if(!isset($completedTournamentIds))
-                    return parent::error('No Upcoming Tournament has completed yet');
-                    
+            if (!isset($completedTournamentIds))
+                return parent::error('No Upcoming Tournament has completed yet');
+
             $tournament = new Tournament();
-            $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final','created_at');
-            $tournament = $tournament->wherein('id',$completedTournamentIds);
+            $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final', 'created_at');
+            $tournament = $tournament->wherein('id', $completedTournamentIds);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $tournament = $tournament->where(function($query) use ($request) {
@@ -353,7 +353,30 @@ class TournamentsController extends ApiController {
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
-    }    
+    }
+
+    public function tournamentFixtureReportToggle(Request $request) {
+//        dd('s');
+        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'stage' => 'required'];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $errors = self::formatValidator($validator);
+            return parent::error($errors, 200);
+        }
+        try {
+            $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
+//            dd($tournamentfixtured->state);
+            $input = $request->all();
+            $input['created_by'] = \Auth::id();
+            $input['updated_by'] = \Auth::id();
+            $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
+            $TournamnetFixed->state = ((\App\TournamentFixture::whereId($tournamentfixtured->id)->first()->state === '1') ? '0' : '1');
+            $TournamnetFixed->save();
+            return parent::success(['message' => 'Report Status Updated Successfully', 'status' => $TournamnetFixed->state]);
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
 
     public function addScoreToTournament(Request $request) {
 
@@ -388,7 +411,7 @@ class TournamentsController extends ApiController {
         // --------- if stage is round-1|| round-2 || no-round || final-------------
         if ($tournamentfixtured->stage == 'round-1' || $tournamentfixtured->stage == 'round-2' || $tournamentfixtured->stage == 'final' || $tournamentfixtured->stage == 'no-round'):
             if ($checkTournamentLegs->type == 'knockout' && $checkTournamentLegs->number_of_legs_in_final == '2' && $tournamentfixtured->stage == 'final'):
-                
+
                 foreach ($fixtureForLegs as $legs):
                     $i = 0;
                     if ($legs->player_id_1_score == null):
@@ -402,10 +425,10 @@ class TournamentsController extends ApiController {
                         $i++;
                     endif;
                 endforeach;
-                if($i == '0'):
+                if ($i == '0'):
                     return parent::success(['message' => 'Scores has already updated for final', 'tournamentFixtures' => $fixtureForLegs]);
                 endif;
-                
+
             else:
                 $input = $request->all();
                 $input['created_by'] = \Auth::id();
