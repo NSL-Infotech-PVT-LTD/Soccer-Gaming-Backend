@@ -330,7 +330,7 @@ class TournamentsController extends ApiController {
 //            dd($tournament->toArray());
             foreach ($tournament1 as $items):
                 if(\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
-                   if(\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === false):
+                   if(\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === true):
                         $completedTournamentIds[] = $items->id;
                     endif; 
                 endif;
