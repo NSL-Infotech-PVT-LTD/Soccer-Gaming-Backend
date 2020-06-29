@@ -65,7 +65,11 @@ class TournamentsController extends ApiController {
         }
 
         $input = $request->all();
-
+        if ($request->type == 'league_and_knockout' || $request->type == 'knockout'):
+            if (!in_array($request->number_of_players, ["2", "4", "8", "16"])):
+                return parent::error('Invalid number of players for this type');
+            endif;
+        endif;
         for ($i = 1; $i <= $request->number_of_players; $i++):
             $key = 'player_' . $i;
             if (!isset($request->$key))
@@ -181,6 +185,37 @@ class TournamentsController extends ApiController {
                 \App\TournamentFixture::insert($fixture);
             endif;
         endif;
+        
+        if ($request->type == 'league_and_knockout'):
+            if (!in_array($request->number_of_players, ["2", "4", "8", "16"])):
+                return parent::error('Invalid number of players for knockout type');
+            endif; 
+            $fixture = [];
+            $fixture2 = [];
+            for ($j = 1; $j < $request->number_of_players; $j++):
+                $key_one = 'player_' . $j;
+                $teamkey = 'player_' . $j . '_teams';
+                $data = (array) json_decode($request->$teamkey, false);
+                foreach ($data as $k => $team_id_one):
+                    for ($i = $j + 1; $i <= $request->number_of_players; $i++):
+                        if ($i != $j):
+                            ${'key' . $i} = 'player_' . $i;
+                            $teamkey = 'player_' . $i . '_teams';
+                            ${'data' . $i} = (array) json_decode($request->$teamkey, false);
+                            foreach ((array) json_decode($request->$teamkey, false) as $team_id_two):
+                                $fixture[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2') ? 'round-1' : 'no-round'];
+                                $fixture2[] = ['tournament_id' => $tournament->id, 'player_id_1' => $request->$key_one, 'player_id_1_team_id' => $team_id_one, 'player_id_2' => $request->${'key' . $i}, 'player_id_2_team_id' => $team_id_two, 'stage' => ($request->number_of_plays_against_each_team == '2') ? 'round-2' : 'no-round'];
+                            endforeach;
+                        endif;
+                    endfor;
+                endforeach;
+            endfor;
+//                    dd($fixture);
+            \App\TournamentFixture::insert($fixture);
+            if ($request->number_of_plays_against_each_team == '2'):
+                \App\TournamentFixture::insert($fixture2);
+            endif;
+        endif;
 
 
         /*         * ***********************************Fixture Add End** */
@@ -286,6 +321,12 @@ class TournamentsController extends ApiController {
             $tournament1 = new Tournament();
             $tournament1 = $tournament1->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
             $tournament1 = $tournament1->where("type", $request->type)->get();
+            
+            $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
+            $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
+//            dd($ids);
+            $tournament1 = $tournament1->whereIn("id", $ids);
+            
 //            dd($tournament->toArray());
             foreach ($tournament1 as $items):
                 if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
