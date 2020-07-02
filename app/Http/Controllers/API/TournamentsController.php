@@ -298,11 +298,26 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $tournament = new Tournament();
-            $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
+            $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final', 'created_by');
             $tournament = $tournament->where("id", $request->tournament_id);
             $tournament = $tournament->with(['fixtures']);
             $tournament = $tournament->with(['players']);
             return parent::success($tournament->first());
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+    
+    public function getBannerImages(Request $request) {
+        $rules = ['search' => ''];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $banner = new \App\Banner();
+            $banner = $banner->select('id', 'name', 'image', 'params', 'state');
+            return parent::success($banner->get());
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
