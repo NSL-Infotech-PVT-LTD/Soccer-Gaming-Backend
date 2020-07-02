@@ -41,6 +41,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('tournament/score', 'API\TournamentsController@addScoreToTournament');
     Route::post('tournament', 'API\TournamentsController@getTournament');
     
+    Route::post('banner', 'API\TournamentsController@getBannerImages');
+    
     Route::post('users', 'API\TournamentsController@findFriend');
     
     Route::post('friends/store', 'API\TournamentsController@addFriend');
