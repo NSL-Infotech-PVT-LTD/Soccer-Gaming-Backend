@@ -185,10 +185,12 @@ class TournamentsController extends ApiController {
                 \App\TournamentFixture::insert($fixture);
             endif;
         endif;
-        
+
         if ($request->type == 'league_and_knockout'):
-            if (!in_array($request->number_of_players, ["2", "4", "8", "16"])):
-                return parent::error('Invalid number of players for knockout type');
+            $playersInKnockout = explode("_", $request->number_of_players_that_will_be_in_the_knockout_stage);
+//        dd($playersInKnockout[0]);
+            if ($request->number_of_players < $playersInKnockout[0]):
+                return parent::error('Number of players cannot be less then number of players in knockout stage');
             endif; 
             $fixture = [];
             $fixture2 = [];
@@ -307,7 +309,7 @@ class TournamentsController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
-    
+
     public function getBannerImages(Request $request) {
         $rules = ['search' => ''];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
@@ -336,12 +338,12 @@ class TournamentsController extends ApiController {
             $tournament1 = new Tournament();
             $tournament1 = $tournament1->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
             $tournament1 = $tournament1->where("type", $request->type)->get();
-            
+
             $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
             $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
 //            dd($ids);
             $tournament1 = $tournament1->whereIn("id", $ids);
-            
+
 //            dd($tournament->toArray());
             foreach ($tournament1 as $items):
                 if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
@@ -384,25 +386,25 @@ class TournamentsController extends ApiController {
             $tournament1 = $tournament1->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final')->get();
 //            $tournament1 = $tournament1->where("type", $request->type);
 //            dd($tournament1->toArray());
-            
+
             foreach ($tournament1 as $items):
 //                dd($items->id);
                 $scoreNullorNot = 'true';
                 if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
-                    foreach(\App\TournamentFixture::where('tournament_id', '=', $items->id)->get() as $fixtures):
+                    foreach (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get() as $fixtures):
 //                    dd($fixtures->player_id_1_score);
-                        if($fixtures->player_id_1_score != null):
+                        if ($fixtures->player_id_1_score != null):
 //                            dd('s');
                             $scoreNullorNot = 'false';
                         endif;
                     endforeach;
-                    if($scoreNullorNot == 'true'):
+                    if ($scoreNullorNot == 'true'):
                         $upcomingTournamentIds[] = $items->id;
                     endif;
                 endif;
             endforeach;
             if (!isset($upcomingTournamentIds))
-                return parent::error('No Upcoming Tournament yet'); 
+                return parent::error('No Upcoming Tournament yet');
 
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final', 'created_at');
@@ -461,6 +463,7 @@ class TournamentsController extends ApiController {
         $fixtureForLegs = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get();
 
         $checkTournamentLegs = Tournament::where('id', '=', $request->tournament_id)->first();
+        $checkTournament = Tournament::where('id', '=', $request->tournament_id)->first();
         $knockoutLegs = $checkTournamentLegs->legs_per_match_in_knockout_stage;
 
         if (\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get()->isEmpty() === true)
@@ -497,9 +500,113 @@ class TournamentsController extends ApiController {
                 $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
                 $TournamnetFixed->fill($input);
                 $TournamnetFixed->save();
-                return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
+                if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['player_id_1_score', '=', NULL], ['player_id_2_score', '=', NULL]])->get()->isEmpty() != true):
+                    return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
+                endif;
             endif;
         endif;
+
+        //------Calculating points for knockout section in league and knockout----------
+        if ($checkTournament->type == 'league_and_knockout'):
+            if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['player_id_1_score', '=', NULL], ['player_id_2_score', '=', NULL]])->get()->isEmpty() === true):
+//                dd('s');
+
+                $arr = \App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->select('team_id', 'player_id')->get()->toArray();
+//            dd($arr->team_id);
+
+                $return = [];
+                $played = 0;
+                $won = 0;
+                $draw = 0;
+                $losses = 0;
+                $scored = 0;
+                $against = 0;
+                $difference = 0;
+                $points = 0;
+//        $avgpoints = 0;
+
+                foreach ($arr as $team_id):
+//            dd($team_id['team_id']);
+
+                    foreach (\App\TournamentFixture::where('tournament_id', $request->tournament_id)->where('player_id_1_team_id', $team_id['team_id'])->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
+
+
+                        $played = $played + 1;
+                        $scored = $scored + $tournamentTeam->player_id_1_score;
+                        $against = $against + $tournamentTeam->player_id_2_score;
+                        $difference = $scored - $against;
+
+                        if ($tournamentTeam->player_id_1_score > $tournamentTeam->player_id_2_score)
+                            $won = $won + 1;
+
+                        elseif ($tournamentTeam->player_id_1_score < $tournamentTeam->player_id_2_score)
+                            $losses = $losses + 1;
+                        else
+                            $draw = $draw + 1;
+                    endforeach;
+
+                    foreach (\App\TournamentFixture::where('tournament_id', $request->tournament_id)->where('player_id_2_team_id', $team_id['team_id'])->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
+
+                        $played = $played + 1;
+                        $scored = $scored + $tournamentTeam->player_id_2_score;
+                        $against = $against + $tournamentTeam->player_id_1_score;
+                        $difference = $scored - $against;
+
+                        if ($tournamentTeam->player_id_2_score > $tournamentTeam->player_id_1_score)
+                            $won = $won + 1;
+                        elseif ($tournamentTeam->player_id_2_score < $tournamentTeam->player_id_1_score)
+                            $losses = $losses + 1;
+                        else
+                            $draw = $draw + 1;
+                    endforeach;
+
+                    $points = $won * 3 + $draw * 1;
+
+//            $fixtures = TournamentFixture::where('tournament_id', $this->tournament_id)->whereNotNull('player_id_1_score')->whereNotNull('player_id_2_score')->get();
+//            $avgpoints = ($points > 0)?$points / count($fixtures):0; 
+
+                    $return[] = ['team' => (\App\Team::where('id', $team_id)->get()->isEmpty() != true) ? \App\Team::where('id', $team_id)->select('id', 'team_name', 'image')->first() : (['team_name' => $team_id]), 'player' => (User::where('id', $team_id['player_id'])->get()->isEmpty() != true) ? User::where('id', $team_id['player_id'])->select('id', 'username', 'image')->first() : (['player' => $team_id['player_id']]), 'played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points];
+                    $played = 0;
+                    $won = 0;
+                    $draw = 0;
+                    $losses = 0;
+                    $scored = 0;
+                    $against = 0;
+                    $difference = 0;
+                    $points = 0;
+
+                endforeach;
+//            dd($return);
+                $sortarray = collect($return)->sortBy('points')->reverse()->toArray();
+                $customsortarray = [];
+//            return $sortarray;
+                $playersInKnockout = explode("_", $checkTournament->number_of_players_that_will_be_in_the_knockout_stage);
+                foreach($sortarray as $value){
+                    $customsortarray[] = $value;
+                }
+//                return $customsortarray;
+//            dd($playersInKnockout[0]);
+                if ($playersInKnockout[0] == '16'):
+                    $stage = 'pre-quarter-final';
+                elseif ($playersInKnockout[0] == '8'):
+                    $stage = 'quarter-final';
+                elseif ($playersInKnockout[0] == '4'):
+                    $stage = 'semi-final';
+                else:
+                    $stage = 'final';
+                endif;
+                for ($i = 0; $i < $playersInKnockout[0];):
+                    //creating double fixtures for auto-generated semi-finals  
+                    $fixture[] = ['tournament_id' => $checkTournament->id, 'player_id_1' => $customsortarray[$i]['player']['id'], 'player_id_1_team_id' => $customsortarray[$i]['team']['id'], 'player_id_2' => $customsortarray[$i+1]['player']['id'], 'player_id_2_team_id' => $customsortarray[$i+1]['team']['id'], 'stage' => $stage];
+                    if($playersInKnockout[0] == $i+2){
+                        \App\TournamentFixture::insert($fixture);
+                        break;
+                    }
+                    $i = $i + 2;
+                endfor;
+            endif;
+        endif;
+
 
         //---------if stage is semi-final || Quarter-final || Pre-Quarter Final-----
 
