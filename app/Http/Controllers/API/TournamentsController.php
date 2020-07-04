@@ -507,7 +507,7 @@ class TournamentsController extends ApiController {
         endif;
 
         //------Calculating points for knockout section in league and knockout----------
-        if ($checkTournament->type == 'league_and_knockout'):
+        if ($checkTournament->type == 'league_and_knockout' && $tournamentfixtured->stage != 'final'):
             if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['player_id_2_score', '=', NULL]])->get()->isEmpty() === true):
 //                dd('s');
 
