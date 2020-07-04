@@ -500,7 +500,7 @@ class TournamentsController extends ApiController {
                 $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
                 $TournamnetFixed->fill($input);
                 $TournamnetFixed->save();
-                if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['player_id_1_score', '=', NULL], ['player_id_2_score', '=', NULL]])->get()->isEmpty() != true):
+                if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['player_id_2_score', '=', NULL]])->get()->isEmpty() != true):
                     return parent::success(['message' => 'Scores has been successfully Added', 'tournamentFixtures' => $TournamnetFixed]);
                 endif;
             endif;
@@ -508,7 +508,7 @@ class TournamentsController extends ApiController {
 
         //------Calculating points for knockout section in league and knockout----------
         if ($checkTournament->type == 'league_and_knockout'):
-            if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['player_id_1_score', '=', NULL], ['player_id_2_score', '=', NULL]])->get()->isEmpty() === true):
+            if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['player_id_2_score', '=', NULL]])->get()->isEmpty() === true):
 //                dd('s');
 
                 $arr = \App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->select('team_id', 'player_id')->get()->toArray();
@@ -604,6 +604,7 @@ class TournamentsController extends ApiController {
                     }
                     $i = $i + 2;
                 endfor;
+                return parent::success(['message' => 'Fixtures for knockout in league and knockout stage created']);
             endif;
         endif;
 
