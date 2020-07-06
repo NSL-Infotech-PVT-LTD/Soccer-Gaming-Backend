@@ -325,6 +325,148 @@ class TournamentsController extends ApiController {
         }
     }
 
+    public function lastMatchWinner(Request $request) {
+//        dd('s');
+        $rules = ['search' => '', 'type' => 'required|in:league,league_and_knockout,knockout'];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $user = \App\User::findOrFail(\Auth::id());
+//            $teams = new \App\Team();
+//            $tournaments = Tournament::where('created_by', \Auth::id())->get();
+            $completedTournamentIds = self::getCompletedTournamentsId($request->type);
+//            dd($completedTournamentIds);
+            if (!isset($completedTournamentIds))
+                return parent::error('No Tournament has completed yet');
+
+            $tournaments = new Tournament();
+            $tournaments = $tournaments->wherein('id', $completedTournamentIds)->get();
+            foreach ($tournaments as $tournament):
+//                $tournament->is_winner = '3';
+//                    dd($tournament);
+                $arr = \App\TournamentPlayerTeam::where('tournament_id', $tournament->id)->select('team_id', 'player_id')->get()->toArray();
+//            dd($arr->team_id);
+
+                $return = [];
+                $played = 0;
+                $won = 0;
+                $draw = 0;
+                $losses = 0;
+                $scored = 0;
+                $against = 0;
+                $difference = 0;
+                $points = 0;
+//        $avgpoints = 0;
+
+                foreach ($arr as $team_id):
+//            dd($team_id['team_id']);
+
+                    foreach (\App\TournamentFixture::where('tournament_id', $request->tournament_id)->where('player_id_1_team_id', $team_id['team_id'])->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
+
+
+                        $played = $played + 1;
+                        $scored = $scored + $tournamentTeam->player_id_1_score;
+                        $against = $against + $tournamentTeam->player_id_2_score;
+                        $difference = $scored - $against;
+
+                        if ($tournamentTeam->player_id_1_score > $tournamentTeam->player_id_2_score)
+                            $won = $won + 1;
+
+                        elseif ($tournamentTeam->player_id_1_score < $tournamentTeam->player_id_2_score)
+                            $losses = $losses + 1;
+                        else
+                            $draw = $draw + 1;
+                    endforeach;
+
+                    foreach (\App\TournamentFixture::where('tournament_id', $request->tournament_id)->where('player_id_2_team_id', $team_id['team_id'])->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
+
+                        $played = $played + 1;
+                        $scored = $scored + $tournamentTeam->player_id_2_score;
+                        $against = $against + $tournamentTeam->player_id_1_score;
+                        $difference = $scored - $against;
+
+                        if ($tournamentTeam->player_id_2_score > $tournamentTeam->player_id_1_score)
+                            $won = $won + 1;
+                        elseif ($tournamentTeam->player_id_2_score < $tournamentTeam->player_id_1_score)
+                            $losses = $losses + 1;
+                        else
+                            $draw = $draw + 1;
+                    endforeach;
+
+                    $points = $won * 3 + $draw * 1;
+
+//            $fixtures = TournamentFixture::where('tournament_id', $this->tournament_id)->whereNotNull('player_id_1_score')->whereNotNull('player_id_2_score')->get();
+//            $avgpoints = ($points > 0)?$points / count($fixtures):0; 
+
+                    $return[] = ['team' => (\App\Team::where('id', $team_id)->get()->isEmpty() != true) ? \App\Team::where('id', $team_id)->select('id', 'team_name', 'image')->first() : (['team_name' => $team_id]), 'player' => (User::where('id', $team_id['player_id'])->get()->isEmpty() != true) ? User::where('id', $team_id['player_id'])->select('id', 'username', 'image')->first() : (['player' => $team_id['player_id']]), 'played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points];
+                    $played = 0;
+                    $won = 0;
+                    $draw = 0;
+                    $losses = 0;
+                    $scored = 0;
+                    $against = 0;
+                    $difference = 0;
+                    $points = 0;
+
+                endforeach;
+//                    dd($return);
+//                    return $return;
+                $sortarray = collect($return)->sortBy('points')->reverse()->toArray();
+                $customsortarray = [];
+                foreach ($sortarray as $value) {
+                    $customsortarray[] = $value;
+                }
+//                $winnerarray = array_shift($customsortarray);
+                $tournament->fixture = [];
+                $tournament->winner = array_shift($customsortarray);
+                if ($tournament->type != 'league'):
+                    $tournament->fixture = \App\TournamentFixture::where('tournament_id', $tournament->id)->where('stage','final')->get();
+                endif;
+//                dd($tournament);
+//                    $finalwinnerarray = [];
+//                    $finalwinnerarray = ;
+//                    return parent::success(['data' => $winnerarray]);
+            endforeach;
+//            dd($tournaments);
+            $perPage = isset($request->limit) ? $request->limit : 20;
+            if (isset($request->search)) {
+                $tournaments = $tournaments->where(function($query) use ($request) {
+                    $query->where('id', 'LIKE', "$request->search%")
+                            ->orWhere('type', 'LIKE', "$request->search%");
+                });
+            }
+//            dd($tournaments);
+            return parent::success($tournaments);
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    private static function getCompletedTournamentsId($type = null) {
+        $tournament1 = new Tournament();
+        $tournament1 = $tournament1->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
+        if ($type != null)
+            $tournament1 = $tournament1->where("type", $type);
+        $tournament1 = $tournament1->get();
+
+        $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
+        $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
+//            dd($ids);
+        $tournament1 = $tournament1->whereIn("id", $ids);
+        $completedTournamentIds = [];
+//            dd($tournament->toArray());
+        foreach ($tournament1 as $items):
+            if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
+                if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === true):
+                    $completedTournamentIds[] = $items->id;
+                endif;
+            endif;
+        endforeach;
+        return $completedTournamentIds;
+    }
+
     public function tournamentHistory(Request $request) {
 
         $rules = ['search' => '', 'type' => 'required|in:league,league_and_knockout,knockout'];
@@ -335,23 +477,8 @@ class TournamentsController extends ApiController {
         try {
             $user = \App\User::findOrFail(\Auth::id());
 
-            $tournament1 = new Tournament();
-            $tournament1 = $tournament1->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
-            $tournament1 = $tournament1->where("type", $request->type)->get();
-
-            $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
-            $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
-//            dd($ids);
-            $tournament1 = $tournament1->whereIn("id", $ids);
-
-//            dd($tournament->toArray());
-            foreach ($tournament1 as $items):
-                if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
-                    if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === true):
-                        $completedTournamentIds[] = $items->id;
-                    endif;
-                endif;
-            endforeach;
+            $completedTournamentIds = self::getCompletedTournamentsId($request->type);
+//            dd($completedTournamentIds);
             if (!isset($completedTournamentIds))
                 return parent::error('No Tournament has completed yet');
 
