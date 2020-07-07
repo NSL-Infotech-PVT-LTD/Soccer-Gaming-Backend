@@ -148,6 +148,25 @@ class TournamentController extends Controller {
 
         return redirect('admin/tournament')->with('flash_message', 'Tournament updated!');
     }
+    public function editTournamentFixture(Request $request, $fixture_id) {
+//        dd($fixture_id);
+        $tournamentfixture = \App\TournamentFixture::findOrFail($fixture_id);
+
+        return view('admin.tournament.editfixture', compact('tournamentfixture'));
+    }
+    public function updateTournamentFixture(Request $request, $fixture_id) {
+//        dd($request->player_id_1_score);
+        $this->validate($request, [
+            'player_id_1_score' => 'required',
+            'player_id_2_score' => 'required'
+        ]);
+        $requestData = $request->all();
+
+        $tournamentfixture = \App\TournamentFixture::findOrFail($fixture_id);
+        $tournamentfixture->update($requestData);
+
+        return redirect()->back()->with('flash_message', 'Fixture updated!');
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -161,5 +180,12 @@ class TournamentController extends Controller {
 
         return redirect('admin/tournament')->with('flash_message', 'Tournament deleted!');
     }
+    public function changeStatus(Request $request) {
+        $tournamentfixture = \App\TournamentFixture::findOrFail($request->id);
+        $tournamentfixture->state = '0';
+        $tournamentfixture->save();
+        return response()->json(["success" => true, 'message' => 'Tournament fixture updated!']);
+    }
+    
 
 }
