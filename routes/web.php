@@ -25,6 +25,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
     Route::get('users/role/{role_id}', 'Admin\UsersController@indexByRoleId')->name('users-role');
     Route::get('tournamentPlayers/{tournament_id}', 'Admin\TournamentController@showTournamentPlayers');
     Route::get('playerFixtures/{player_id}', 'Admin\TournamentController@showTournamentPlayerFixtures');
+    Route::get('playerFixtures-reported', 'Admin\TournamentController@showTournamentPlayerFixturesReported');
     Route::get('editfixture/{fixture_id}', 'Admin\TournamentController@editTournamentFixture');
     Route::any('updateTournamentFixture/{fixture_id}', 'Admin\TournamentController@updateTournamentFixture');
     Route::get('playerfriends/{user_id}', 'Admin\UsersController@showPlayerFriends');

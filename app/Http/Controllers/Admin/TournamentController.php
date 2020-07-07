@@ -112,6 +112,13 @@ class TournamentController extends Controller {
 
         return view('admin.tournament.showfixtures', compact('tournamentfixtures'));
     }
+    
+    public function showTournamentPlayerFixturesReported(Request $request) {
+
+        $tournamentfixtures = \App\TournamentFixture::where('state', '1')->get();
+
+        return view('admin.tournament.showfixtures', compact('tournamentfixtures'));
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -155,7 +162,7 @@ class TournamentController extends Controller {
         return view('admin.tournament.editfixture', compact('tournamentfixture'));
     }
     public function updateTournamentFixture(Request $request, $fixture_id) {
-//        dd($request->player_id_1_score);
+//        dd($request->update);
         $this->validate($request, [
             'player_id_1_score' => 'required',
             'player_id_2_score' => 'required'

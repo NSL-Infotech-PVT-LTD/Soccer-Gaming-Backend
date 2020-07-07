@@ -44,7 +44,8 @@
 
                         </div>
                         <div class="form-group">
-                            <input class="btn btn-primary" type="submit" value="Update">
+                            <input class="btn btn-primary" name="update" type="submit" value="Update">
+<!--                            <input class="btn btn-primary" type="submit" name="update" value="Update & Mark Unreport">-->
                         </div>
                     </form>
 

@@ -142,6 +142,7 @@
                     <li><a href="{{ url('admin/tournament')}}"><i class="fa fa-gamepad"></i> <span>Tournaments</span></a></li>
                     <li><a href="{{ url('admin/banner')}}"><i class="fa fa-picture-o"></i> <span>Banner Image</span></a></li>
                     <li><a href="{{ url('admin/configuration')}}"><i class="fa fa-cogs"></i> <span>Configuration</span></a></li>
+                    <li><a href="{{ url('admin/playerFixtures-reported')}}"><i class="fa fa-file"></i> <span>Reported Fixtures</span></a></li>
                     
                    
 
