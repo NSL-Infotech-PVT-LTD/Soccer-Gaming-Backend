@@ -52,7 +52,23 @@ class TournamentFixture extends Model {
     public function playerId_2() {
         return $this->hasOne(User::class, 'id', 'player_id_2')->select('id', 'username', 'email', 'image');
     }
-
+    
+//    public function getPlayerId_1Attribute() {
+//        $model = Team::where('id',$this->player_id_1);
+//        if ($model->get()->isEmpty() != true)
+//            return $model->select('id', 'username', 'image')->where('id',$this->player_id_1)->first();
+////        return $this->player_id_1_team_id;
+//        return (['player_name' => $this->player_id_1]);
+//    }
+//    
+//    public function getPlayerId_2Attribute() {
+//        $model = Team::where('id',$this->player_id_2);
+//        if ($model->get()->isEmpty() != true)
+//            return $model->select('id', 'username', 'image')->where('id',$this->player_id_2)->first();
+////        return $this->player_id_1_team_id;
+//        return (['player_name' => $this->player_id_2]);
+//    }
+    
     public function getPlayerIdOneTeamIdAttribute() {
         $model = Team::where('id',$this->player_id_1_team_id);
         if ($model->get()->isEmpty() != true)
