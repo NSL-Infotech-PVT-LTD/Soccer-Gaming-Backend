@@ -26,15 +26,22 @@
                                     <td>{{ $item->id }}</td>
                                     <td>
                                         <?php
-                                        $user = DB::table('users')->where('id', $item->player_id_1)->first();
-//                                        echo $user->username;
+                                        $user = DB::table('users')->where('id', $item->player_id_1)->get();
+                                        if($user->isEmpty()!=true)
+                                            echo $user->first()->username;
+                                        else
+                                            echo $item->player_id_1;
                                         ?>
                                     </td>
                                     <td><?= ($item->player_id_1_score != null) ? $item->player_id_1_score : "-" ?></td>
                                     <td>
                                         <?php
-                                        $user = DB::table('users')->where('id', $item->player_id_2)->first();
-//                                        echo $user->username;
+                                        
+                                        $user = DB::table('users')->where('id', $item->player_id_2)->get();
+                                        if($user->isEmpty()!=true)
+                                            echo $user->first()->username;
+                                        else
+                                            echo $item->player_id_2;
                                         ?>
                                     </td>
                                     <td><?= ($item->player_id_2_score != null) ? $item->player_id_2_score : "-" ?></td>
