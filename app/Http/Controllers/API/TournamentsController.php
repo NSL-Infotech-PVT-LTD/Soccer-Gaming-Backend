@@ -422,7 +422,8 @@ class TournamentsController extends ApiController {
                 $tournament->fixture = [];
                 $tournament->winner = array_shift($customsortarray);
                 if ($tournament->type != 'league'):
-                    $tournament->fixture = \App\TournamentFixture::where('tournament_id', $tournament->id)->where('stage','final')->get();
+                    $tournament->fixture = \App\TournamentFixture::with(['playerId_1'])->with(['playerId_2'])->where('tournament_id', $tournament->id)->where('stage','final')->get();
+//                $tournament = $tournament->with(['playerId_1'],['playerId_2']);
                 endif;
 //                dd($tournament);
 //                    $finalwinnerarray = [];
