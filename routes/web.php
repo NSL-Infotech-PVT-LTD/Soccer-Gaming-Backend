@@ -25,6 +25,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
     Route::get('users/role/{role_id}', 'Admin\UsersController@indexByRoleId')->name('users-role');
     Route::get('tournamentPlayers/{tournament_id}', 'Admin\TournamentController@showTournamentPlayers');
     Route::get('playerFixtures/{player_id}', 'Admin\TournamentController@showTournamentPlayerFixtures');
+    Route::get('editfixture/{fixture_id}', 'Admin\TournamentController@editTournamentFixture');
+    Route::any('updateTournamentFixture/{fixture_id}', 'Admin\TournamentController@updateTournamentFixture');
     Route::get('playerfriends/{user_id}', 'Admin\UsersController@showPlayerFriends');
     Route::get('/', 'Admin\AdminController@index');
     Route::resource('roles', 'Admin\RolesController');
@@ -40,6 +42,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' =>
     ]);
     Route::resource('settings', 'Admin\SettingsController');
     Route::post('user/change-status', 'Admin\UsersController@changeStatus')->name('user.changeStatus');
+    Route::post('tournament/change-status', 'Admin\TournamentController@changeStatus')->name('tournament.changeStatus');
     Route::post('banner/change-status', 'Admin\BannerController@changeStatus')->name('banner.changeStatus');
     Route::resource('teams', 'Admin\\TeamsController');
     Route::resource('banner', 'Admin\\BannerController');
