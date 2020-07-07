@@ -25,20 +25,20 @@
                         @csrf
                         <div class="form-group">
                             <label for="player_id_1_score" class="control-label"><?php
-                                        $user = DB::table('users')->where('id', $tournamentfixture->player_id_1)->first();
-                                        $team = DB::table('teams')->where('id', $tournamentfixture->player_id_1_team_id)->first();
-                                        echo $user->username;
-                                        echo ' ('.$team->team_name.')';
+//                                        $user = DB::table('users')->where('id', $tournamentfixture->player_id_1)->first();
+//                                        $team = DB::table('teams')->where('id', $tournamentfixture->player_id_1_team_id)->first();
+//                                        echo $user->username;
+//                                        echo ' ('.$team->team_name.')';
                                         ?> score: </label>
                             <input class="form-control" required="required" name="player_id_1_score" type="text" value="{{$tournamentfixture->player_id_1_score}}" id="player_id_1_score">
 
                         </div>
                         <div class="form-group">
                             <label for="player_id_2_score" class="control-label"><?php
-                                        $user = DB::table('users')->where('id', $tournamentfixture->player_id_2)->first();
-                                        $team = DB::table('teams')->where('id', $tournamentfixture->player_id_2_team_id)->first();
-                                        echo $user->username;
-                                        echo ' ('.$team->team_name.')';
+//                                        $user = DB::table('users')->where('id', $tournamentfixture->player_id_2)->first();
+//                                        $team = DB::table('teams')->where('id', $tournamentfixture->player_id_2_team_id)->first();
+//                                        echo $user->username;
+//                                        echo ' ('.$team->team_name.')';
                                         ?> score: </label>
                             <input class="form-control" required="required" name="player_id_2_score" type="text" value="{{$tournamentfixture->player_id_2_score}}" id="player_id_2_score">
 
