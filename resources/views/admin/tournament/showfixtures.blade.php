@@ -47,10 +47,6 @@
                                     <td><?= ($item->player_id_2_score != null) ? $item->player_id_2_score : "-" ?></td>
 
                                     <td>
-                                        <?=
-                                        ($item->state == '1') ?
-                                                "&nbsp;<button class='btn btn-danger btn-sm changeStatus' title='Unreport'  data-id=" . $item->id . " data-status='UnReport'>Reported</button>" : "&nbsp;<button class='btn btn-success btn-sm' >Not Reported</button>";
-                                        ?>
                                         <?= ($item->state == '0') ? '' : "&nbsp;<a href=" . url('admin/editfixture/' . $item->id) . " style='color:red; text-decoration:none;position:absolute;' title = 'Edit Fixture'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>
 </a>" ?>
                                     </td>
