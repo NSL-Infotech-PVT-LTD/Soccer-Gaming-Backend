@@ -98,21 +98,21 @@ class TournamentController extends Controller {
 
         return view('admin.tournament.show', compact('tournament'));
     }
-    
+
     public function showTournamentPlayers($tournament_id) {
 
         $tournamentPlayers = \App\TournamentPlayerTeam::where('tournament_id', $tournament_id)->groupBy('player_id')->get();
 
         return view('admin.tournament.showplayers', compact('tournamentPlayers'));
     }
-    
+
     public function showTournamentPlayerFixtures($player_id) {
 
         $tournamentfixtures = \App\TournamentFixture::where('player_id_1', $player_id)->orWhere('player_id_2', $player_id)->get();
 
         return view('admin.tournament.showfixtures', compact('tournamentfixtures'));
     }
-    
+
     public function showTournamentPlayerFixturesReported(Request $request) {
 
         $tournamentfixtures = \App\TournamentFixture::where('state', '1')->get();
@@ -155,21 +155,27 @@ class TournamentController extends Controller {
 
         return redirect('admin/tournament')->with('flash_message', 'Tournament updated!');
     }
+
     public function editTournamentFixture(Request $request, $fixture_id) {
 //        dd($fixture_id);
         $tournamentfixture = \App\TournamentFixture::findOrFail($fixture_id);
 
         return view('admin.tournament.editfixture', compact('tournamentfixture'));
     }
+
     public function updateTournamentFixture(Request $request, $fixture_id) {
-//        dd($request->update);
         $this->validate($request, [
             'player_id_1_score' => 'required',
             'player_id_2_score' => 'required'
         ]);
         $requestData = $request->all();
 
+//        dd($requestData);
         $tournamentfixture = \App\TournamentFixture::findOrFail($fixture_id);
+        if ($request->update == 'Update & Mark Unreport'):
+            $tournamentfixture->state = '0';
+            $tournamentfixture->save();
+        endif;
         $tournamentfixture->update($requestData);
 
         return redirect()->back()->with('flash_message', 'Fixture updated!');
@@ -187,12 +193,12 @@ class TournamentController extends Controller {
 
         return redirect('admin/tournament')->with('flash_message', 'Tournament deleted!');
     }
+
     public function changeStatus(Request $request) {
         $tournamentfixture = \App\TournamentFixture::findOrFail($request->id);
         $tournamentfixture->state = '0';
         $tournamentfixture->save();
         return response()->json(["success" => true, 'message' => 'Tournament fixture updated!']);
     }
-    
 
 }
