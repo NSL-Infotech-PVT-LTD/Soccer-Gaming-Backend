@@ -755,6 +755,8 @@ class TournamentsController extends ApiController {
             if ($knockoutLegs == '2'):
                 $i = 1;
                 foreach ($fixtureForLegs as $legs):
+                    $player1score += $legs->player_id_1_score;
+                    $player2score += $legs->player_id_2_score;
                     if ($legs->player_id_1_score == null):
                         $input = $request->all();
                         $input['created_by'] = \Auth::id();
@@ -765,8 +767,6 @@ class TournamentsController extends ApiController {
                         if ($i == '1')
                             return parent::success(['message' => 'Scores has been successfully updated', 'tournamentFixtures' => $TournamnetFixed]);
                     endif;
-                    $player1score += $legs->player_id_1_score;
-                    $player2score += $legs->player_id_2_score;
                     $i++;
                 endforeach;
                 if ($player1score > $player2score):
