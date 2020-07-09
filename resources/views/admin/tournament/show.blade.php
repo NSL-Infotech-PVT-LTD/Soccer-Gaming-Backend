@@ -29,11 +29,15 @@
 
                     <div class="table-responsive">
                         <table class="table">
+                            <col width="350"> 
                             <tbody>
                                 <tr>
                                     <th>ID</th><td>{{ $tournament->id }}</td>
                                 </tr>
-                                <tr><th> Name </th><td> {{ $tournament->name }} </td></tr><tr><th> Type </th><td> {{ $tournament->type }} </td></tr><tr><th> Number Of Players </th><td> {{ $tournament->number_of_players }} </td></tr>
+                                <tr><th> Name </th><td> {{ $tournament->name }} </td></tr><tr><th> Type </th><td> {{ $tournament->type }} </td></tr><tr><th> Number Of Teams per Players </th><td> {{ $tournament->number_of_teams_per_player }} </td></tr><tr><th> Number Of Players </th><td> {{ $tournament->number_of_teams_per_player }} </td></tr><tr><th> Number Of Plays against each Team </th><td> {{ $tournament->number_of_plays_against_each_team }} </td></tr>
+                                <?php if ($tournament->type != 'league') { ?>
+                                    <tr width = '10'><th> Number of Players in knockout stage</th><td> {{ $tournament->number_of_players_that_will_be_in_the_knockout_stage }} </td></tr><tr><th> Legs per Match in Knockout stage</th><td> {{ $tournament->legs_per_match_in_knockout_stage }} </td></tr><tr><th> Number of legs in Final </th><td> {{ $tournament->number_of_legs_in_final }} </td></tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -79,7 +83,7 @@
                                         <?php
                                         if (is_numeric($item->team_id)):
                                             $teams = DB::table('teams')->where('id', $item->team_id)->first();
-                                            echo "<img width='50' src=".$teams->image.">";
+                                            echo "<img width='50' src=" . $teams->image . ">";
                                         else:
                                             echo 'NA';
                                         endif;
