@@ -258,7 +258,7 @@ class TournamentsController extends ApiController {
 
     public function tournamentList(Request $request) {
 
-        $rules = ['search' => '', 'show_my' => ''];
+        $rules = ['search' => '', 'show_my' => '','type' => 'required|in:league,league_and_knockout,knockout'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -275,7 +275,7 @@ class TournamentsController extends ApiController {
 //            dd($ids);
             $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
 //            dd($ids);
-            $tournament = $tournament->whereIn("id", $ids);
+            $tournament = $tournament->whereIn("id", $ids)->where('type',$request->type);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $tournament = $tournament->where(function($query) use ($request) {
