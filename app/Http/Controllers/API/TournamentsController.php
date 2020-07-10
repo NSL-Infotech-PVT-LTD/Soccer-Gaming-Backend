@@ -868,6 +868,16 @@ class TournamentsController extends ApiController {
                         $TournamnetFinal = \App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL]])->first();
                         $TournamnetFinal->fill($input1);
                         $TournamnetFinal->save();
+                        $TournamnetFinal->fill($input1);
+                        $TournamnetFinal->save();
+
+                        //-----------Creating 2nd fixture for final     
+                        $tournamentdetails = MyModel::where('id', '=', $TournamnetFinal->tournament_id)->first();
+                        if ($tournamentdetails->number_of_legs_in_final == '2' && $stage == 'final'):
+                            $fixture[] = ['tournament_id' => $TournamnetFinal->tournament_id, 'player_id_1' => $TournamnetFinal->player_id_1, 'player_id_1_team_id' => $TournamnetFinal->player_id_1_team_id, 'player_id_2' => $TournamnetFinal->player_id_2, 'player_id_2_team_id' => $TournamnetFinal->player_id_2_team_id, 'stage' => $stage];
+                            \App\TournamentFixture::insert($fixture);
+                        endif;
+                        //ends
                         return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
                     endif;
                 else:
@@ -884,6 +894,15 @@ class TournamentsController extends ApiController {
                         $TournamnetFinal = \App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL]])->first();
                         $TournamnetFinal->fill($input2);
                         $TournamnetFinal->save();
+
+                        //-----------Creating 2nd fixture for final     
+                        $tournamentdetails = MyModel::where('id', '=', $TournamnetFinal->tournament_id)->first();
+                        if ($tournamentdetails->number_of_legs_in_final == '2' && $stage == 'final'):
+                            $fixture[] = ['tournament_id' => $TournamnetFinal->tournament_id, 'player_id_1' => $TournamnetFinal->player_id_1, 'player_id_1_team_id' => $TournamnetFinal->player_id_1_team_id, 'player_id_2' => $TournamnetFinal->player_id_2, 'player_id_2_team_id' => $TournamnetFinal->player_id_2_team_id, 'stage' => $stage];
+                            \App\TournamentFixture::insert($fixture);
+                        endif;
+                        //ends
+
                         return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
                     endif;
                 endif;

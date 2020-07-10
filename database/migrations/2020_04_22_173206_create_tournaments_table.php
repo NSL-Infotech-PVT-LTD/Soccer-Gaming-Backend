@@ -23,6 +23,7 @@ class CreateTournamentsTable extends Migration {
             $table->integer('number_of_legs_in_final')->nullable(); //only with knockout
             \App\Helpers\DbExtender::defaultParams($table, true);
         });
+//        \DB::update("ALTER TABLE tournie.tournaments AUTO_INCREMENT = 1001;");
     }
 
     /**
