@@ -18,7 +18,7 @@ class MessageController extends ApiController {
 // private static $__selectedAttributes = ['id','name','date','from_time','to_time','description','image'];
 
     public function store(Request $request) {
-        
+
         $rules = ['receiver_id' => 'required|exists:users,id', 'message' => 'required', 'player_id' => 'required|exists:users,id'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
@@ -28,7 +28,7 @@ class MessageController extends ApiController {
             return parent::error('You cannot send message to yourself');
         try {
             $data = ['sender_id' => "" . \Auth::id() . "", 'receiver_id' => $request->receiver_id, 'message' => $request->message, 'replied_by_customer' => '1'];
-            
+
 // dd($data);
             $model = MyModel::create($data);
 // dd($model);
@@ -102,7 +102,7 @@ class MessageController extends ApiController {
 
             if ($user->hasRole('Customer') === true)
                 MyModel::whereIn('id', $model->get()->pluck('id'))->update(['is_read_customer' => '1']);
-            
+
 //Mark Message Read end
 
             $model = new MyModel();
@@ -122,6 +122,24 @@ class MessageController extends ApiController {
             return parent::success($model->paginate($perPage));
         } catch (\Exception $ex) {
 
+            return parent::error($ex->getMessage());
+        }
+    }
+
+    public function deleteChat(Request $request) {
+        
+        $rules = ['sender_id' => 'required|exists:users,id', 'receiver_id' => 'required|exists:users,id'];
+        
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $model = MyModel::where('sender_id', $request->sender_id)->where('receiver_id', $request->receiver_id);
+//            dd($model);
+            $model = $model->delete();
+            return parent::success('Chat Successfully Deleted');
+        } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
     }

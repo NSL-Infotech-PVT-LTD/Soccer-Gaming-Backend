@@ -502,7 +502,7 @@ class TournamentsController extends ApiController {
 
     public function tournamentUpcoming(Request $request) {
 //       dd('s');
-        $rules = ['search' => '', 'type' => ''];
+        $rules = ['search' => '', 'type' => 'required|in:league,league_and_knockout,knockout'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -753,9 +753,9 @@ class TournamentsController extends ApiController {
             $player1score = 0;
             $player2score = 0;
             if ($knockoutLegs == '2'):
-                
+
 //            dd($fixtureForLegs->toArray());
-                
+
                 $i = 1;
                 foreach ($fixtureForLegs as $legs):
 //                    $player1score += $legs->player_id_1_score;
@@ -773,12 +773,12 @@ class TournamentsController extends ApiController {
                     endif;
                     $i++;
                 endforeach;
-                
+
                 $similartourns = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get();
                 foreach ($similartourns as $tourns):
                     $player1score += $tourns->player_id_1_score;
                     $player2score += $tourns->player_id_2_score;
-                    
+
                 endforeach;
 //                dd($player1score, $player2score);
                 if ($player1score > $player2score):
@@ -809,7 +809,7 @@ class TournamentsController extends ApiController {
                         //ends            
                         return parent::success(['message' => 'Scores has been successfully Added and 2 fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
                     endif;
-                elseif($player2score > $player1score):
+                elseif ($player2score > $player1score):
                     if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL], ['player_id_2_team_id', '=', NULL]])->get()->isEmpty() === true):
                         $fixture[] = ['tournament_id' => $request->tournament_id, 'player_id_1' => $request->player_id_2, 'player_id_1_team_id' => $request->player_id_2_team_id, 'stage' => $stage];
                         \App\TournamentFixture::insert($fixture);
@@ -837,8 +837,8 @@ class TournamentsController extends ApiController {
                         //ends            
                         return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
                     endif;
-                else: 
-                    return parent::error('Scores has been tied after combining both matches of this stage');   
+                else:
+                    return parent::error('Scores has been tied after combining both matches of this stage');
                 endif;
             else:
                 //--------if number of legs per match in knockout stage is 1----------------
