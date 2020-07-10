@@ -127,7 +127,6 @@ class MessageController extends ApiController {
     }
 
     public function deleteChat(Request $request) {
-        
         $rules = ['sender_id' => 'required|exists:users,id', 'receiver_id' => 'required|exists:users,id'];
         
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
