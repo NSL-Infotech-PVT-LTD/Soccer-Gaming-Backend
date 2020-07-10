@@ -54,6 +54,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('chat/store', 'API\MessageController@store');
     Route::post('chat/getItems', 'API\MessageController@getItems');
     Route::post('chat/getItemsByReceiverId', 'API\MessageController@getItemsByReceiverId');
+    Route::post('chat/delete', 'API\MessageController@deleteChat');
     
     
     Route::post('connectWithStripe', 'API\ApiController@connectWithStripe');
