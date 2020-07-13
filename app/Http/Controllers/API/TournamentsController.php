@@ -768,9 +768,12 @@ class TournamentsController extends ApiController {
                         $TournamnetFixed = \App\TournamentFixture::findOrFail($request->id);
                         $TournamnetFixed->fill($input);
                         $TournamnetFixed->save();
-                            if(\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', $TournamnetFixed->stage)->where('player_id_1_score', '==',null)->get()->isNotEmpty() === true):
-                               return parent::success(['message' => 'Scores has been successfully updated', 'tournamentFixtures' => $TournamnetFixed]); 
-                            endif;
+//                        dd(\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', $TournamnetFixed->stage)->where('player_id_1_score', null)->get()->toArray());
+                        if(\App\TournamentFixture::where('id', '!=' , $request->id)->where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', $TournamnetFixed->stage)->where('player_id_1_score', null)->get()->isNotEmpty() === true):
+//                            dd('true');
+                           return parent::success(['message' => 'Scores has been successfully updated', 'tournamentFixtures' => $TournamnetFixed]); 
+                        
+                        endif;
 //                    endif;
 //                    $i++;
 //                endforeach;
