@@ -842,7 +842,7 @@ class TournamentsController extends ApiController {
                         return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
                     endif;
                 else:
-                    return parent::error('Scores has been tied after combining both matches of this stage');
+                    return parent::error('Score ended in a tie, kindly play extra time or penalty shootout and update the result , proceed to next round');
                 endif;
             else:
                 //--------if number of legs per match in knockout stage is 1----------------
