@@ -880,7 +880,7 @@ class TournamentsController extends ApiController {
                         //ends
                         return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
                     endif;
-                else:
+                    elseif ($player2score > $player1score):
                     if (\App\TournamentFixture::where([['tournament_id', '=', $request->tournament_id], ['stage', '=', $stage], ['player_id_2', '=', NULL], ['player_id_2_team_id', '=', NULL]])->get()->isEmpty() === true):
                         $fixture[] = ['tournament_id' => $request->tournament_id, 'player_id_1' => $request->player_id_2, 'player_id_1_team_id' => $request->player_id_2_team_id, 'stage' => $stage];
                         \App\TournamentFixture::insert($fixture);
@@ -905,6 +905,8 @@ class TournamentsController extends ApiController {
 
                         return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
                     endif;
+                else:
+                    return parent::error('Score has been drawn. kindly update again, to proceed next round');
                 endif;
             endif;
         endif;
