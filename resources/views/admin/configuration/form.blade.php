@@ -30,7 +30,36 @@
     {!! Form::textarea('private_policy_service_provider', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
     {!! $errors->first('private_policy_service_provider', '<p class="help-block">:message</p>') !!}
 </div>-->
-
+<div class="form-group{{ $errors->has('facebook_url') ? 'has-error' : ''}}">
+    {!! Form::label('facebook_url', 'facebook URL', ['class' => 'control-label']) !!}
+    {!! Form::text('facebook_url', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! $errors->first('facebook_url', '<p class="help-block">:message</p>') !!}
+</div>
+<div class="form-group{{ $errors->has('youtube_url') ? 'has-error' : ''}}">
+    {!! Form::label('youtube_url', 'Youtube URL', ['class' => 'control-label']) !!}
+    {!! Form::text('youtube_url', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! $errors->first('youtube_url', '<p class="help-block">:message</p>') !!}
+</div>
+<div class="form-group{{ $errors->has('instagram_url') ? 'has-error' : ''}}">
+    {!! Form::label('instagram_url', 'Instagram URL', ['class' => 'control-label']) !!}
+    {!! Form::text('instagram_url', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! $errors->first('instagram_url', '<p class="help-block">:message</p>') !!}
+</div>
+<div class="form-group{{ $errors->has('twitch') ? 'has-error' : ''}}">
+    {!! Form::label('twitch', 'Twitch', ['class' => 'control-label']) !!}
+    {!! Form::text('twitch', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! $errors->first('twitch', '<p class="help-block">:message</p>') !!}
+</div>
+<div class="form-group{{ $errors->has('google_play_url') ? 'has-error' : ''}}">
+    {!! Form::label('google_play_url', 'Google Play URL', ['class' => 'control-label']) !!}
+    {!! Form::text('google_play_url', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! $errors->first('google_play_url', '<p class="help-block">:message</p>') !!}
+</div>
+<div class="form-group{{ $errors->has('app_store_url') ? 'has-error' : ''}}">
+    {!! Form::label('app_store_url', 'App Store URL', ['class' => 'control-label']) !!}
+    {!! Form::text('app_store_url', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! $errors->first('app_store_url', '<p class="help-block">:message</p>') !!}
+</div>
 
 <div class="form-group">
     {!! Form::submit($formMode === 'edit' ? 'Update' : 'Create', ['class' => 'btn btn-primary']) !!}
