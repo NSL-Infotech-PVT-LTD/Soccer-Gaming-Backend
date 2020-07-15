@@ -605,22 +605,22 @@ class TournamentsController extends ApiController {
         if ($tournamentfixtured->stage == 'round-1' || $tournamentfixtured->stage == 'round-2' || $tournamentfixtured->stage == 'final' || $tournamentfixtured->stage == 'no-round'):
             if ($checkTournamentLegs->type == 'knockout' && $checkTournamentLegs->number_of_legs_in_final == '2' && $tournamentfixtured->stage == 'final'):
 
-                foreach ($fixtureForLegs as $legs):
-                    $i = 0;
-                    if ($legs->player_id_1_score == null):
+//                foreach ($fixtureForLegs as $legs):
+//                    $i = 0;
+//                    if ($legs->player_id_1_score == null):
                         $input = $request->all();
                         $input['created_by'] = \Auth::id();
                         $input['updated_by'] = \Auth::id();
-                        $TournamnetFixed = \App\TournamentFixture::findOrFail($legs->id);
+                        $TournamnetFixed = \App\TournamentFixture::findOrFail($request->id);
                         $TournamnetFixed->fill($input);
                         $TournamnetFixed->save();
                         return parent::success(['message' => 'Scores has been successfully updated for final', 'tournamentFixtures' => $TournamnetFixed]);
-                        $i++;
-                    endif;
-                endforeach;
-                if ($i == '0'):
-                    return parent::success(['message' => 'Scores has already updated for final', 'tournamentFixtures' => $fixtureForLegs]);
-                endif;
+//                        $i++;
+//                    endif;
+//                endforeach;
+//                if ($i == '0'):
+//                    return parent::success(['message' => 'Scores has already updated for final', 'tournamentFixtures' => $fixtureForLegs]);
+//                endif;
 
             else:
                 $input = $request->all();
