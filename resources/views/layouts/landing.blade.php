@@ -156,8 +156,8 @@
                                     <h3 class="footer-title mb-2">Contact Us</h3>
                                     <ul>
                                         <li> <i class="fas fa-map-marker-alt"></i>Al. Dummyodl 124/23 floor 123 Lipsum Street, 02-577 USA.</li>
-                                        <li><i class="fas fa-phone-volume"></i> <a href="tel:">00 387 65 302 657</a></li>
-                                        <li><i class="far fa-envelope"></i><a href="mailto:">hello@inkyy.com</a></li>
+                                        <li><i class="fas fa-phone-alt"></i><a href="tel:">00 387 65 302 657</a></li>
+                                        <li><i class="fas fa-envelope"></i><a href="mailto:">hello@inkyy.com</a></li>
                                     </ul>
                                 </div>
                             </div>

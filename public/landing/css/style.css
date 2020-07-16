@@ -800,19 +800,19 @@ li.nav-item.socail a {
     background: transparent;
     border: 1.5px solid #fff;
     padding: 0px !IMPORTANT;
-    width: 35px;
-    height: 35px;
-    line-height: 35px !IMPORTANT;
+    width: 30px;
+    height: 30px;
+    line-height: 30px !IMPORTANT;
     text-align: center;
     border-radius: 35px;
     margin-right: 9px;
-    font-size: 15px !IMPORTANT;
+    font-size: 12px !IMPORTANT;
 }
 li.nav-item a:after {
     content: '';
     display: block;
     margin: auto;
-    height:4px !IMPORTANT;
+    height:2px !IMPORTANT;
     width: 0px;
     background: #ffffff00;
     transition: width .5s ease, background-color .5s ease;
@@ -823,9 +823,9 @@ li.nav-item a:hover:after {
     background: white;
 }
 ul#navbar-nav a {
-    padding: 5px 23px;
+     padding: 5px 14px;
     text-transform: uppercase;
-    font-size: 20px;
+    font-size: 15px;
     line-height: 30px;
     font-family: HelveticaNowDisplaylight;
     font-weight: lighter;
@@ -1093,9 +1093,9 @@ ul#navbar-nav li.nav-item.socail {
     display: inline-block;
     margin: 25px 0px;
     color: #fff;
-    font-size: 27px;
+    font-size: 22px;
     position: relative;
-    padding-left: 30px;
+    padding-left:25px;
     width: 47%;
     border-radius: 1px;
     font-family: HelveticaNowDisplaylight;
@@ -1106,8 +1106,8 @@ ul#navbar-nav li.nav-item.socail {
     left: 0;
     content: '';
     background: #e4cd49;
-    width: 10px;
-    height: 40px;
+    width: 5px;
+    height: 38px;
     border-radius: 10px;
     top: -7px;
 }
@@ -1257,7 +1257,7 @@ footer.footer-area{
 }
 .footer-items p, a {
     color: #4229a8;
-    font-size: 18px;
+    font-size: 16px;
     letter-spacing: 1px;
     font-family: HelveticaNowDisplaylight;
 }
@@ -1276,7 +1276,7 @@ h3.footer-title {
     position: relative;
     padding-left: 20px;
     padding: 11px 1px 0px 37px;
-    font-size: 18px;    
+    font-size: 16px;    
      font-family: HelveticaNowDisplaylight;
 
 }

@@ -26,12 +26,12 @@
 <section class="section service-area bg-gray overflow-hidden ptb_100">
     <div class="container">
         <div class="row justify-content-between">
-            <div class="col-12 col-lg-6 col-md-6">
+            <div class="col-12 col-lg-7 col-md-5">
                 <div class="service">
                     <img src="{{ asset('landing/img/about_phone.png') }}">
                 </div>
             </div>
-            <div class="col-12 col-lg-6 col-md-6">
+            <div class="col-12 col-lg-5 col-md-5">
                 <div class="service_text text-center">
                     <img src="{{ asset('landing/img/about_logo.png') }}">
                     <p>The TOURNIE App Is Now Available On <br>
