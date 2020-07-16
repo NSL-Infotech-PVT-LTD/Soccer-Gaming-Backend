@@ -1362,6 +1362,7 @@ class TournamentsController extends ApiController {
 
             $notificationread = \App\Notification::where('title', $request->type)->where('target_id', \Auth::id());
             $not = $notificationread->get();
+            $notificationId = [];
             foreach ($not as $data):
                 if ($data->data->target_id == $request->sender_id):
                     $notificationId[] = $data->id;
