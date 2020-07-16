@@ -708,7 +708,7 @@ class TournamentsController extends ApiController {
                             $customsortarray[] = $value;
                         }
 //                return $customsortarray;
-            dd($playersInKnockout[0]);
+//            dd($playersInKnockout[0]);
                         if ($playersInKnockout[0] == '16'):
                             $stage = 'pre-quarter-final';
                         elseif ($playersInKnockout[0] == '8'):
