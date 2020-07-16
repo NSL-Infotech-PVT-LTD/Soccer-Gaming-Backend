@@ -9,16 +9,31 @@
                 <div class="col-12 col-md-7 col-lg-7">
                     <div class="welcome-intro">
                         <h1 class="text-white">Privacy Policy</h1>
-                        <p class="text-white">The fixtures and results table will be generated automatically. <br>
+                        <p class="text-white">The fixtures and results table will be generated automatically.  
                             Players will never play against their own teams.
                         </p>
                     </div>
                 </div>
                 <div class="col-12 col-md-5 col-lg-5">
                     <img src="{{ asset('landing/img/term_phone.png') }}">
+                                    
+                    <button type="button" class="btn video-btn btnterm" data-src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" data-toggle="modal" data-target="">
+                <div class="styles_animation__1Lamn2"></div>
+            </button>
+                    
+                    
+                       <button type="button" class="btn video-btn btnterm2" data-src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" data-toggle="modal" data-target="">
+                <div class="styles_animation__1Lamn2"></div>
+            </button>
+                    
+                 <button type="button" class="btn video-btn btnterm3" data-src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" data-toggle="modal" data-target="">
+                <div class="styles_animation__1Lamn2"></div>
+            </button>
+                    
+                </div>
                 </div>
             </div>
-        </div>
+        
         <!-- Shape Bottom -->
         <div class="shape-bottom">
         </div>

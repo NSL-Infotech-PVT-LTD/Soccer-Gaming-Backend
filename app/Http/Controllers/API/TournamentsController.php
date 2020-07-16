@@ -226,13 +226,13 @@ class TournamentsController extends ApiController {
         $tournamentGet = $tournamentGet->where("id", $tournament->id);
         $tournamentGet = $tournamentGet->with(['players', 'fixtures']);
 
-//        $playerIDs=[];
-//        for ($i = 1; $i <= $request->number_of_players; $i++):
-//            $key = 'player_' . $i;
-//            $playerIDs[]=$request->$key;
-//        endfor;
+        $playerIDs=[];
+        for ($i = 1; $i <= $request->number_of_players; $i++):
+            $key = 'player_' . $i;
+            $playerIDs[]=$request->$key;
+        endfor;
 //        $playerIDs)
-//        parent::pushNotifications(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']],$playerIDs , TRUE);
+        parent::pushNotifications(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']],$playerIDs , TRUE);
 
         return parent::success(['message' => 'Your Tournament has been successfully created', 'tournaments' => $tournamentGet->first()]);
     }
@@ -708,7 +708,7 @@ class TournamentsController extends ApiController {
                             $customsortarray[] = $value;
                         }
 //                return $customsortarray;
-//            dd($playersInKnockout[0]);
+            dd($playersInKnockout[0]);
                         if ($playersInKnockout[0] == '16'):
                             $stage = 'pre-quarter-final';
                         elseif ($playersInKnockout[0] == '8'):
