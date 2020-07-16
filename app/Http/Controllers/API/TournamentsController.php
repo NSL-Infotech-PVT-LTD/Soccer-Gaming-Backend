@@ -718,11 +718,15 @@ class TournamentsController extends ApiController {
                         else:
                             $stage = 'final';
                         endif;
+//                        dd($checkTournamentLegs->legs_per_match_in_knockout_stage);
                         for ($i = 0; $i < $playersInKnockout[0];):
                             //creating double fixtures for auto-generated semi-finals  
                             $fixture[] = ['tournament_id' => $checkTournament->id, 'player_id_1' => $customsortarray[$i]['player']['id'], 'player_id_1_team_id' => $customsortarray[$i]['team']['id'], 'player_id_2' => $customsortarray[$i + 1]['player']['id'], 'player_id_2_team_id' => $customsortarray[$i + 1]['team']['id'], 'stage' => $stage];
                             if ($playersInKnockout[0] == $i + 2) {
                                 \App\TournamentFixture::insert($fixture);
+                                if($checkTournamentLegs->legs_per_match_in_knockout_stage == '2'):
+                                    \App\TournamentFixture::insert($fixture);
+                                endif;
                                 break;
                             }
                             $i = $i + 2;
