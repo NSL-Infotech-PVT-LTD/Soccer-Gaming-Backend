@@ -1454,6 +1454,7 @@ form#contact-form textarea::placeholder {
         font-size: 35px;
         line-height: 40px;
         letter-spacing: 1px;
+        padding-bottom: 40px;
     }
     .service-area {
         padding-bottom: 0;
@@ -1467,6 +1468,16 @@ form#contact-form textarea::placeholder {
     .service_text p {
         font-size: 18px;
     }
+    
+    button.btn.video-btn.btnterm {
+    transform: translateX(783%) translateY(265%);
+
+}
+button.btn.video-btn.btnterm2 {
+    transform: translateX(50%) translateY(-197%);
+
+}
+
 }
 
 @media only screen and (min-width:767px) and (max-width:1024px) {
