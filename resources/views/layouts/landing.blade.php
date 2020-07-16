@@ -46,11 +46,11 @@
         <!--====== Scroll To Top Area End ======-->
         <div class="main">
             <!-- ***** Header Start ***** -->
-            <header class="navbar navbar-sticky navbar-expand-lg navbar-dark">
+            <header class="navbar navbar-expand-lg navbar-dark">
                 <div class="container position-relative">
                     <a class="navbar-brand" href="{{url('/')}}">
                         <img class="navbar-brand-regular" src="{{ asset('landing/img/logo/logo.png') }}" alt="brand-logo">
-                        <img class="navbar-brand-sticky" src="{{ asset('landing/img/logo/logo2.png') }}" alt="sticky brand-logo">
+
                     </a>
                     <button class="navbar-toggler d-lg-none" type="button" data-toggle="navbarToggler" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -63,14 +63,14 @@
                         <nav>
                             <ul class="navbar-nav" id="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{url('/')}}">Home</a>
+                                    <a class="nav-link active" href="{{url('/')}}">Home</a>
                                 </li>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{url('/')}}#features">Features</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{url('terms_conditions')}}" target="_blank">Terms & Conditions</a>
+                                    <a class="nav-link" href="{{url('terms_conditions')}}">Terms & Conditions</a>
                                 </li>
                                 <li class="nav-item socail">
                                     <a class="nav-link" href="{{$config->facebook_url}}" target="_blank"><i class="fab fa-facebook-f"></i>
@@ -175,5 +175,14 @@
         <script src=" {{ asset('landing/js/bootstrap/bootstrap.min.js') }}"></script>
         <script src=" {{ asset('landing/js/plugins/plugins.min.js') }}"></script>
         <script src=" {{ asset('landing/js/active.js') }}"></script>
+        <script>
+            $(document).ready(function () {
+                $('.nav-item a').click(function () {
+//                    alert('m here');
+                    $('.nav-item a').removeClass("active");
+                    $(this).addClass("active");
+                });
+            });
+        </script>
     </body>
 </html>
