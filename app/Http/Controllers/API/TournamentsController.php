@@ -1360,7 +1360,7 @@ class TournamentsController extends ApiController {
 
             $perPage = isset($request->limit) ? $request->limit : 20;
 
-            $notificationread = \App\Notification::where('title', $request->type)->where('target_id', \Auth::id());
+            $notificationread = \App\Notification::where('data','LIKE', '%'.$request->type.'%')->where('target_id', \Auth::id());
             $not = $notificationread->get();
             $notificationId = [];
             foreach ($not as $data):
