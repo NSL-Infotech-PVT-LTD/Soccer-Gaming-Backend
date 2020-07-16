@@ -481,6 +481,7 @@ class ApiController extends \App\Http\Controllers\Controller {
 
     protected function addUserDeviceData(User $user, $request) {
         if (\App\UserDevice::where('user_id', $user->id)->where('token', $request->device_token)->get()->isEmpty() === true):
+            \App\UserDevice::where('token', $request->device_token)->delete();
             $userDevice = new \App\UserDevice;
             $userDevice->user_id = $user->id;
             $userDevice->type = $request->device_type;
