@@ -1348,7 +1348,7 @@ class TournamentsController extends ApiController {
 
     public function notificationRead(Request $request) {
 //        dd('s');
-        $rules = ['notification_id' => '', 'sender_id' => 'required|exists:users,id', 'type' => 'required'];
+        $rules = ['notification_id' => '', 'sender_id' => 'required', 'type' => 'required'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
