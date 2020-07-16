@@ -297,7 +297,7 @@ class ApiController extends \App\Http\Controllers\Controller {
             if (isset($data['data']))
                 $data['data'] = json_encode($data['data']);
             $data += ['target_id' => $userId];
-//            $data += ['action_id' => $action_id];
+            $data += ['created_by' => \Auth::id()];
 
             \App\Notification::create($data);
             return true;

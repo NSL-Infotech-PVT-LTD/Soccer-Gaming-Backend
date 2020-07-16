@@ -29,7 +29,7 @@ class Notification extends Model {
      *
      * @var array
      */
-    protected $fillable = ['title', 'body', 'data', 'target_id', 'is_read'];
+    protected $fillable = ['title', 'body', 'data', 'target_id', 'is_read','created_by'];
     protected $appends = ['friend_request', 'notification_come_from'];
 
     /**
@@ -68,7 +68,7 @@ class Notification extends Model {
 
     public function getnotificationComeFromAttribute() {
         try {
-            $model = User::select('id', 'username', 'email', 'image')->where('id', $this->data->target_id)->first();
+            $model = User::select('id', 'username', 'email', 'image')->where('id', $this->created_by)->first();
             return $model;
         } catch (\Exception $ex) {
             return null;
