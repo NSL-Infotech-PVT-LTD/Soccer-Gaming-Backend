@@ -1338,7 +1338,7 @@ class TournamentsController extends ApiController {
 //            $model = $model->where('target_id', \Auth::id());
 //            \App\Notification::whereIn('id', $model->get()->pluck('id'))->update(['is_read' => '1']);
 
-            $model = $model->where('target_id', \Auth::id())->select('id', 'title', 'body', 'data', 'target_id', 'is_read', 'params', 'state');
+            $model = $model->where('target_id', \Auth::id())->select('id', 'title', 'body', 'data', 'target_id', 'is_read', 'params', 'state', 'created_by');
             $model = $model->orderBy('id', 'desc');
             return parent::success($model->paginate($perPage));
         } catch (\Exception $ex) {
