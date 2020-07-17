@@ -15,17 +15,20 @@
 //    return redirect('login');
 //});
 
-Route::get('/', 'HomeController@index');
+Route::get('/', 'HomeController@index')->name('front.home');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/terms_conditions', 'HomeController@terms_and_conditions')->name('terms_conditions');
-Route::get('/privacypolicy', 'HomeController@privacy_policy')->name('privacypolicy');
-Route::get('/aboutus', 'HomeController@about_us')->name('aboutus');
+Route::get('terms & condition', 'HomeController@terms_and_conditions')->name('terms_conditions');
+Route::get('privacy & policy', 'HomeController@privacy_policy')->name('privacypolicy');
+Route::get('about us', 'HomeController@about_us')->name('aboutus');
 
 Route::get('forget/success', 'HomeController@forgetsuccess')->name('forget.success');
 Route::post('contactformsubmit', 'HomeController@contact_form')->name('contactformsubmit');
+
+
+
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' => ['Super-Admin']], function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('users/role/{role_id}', 'Admin\UsersController@indexByRoleId')->name('users-role');

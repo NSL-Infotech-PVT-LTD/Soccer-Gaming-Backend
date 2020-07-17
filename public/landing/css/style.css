@@ -37,7 +37,9 @@
 a.nav-link.active {
     font-family:HelveticaNowDisplay !important;
 }
-
+/*ul#navbar-nav .active a {
+    font-family: HelveticaNowDisplay !important;
+}*/
 /* ******************************
  CSS
 ****************************** */
