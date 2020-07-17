@@ -29,7 +29,7 @@
                 <div class="col-12 col-md-12">
                     <div class="term_text">
                         <ul>
-                            <li>{{$config->about_us_customer}}</li>
+                            <li>{!! $config->about_us_customer !!}</li>
                         </ul>
                     </div>
                 </div>
