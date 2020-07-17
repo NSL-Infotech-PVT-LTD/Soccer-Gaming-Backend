@@ -128,7 +128,7 @@
                                         <input type="email" class="form-control" name="email" placeholder="Your Email" id="email" required="required">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="phone" id="phone" maxlength="10" minlength="10" type="tel" onkeyup="if (/\D/g.test(this.value))
+                                        <input type="text" class="form-control" name="phone" id="phone" minlength="5" type="tel" onkeyup="if (/\D/g.test(this.value))
         this.value = this.value.replace(/\D/g, '')"placeholder="Phone Number" required="required">
                                     </div>
                                     <div class="form-group">
