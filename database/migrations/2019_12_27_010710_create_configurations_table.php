@@ -14,9 +14,9 @@ class CreateConfigurationsTable extends Migration {
     public function up() {
         Schema::create('configurations', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('terms_and_conditions_customer');
-            $table->string('private_policy_customer');
-            $table->string('about_us_customer');
+            $table->longText('terms_and_conditions_customer');
+            $table->longText('private_policy_customer');
+            $table->longText('about_us_customer');
             $table->string('facebook_url')->nullable();
             $table->string('youtube_url')->nullable();
             $table->string('instagram_url')->nullable();

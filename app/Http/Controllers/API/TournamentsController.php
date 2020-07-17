@@ -268,14 +268,16 @@ class TournamentsController extends ApiController {
 
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
-//            if ($request->show_my == 'my')
-//            $tournament = $tournament->where("created_by", \Auth::id());
+            if ($request->show_my == 'my')
+            $tournament = $tournament->where("created_by", \Auth::id());
 
             $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
-//            dd($ids);
             $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
-//            dd($ids);
+            
+            $completedTournamentIds = self::getCompletedTournamentsId($request->type);
             $tournament = $tournament->whereIn("id", $ids);
+            $tournament = $tournament->whereNotIn("id", $completedTournamentIds);
+            
 //            $tournament = $tournament->where('type',$request->type);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
