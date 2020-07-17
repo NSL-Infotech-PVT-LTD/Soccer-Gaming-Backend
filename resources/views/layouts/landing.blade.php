@@ -176,13 +176,18 @@
         <script src=" {{ asset('landing/js/plugins/plugins.min.js') }}"></script>
         <script src=" {{ asset('landing/js/active.js') }}"></script>
         <script>
-            $(document).ready(function () {
-                $('.nav-item a').click(function () {
-//                    alert('m here');
-                    $('.nav-item a').removeClass("active");
-                    $(this).addClass("active");
-                });
+        $(document).ready(function () {
+        //                $('.nav-item a').click(function () {
+        ////                    alert('m here');
+        //                    $('.nav-item a').removeClass("active");
+        //                    $(this).addClass("active");
+        //                });
+            $("ul#navbar-nav > li.nav-item > a").each(function () {
+                if ((window.location.href.indexOf($(this).attr('href'))) > -1) {
+                    $(this).parent().addClass('active');
+                }
             });
+        });
         </script>
     </body>
 </html>
