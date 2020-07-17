@@ -216,7 +216,7 @@
                             </div>
 
                             <div class="footer_bottom">
-                                            <img src="{{url('landing/img/footer_image.png')}}">
+                                <a href="https://www.netscapelabs.com/" target="_blank"><img src="{{url('landing/img/footer_image.png')}}"></a>
 </div>
 
 
