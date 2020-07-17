@@ -20,6 +20,19 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <style>
+            .footer_bottom img {
+                max-width: 361px;
+                margin: auto;
+            }
+
+            .footer_bottom {
+                width: 100%;
+                text-align: center;
+                padding-top: 50px;
+            }
+            .term_text h1, .term_text h2 {
+                background-color: transparent !important;
+            }
             body {
                 overflow: hidden;
             }
@@ -139,13 +152,13 @@
             <!--====== Footer Area Start ======-->
             <footer class="footer-area">
                 <!-- Footer Top -->
-                <div class="footer-top ptb_100">
+                <div class="footer-top">
                     <div class="container">
                         <div class="row">
                             <div class="col-12 col-sm-6 col-lg-4">
                                 <!-- Footer Items -->
                                 <div class="footer-items">
-                                    <p class="mt-2 mb-3">Finaldream rure dolor in reprehenderit in voluptate velit esse cillum dolore e uis nostrud exercitation isi ut aliquip ex ea commodo consequat.</p>
+<!--                                                <p class="mt-2 mb-3">Finaldream rure dolor in reprehenderit in voluptate velit esse cillum dolore e uis nostrud exercitation isi ut aliquip ex ea commodo consequat.</p>-->
                                     <!-- Social Icons -->
                                     <div class="social-icons d-flex">
                                         <a class="nav-link" href="{{$config->facebook_url}}" target="_blank"><i class="fab fa-facebook-f"></i>
@@ -195,20 +208,26 @@
                                     <!-- Footer Title -->
                                     <h3 class="footer-title mb-2">Contact Us</h3>
                                     <ul>
-                                        <li> <i class="fas fa-map-marker-alt"></i>Al. Dummyodl 124/23 floor 123 Lipsum Street, 02-577 USA.</li>
-                                        <li><i class="fas fa-phone-alt"></i><a href="tel:">00 387 65 302 657</a></li>
-                                        <li><i class="fas fa-envelope"></i><a href="mailto:">hello@inkyy.com</a></li>
+                                        <li> <i class="fas fa-map-marker-alt"></i>{{$config->address}}</li>
+                                        <li><i class="fas fa-phone-alt"></i><a href="tel:">{{$config->phone_number}}</a></li>
+                                        <li><i class="fas fa-envelope"></i><a href="mailto:">{{$config->email}}</a></li>
                                     </ul>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!--====== Footer Area End ======-->
-        </div>
-        <!--========= ***** All jQuery Plugins ***** ===========================-->
-        <script src=" {{ asset('landing/js/jquery/jquery-3.3.1.min.js') }}"></script>
+
+                            <div class="footer_bottom">
+                                            <img src="{{url('landing/img/footer_image.png')}}">
+</div>
+
+
+</div>
+</div>
+</div>
+</footer>
+<!--                ====== Footer Area End ======-->
+              </div>
+                    <!--========= ***** All jQuery Plugins ***** ====        =======================-->
+<script src=" {{    asset('landing/js/jquery/jquery-3.3.1.min.js') }}"></script>
         <script src=" {{ asset('landing/js/bootstrap/popper.min.js') }}"></script>
         <!--===============================================================================================-->
         <script src=" {{ asset('landing/js/bootstrap/bootstrap.min.js') }}"></script>
@@ -216,12 +235,12 @@
         <script src=" {{ asset('landing/js/plugins/plugins.min.js') }}"></script>
         <script src=" {{ asset('landing/js/active.js') }}"></script>
         <script>
-            $(window).on('load', function () { // makes sure the whole site is loaded 
+$(window).on('load', function () { // makes sure the whole site is loaded 
 
-                $('#preloader').delay(250).fadeOut('slow'); // will fade out the white DIV that covers the website. 
-                $('#status').delay(350).fadeOut('slow'); // will first fade out the loading animation 
-                $('body').delay(350).css({'overflow': 'visible'});
-            });
+    $('#preloader').delay(250).fadeOut('slow'); // will fade out the white DIV that covers the website. 
+    $('#status').delay(350).fadeOut('slow'); // will first fade out the loading animation 
+    $('body').delay(350).css({'overflow': 'visible'});
+});
         </script>
     </body>
 </html>
