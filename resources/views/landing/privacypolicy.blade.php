@@ -44,7 +44,7 @@
                 <div class="col-12 col-md-12">
                     <div class="term_text">
                         <ul>
-                            <li>{{$config->private_policy_customer}}</li>
+                            <li>{!! $config->private_policy_customer !!}</li>
                         </ul>
                     </div>
                 </div>

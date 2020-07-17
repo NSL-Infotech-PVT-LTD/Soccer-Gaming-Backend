@@ -43,7 +43,7 @@
                 <div class="col-12 col-md-12">
                     <div class="term_text">
                         <ul>
-                            <li>{{$config->terms_and_conditions_customer}}</li>
+                            <li>{!! $config->terms_and_conditions_customer !!}</li>
                         </ul>
                     </div>
                 </div>

@@ -62,7 +62,7 @@ label.form-check-label {
     transform: translate(-50%, -50%)
 }
 div#app {
-    background: url(/tournie/public/banner.jpg);
+    background: url(../../banner.jpg);
     background-size: cover;
     height: 100vh;
     background-position: center;

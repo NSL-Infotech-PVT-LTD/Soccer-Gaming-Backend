@@ -7,7 +7,7 @@
         <div class="col-md-12">
          
             <div class="log">
-                <img src="/tournie/public/logo.png">
+                <img src="{{asset('logo.png')}}">
  
             </div>
 
