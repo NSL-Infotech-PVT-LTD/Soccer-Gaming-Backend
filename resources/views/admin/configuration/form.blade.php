@@ -44,6 +44,21 @@
     {!! Form::text('app_store_url', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
     {!! $errors->first('app_store_url', '<p class="help-block">:message</p>') !!}
 </div>
+<div class="form-group{{ $errors->has('address') ? 'has-error' : ''}}">
+    {!! Form::label('address', 'Address', ['class' => 'control-label']) !!}
+    {!! Form::text('address', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! $errors->first('address', '<p class="help-block">:message</p>') !!}
+</div>
+<div class="form-group{{ $errors->has('phone_number') ? 'has-error' : ''}}">
+    {!! Form::label('phone_number', 'Phone number', ['class' => 'control-label']) !!}
+    {!! Form::text('phone_number', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! $errors->first('phone_number', '<p class="help-block">:message</p>') !!}
+</div>
+<div class="form-group{{ $errors->has('email') ? 'has-error' : ''}}">
+    {!! Form::label('email', 'Email', ['class' => 'control-label']) !!}
+    {!! Form::email('email', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}
+    {!! $errors->first('email', '<p class="help-block">:message</p>') !!}
+</div>
 
 <div class="form-group">
     {!! Form::submit($formMode === 'edit' ? 'Update' : 'Create', ['class' => 'btn btn-primary']) !!}

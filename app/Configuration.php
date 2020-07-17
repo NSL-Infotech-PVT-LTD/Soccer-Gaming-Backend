@@ -20,7 +20,7 @@ class Configuration extends Model
      *
      * @var array
      */
-    protected $fillable = ['about_us_customer', 'about_us_service_provider', 'terms_and_conditions_customer', 'terms_and_conditions_service_provider','private_policy_customer','private_policy_service_provider','facebook_url','youtube_url','instagram_url','twitch','google_play_url','app_store_url'];
+    protected $fillable = ['about_us_customer', 'about_us_service_provider', 'terms_and_conditions_customer', 'terms_and_conditions_service_provider','private_policy_customer','private_policy_service_provider','facebook_url','youtube_url','instagram_url','twitch','google_play_url','app_store_url', 'address', 'phone_number', 'email'];
 
 
 

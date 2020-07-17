@@ -20,6 +20,9 @@ class ConfigurationSeeder extends Seeder {
             'twitch' => 'https://www.twitch.tv/',
             'google_play_url' => 'https://play.google.com/',
             'app_store_url' => 'https://www.apple.com/',
+            'address' => '#tournie',
+            'phone_number' => '+44 7946786262',
+            'email' => 'contact@tournie.co.uk',
         ];
         $configuration = App\Configuration::create($data);
     }

@@ -23,6 +23,9 @@ class CreateConfigurationsTable extends Migration {
             $table->string('twitch')->nullable();
             $table->string('google_play_url')->nullable();
             $table->string('app_store_url')->nullable();
+            $table->text('address')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('email')->nullable();
             App\Helpers\DbExtender::defaultParams($table);
         });
     }
