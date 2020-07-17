@@ -28,27 +28,35 @@ class HomeController extends Controller {
         $config = DB::table('configurations')->get()->first();
         return view('landing.home', compact('config'));
     }
+
     public function terms_and_conditions() {
         $config = DB::table('configurations')->get()->first();
         return view('landing.termsandconditions', compact('config'));
     }
+
     public function privacy_policy() {
         $config = DB::table('configurations')->get()->first();
         return view('landing.privacypolicy', compact('config'));
     }
+
     public function about_us() {
         $config = DB::table('configurations')->get()->first();
         return view('landing.aboutus', compact('config'));
     }
-    
+
     public function forgetsuccess() {
         \Auth::logout();
         return view('auth.passwords.forgetsuccess');
     }
+
     public function contact_form(Request $request) {
-//        dd('m here');
         $requestData = $request->all();
-        \App\Contact::create($requestData);
-        return redirect()->back()->with('message', 'Message Sent. Will contact you soon.');
+//        dd($requestData);
+        $result = \App\Contact::create($requestData);
+        if ($result) {
+            $arr = array('msg' => 'Message Received! Will contact you Soon', 'status' => true);
+        }
+        return Response()->json($arr);
     }
+
 }

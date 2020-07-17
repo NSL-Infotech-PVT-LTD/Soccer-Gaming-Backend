@@ -27,7 +27,7 @@
 {{--        <script src="{{ asset('template/js/light.js') }} "></script>--}}
 <!-- //lined-icons -->
 
-<script src="{{asset('js/jquery-1.11.1.min.js')}}"></script>
+<script src="{{asset('template/js/jquery-1.10.2.min.js')}}"></script>
 
 
 <!--datatable starts-->
@@ -42,22 +42,9 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
-<!--datatable ends-->
-{{--        <script src="{{ asset('template/js/jquery-1.10.2.min.js') }} "></script>--}}
-<!--pie-chart--->
-{{--        <script src="{{ asset('template/js/pie-chart.js') }} " type="text/javascript"></script>--}}
 
-
-<!--charts js starts-->
-
-<script src ="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js">
 <link rel = "stylesheet" href = "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-</script>
-
 <!--charts js ends-->
-
-
-
 </head>
 <body>
     <div class="page-container">
@@ -185,7 +172,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 
  <!-- DataTable -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<!--<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>-->
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {

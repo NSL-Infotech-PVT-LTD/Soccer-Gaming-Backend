@@ -644,7 +644,7 @@ class TournamentsController extends ApiController {
                 $input = $request->all();
                 $input['created_by'] = \Auth::id();
                 $input['updated_by'] = \Auth::id();
-                $TournamnetFixed = \App\TournamentFixture::findOrFail($tournamentfixtured->id);
+                $TournamnetFixed = \App\TournamentFixture::findOrFail($request->id);
                 $TournamnetFixed->fill($input);
                 $TournamnetFixed->save();
                 //------Calculating points for knockout section in league and knockout----------

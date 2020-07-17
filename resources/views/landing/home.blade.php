@@ -1,6 +1,7 @@
 @extends('layouts.landing')
 
 @section('content')
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> 
 <!-- ***** Welcome Area Start ***** -->
 <section id="home" class="section welcome-area bg-overlay overflow-hidden d-flex align-items-center">
     <div class="container">
@@ -111,39 +112,37 @@
                     <div class="heading">
                         <h2 class="text-capitalize">Send Us message</h2>
                     </div>
-                    @if(session()->has('message'))
-                    <div class="alert alert-success">
-                        {{ session()->get('message') }}
+                    <div class="alert alert-success" id="res_message" style="display:none;">
+                        
                     </div>
-                    @endif
                     <!-- Contact Form -->
                     <div style="padding:30px 40px;background: white;box-shadow: 1px 4px 5px 6px #4229a80f;">
-                        <form  method="POST" action="{{ url('contact-form')}}">
+                        <form id="contactform" method="POST" action="javascript:void(0)">
                             @csrf
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="name" placeholder="Your Name" required="required">
+                                        <input type="text" class="form-control" name="name" placeholder="Your Name" id="name" required="required">
                                     </div>
                                     <div class="form-group">
-                                        <input type="email" class="form-control" name="email" placeholder="Your Email" required="required">
+                                        <input type="email" class="form-control" name="email" placeholder="Your Email" id="email" required="required">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="phone" maxlength="10" minlength="10" type="tel" onkeyup="if (/\D/g.test(this.value))
-                                                    this.value = this.value.replace(/\D/g, '')"placeholder="Phone Number" required="required">
+                                        <input type="text" class="form-control" name="phone" id="phone" maxlength="10" minlength="10" type="tel" onkeyup="if (/\D/g.test(this.value))
+        this.value = this.value.replace(/\D/g, '')"placeholder="Phone Number" required="required">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="subject" placeholder="Subject">
+                                        <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <textarea class="form-control" name="message" placeholder="Message" required="required"></textarea>
+                                        <textarea class="form-control" name="message" placeholder="Message" id="message" required="required"></textarea>
                                     </div>
                                 </div>
                                 <!--<input type="submit" value='submit' name="submit"/>-->
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-lg btn-block mt-3"><span class="text-white"></span>Get Started <i class="fas fa-angle-double-right"></i></button>
+                                    <button type="submit" id="bringform" class="btn btn-lg btn-block mt-3"><span class="text-white"></span>Get Started <i class="fas fa-angle-double-right"></i></button>
                                 </div>
                             </div>
                         </form>
@@ -154,4 +153,48 @@
     </div>
 </section>
 <!--====== Contact Area End ======-->
+<script>
+    $(document).ready(function () {
+        $('#contactform').on('submit', function (e) {
+            e.preventDefault();
+            var name = $('#name').val();
+            var email = $('#email').val();
+            var phone = $('#phone').val();
+            var subject = $('#subject').val();
+            var message = $('#message').val();
+            var form_data = new FormData();
+            form_data.append("name", name);
+            form_data.append("email", email);
+            form_data.append("phone", phone);
+            form_data.append("subject", subject);
+            form_data.append("message", message);
+            form_data.append("_token", $('meta[name="csrf-token"]').attr('content'));
+            $.ajax({
+                url: "{{route('contactformsubmit')}}",
+                method: "POST",
+                data: form_data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function () {
+                    //                        Swal.showLoading();
+                },
+                success: function (response)
+                {
+//                    $('#send_form').html('Submit');
+                    $('#res_message').show();
+                    $('#res_message').html(response.msg);
+                    
+
+                    document.getElementById("contactform").reset();
+                    setTimeout(function () {
+                        $('#res_message').hide();
+                    }, 10000);
+                }
+            });
+        });
+    });
+
+</script>
+
 @endsection
