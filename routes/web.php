@@ -25,7 +25,7 @@ Route::get('/privacypolicy', 'HomeController@privacy_policy')->name('privacypoli
 Route::get('/aboutus', 'HomeController@about_us')->name('aboutus');
 
 Route::get('forget/success', 'HomeController@forgetsuccess')->name('forget.success');
-Route::post('contact-form', 'HomeController@contact_form');
+Route::post('contactformsubmit', 'HomeController@contact_form')->name('contactformsubmit');
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'roles'], 'roles' => ['Super-Admin']], function () {
     Route::get('home', 'HomeController@index')->name('home');
     Route::get('users/role/{role_id}', 'Admin\UsersController@indexByRoleId')->name('users-role');

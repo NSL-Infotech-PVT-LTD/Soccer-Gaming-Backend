@@ -16,6 +16,7 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('landing/css/responsive.css') }}">
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
     <body>
         <!--====== Preloader Area Start ======-->
@@ -176,18 +177,18 @@
         <script src=" {{ asset('landing/js/plugins/plugins.min.js') }}"></script>
         <script src=" {{ asset('landing/js/active.js') }}"></script>
         <script>
-        $(document).ready(function () {
-        //                $('.nav-item a').click(function () {
-        ////                    alert('m here');
-        //                    $('.nav-item a').removeClass("active");
-        //                    $(this).addClass("active");
-        //                });
-            $("ul#navbar-nav > li.nav-item > a").each(function () {
-                if ((window.location.href.indexOf($(this).attr('href'))) > -1) {
-                    $(this).parent().addClass('active');
-                }
-            });
-        });
+$(document).ready(function () {
+    //                $('.nav-item a').click(function () {
+    ////                    alert('m here');
+    //                    $('.nav-item a').removeClass("active");
+    //                    $(this).addClass("active");
+    //                });
+    $("ul#navbar-nav > li.nav-item > a").each(function () {
+        if ((window.location.href.indexOf($(this).attr('href'))) > -1) {
+            $(this).parent().addClass('active');
+        }
+    });
+});
         </script>
     </body>
 </html>
