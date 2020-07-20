@@ -3,12 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/admin/tournament/showplayers.blade.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/admin/tournament/show.blade.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/routes/api.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/resources/views/admin/tournament/showfixtures.blade.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/app/Http/Controllers/API/TournamentsController.php</file>
-            <file>file:/opt/lampp/htdocs/tournie/routes/web.php</file>
+            <file>file:/var/www/html/tournie/app/Http/Controllers/API/TournamentsController.php</file>
+            <file>file:/var/www/html/tournie/resources/views/layouts/backend.blade.php</file>
+            <file>file:/var/www/html/tournie/resources/views/layouts/landing.blade.php</file>
+            <file>file:/var/www/html/tournie/public/landing/css/style.css</file>
+            <file>file:/var/www/html/tournie/resources/views/auth/login.blade.php</file>
+            <file>file:/var/www/html/tournie/resources/views/landing/home.blade.php</file>
+            <file>file:/var/www/html/tournie/routes/web.php</file>
+            <file>file:/var/www/html/tournie/app/Http/Controllers/HomeController.php</file>
         </group>
     </open-files>
 </project-private>
