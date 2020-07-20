@@ -287,6 +287,7 @@ class ApiController extends \App\Http\Controllers\Controller {
             endforeach;
         endforeach;
 //        dd($tokens);
+        if (count($tokens) > 0)
         self::pushNotofication($data, $tokens);
         return true;
     }
