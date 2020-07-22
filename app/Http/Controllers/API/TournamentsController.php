@@ -269,15 +269,15 @@ class TournamentsController extends ApiController {
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
             if ($request->show_my == 'my')
-            $tournament = $tournament->where("created_by", \Auth::id());
+                $tournament = $tournament->where("created_by", \Auth::id());
 
             $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
             $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
-            
+
             $completedTournamentIds = self::getCompletedTournamentsId($request->type);
             $tournament = $tournament->whereIn("id", $ids);
             $tournament = $tournament->whereNotIn("id", $completedTournamentIds);
-            
+
 //            $tournament = $tournament->where('type',$request->type);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
@@ -566,19 +566,56 @@ class TournamentsController extends ApiController {
         }
     }
 
-    public function tournamentFixtureReportToggle(Request $request) {
+    public function addTournamentFixtureReport(Request $request) {
 //        dd('s');
-        $rules = ['id' => 'required|exists:tournament_fixtures,id'];
+        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'fixture_id' => 'required|exists:tournament_fixtures,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => 'required'];
+
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $errors = self::formatValidator($validator);
             return parent::error($errors, 200);
         }
+        if (\App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->where('player_id', $request->player_id_1)->where('team_id', $request->player_id_1_team_id)->get()->isEmpty())
+            return parent::error('Players one are not available in the tournament');
+        
+        
+        if (\App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->where('player_id', $request->player_id_2)->where('team_id', $request->player_id_2_team_id)->get()->isEmpty() == true)
+            return parent::error('Players two are not available in the tournament');
+        
+        if (\App\TournamentFixture::where('id', '=', $request->fixture_id)->where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('player_id_1_score', '=', $request->player_id_1_score)->where('player_id_2_score', '=', $request->player_id_2_score)->where('stage', '=', $request->stage)->get()->isEmpty() === true)
+            return parent::error('fixture does not exist');
+
         try {
-            $TournamnetFixed = \App\TournamentFixture::findOrFail($request->id);
-            $TournamnetFixed->state = ((\App\TournamentFixture::whereId($request->id)->first()->state === '1') ? '0' : '1');
-            $TournamnetFixed->save();
-            return parent::success(['message' => 'Report Status Updated Successfully', 'status' => $TournamnetFixed->state]);
+            $requestData = $request->all();
+            $input['created_by'] = \Auth::id();
+            $input['updated_by'] = \Auth::id();
+            $reportedTournamnetFixture = \App\TournamentFixtureReport::create($requestData);
+            return parent::success(['message' => 'Reported Fixture added Successfully', 'data' => $reportedTournamnetFixture]);
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
+    
+    public function getReportedFixtures(Request $request) {
+//        dd('s');
+        $rules = ['search' => ''];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $reportedFixtures = new \App\TournamentFixtureReport();
+            $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'params', 'state', 'created_at', 'updated_at');
+            $perPage = isset($request->limit) ? $request->limit : 20;
+            if (isset($request->search)) {
+                $reportedFixtures = $reportedFixtures->where(function($query) use ($request) {
+                    $query->where('tournament_id', 'LIKE', "$request->search%")
+                            ->orWhere('fixture_id', 'LIKE', "$request->search%");
+                });
+            }
+            $reportedFixtures = $reportedFixtures->orderby('id', 'desc');
+
+            return parent::success($reportedFixtures->paginate($perPage));
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
@@ -936,7 +973,7 @@ class TournamentsController extends ApiController {
         endif;
         //-------------------------------------------code ends-------------------------------------       
     }
-
+    
     public function teamList(Request $request) {
 //        dd('s');
         $rules = ['search' => ''];
