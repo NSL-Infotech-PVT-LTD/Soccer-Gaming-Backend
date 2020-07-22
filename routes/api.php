@@ -39,11 +39,14 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('tournament/list', 'API\TournamentsController@tournamentList');
     Route::post('tournament/history', 'API\TournamentsController@tournamentHistory');
     Route::post('tournament/upcoming', 'API\TournamentsController@tournamentUpcoming');
-    Route::post('tournament/report', 'API\TournamentsController@addTournamentFixtureReport');
-    Route::post('report/list', 'API\TournamentsController@getReportedFixtures');
     Route::post('tournament/score', 'API\TournamentsController@addScoreToTournament');
     Route::post('tournament/winner', 'API\TournamentsController@lastMatchWinner');
     Route::post('tournament', 'API\TournamentsController@getTournament');
+    
+    Route::post('tournament/report', 'API\TournamentsController@addTournamentFixtureReport');
+    Route::post('tournament/report/result', 'API\TournamentsController@acceptRejectReportedFixtures');
+    Route::post('report/list', 'API\TournamentsController@getReportedFixtures');
+    Route::post('report/list/id', 'API\TournamentsController@getReportedFixtureById');
     
     Route::post('banner', 'API\TournamentsController@getBannerImages');
     
