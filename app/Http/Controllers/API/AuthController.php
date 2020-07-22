@@ -230,6 +230,29 @@ class AuthController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
+    
+    public function updateNotifyStatus(Request $request) {
+//        dd('s');
+        $user = \App\User::findOrFail(\Auth::id());
+
+        $rules = ['is_notify' => 'required|in:0,1'];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $input = $request->all();
+//            $input['sport_id']= json_encode($request->sport_id);
+            $input['is_notify'] = $request->is_notify;
+            $user->fill($input);
+            $user->save();
+
+            $user = \App\User::whereId($user->id)->select('id', 'first_name', 'last_name', 'email', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id','is_notify')->first();
+            return parent::successCreated(['message' => 'Notification Status Updated Successfully', 'user' => $user]);
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
 
     public function getProfile(Request $request) {
         $rules = [];
