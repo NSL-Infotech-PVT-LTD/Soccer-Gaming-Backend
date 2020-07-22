@@ -32,16 +32,16 @@ class NotificationController extends ApiController {
                 $model = $model->Where('title', 'LIKE', "%$request->search%")
                         ->orWhere('body', 'LIKE', "%$request->search%")
                         ->orWhere('data', 'LIKE', "%$request->search%");
-            
 
-            $model = $model->where('action_id', \Auth::id())->select('id', 'title', 'body', 'data', 'created_by', 'created_at','action_id');
+
+            $model = $model->where('action_id', \Auth::id())->select('id', 'title', 'body', 'data', 'created_by', 'created_at', 'action_id');
             $model = $model->with('userDetail')->orderBy('created_at', 'desc');
             return parent::success($model->paginate($perPage));
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
     }
-    
+
     public function deleteNotifications(Request $request) {
 //        dd('s');
         $rules = ['receiver_id' => 'required|exists:users,id'];
@@ -50,12 +50,15 @@ class NotificationController extends ApiController {
             return $validateAttributes;
         endif;
         try {
-            $model = new \App\Notification();
-            $model = $model->where('target_id', $request->receiver_id);
+            if (MyModel::where('target_id', $request->receiver_id)->get()->isEmpty() == true)
+                return parent::error('No notifications found for this player');
+
+            $model = MyModel::where('target_id', $request->receiver_id);
             $model = $model->delete();
             return parent::success('Notifications Successfully Deleted');
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
     }
+
 }
