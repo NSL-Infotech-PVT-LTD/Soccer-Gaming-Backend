@@ -41,5 +41,21 @@ class NotificationController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
-
+    
+    public function deleteNotifications(Request $request) {
+//        dd('s');
+        $rules = ['receiver_id' => 'required|exists:users,id'];
+        $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
+        if ($validateAttributes):
+            return $validateAttributes;
+        endif;
+        try {
+            $model = new \App\Notification();
+            $model = $model->where('target_id', $request->receiver_id);
+            $model = $model->delete();
+            return parent::success('Notifications Successfully Deleted');
+        } catch (\Exception $ex) {
+            return parent::error($ex->getMessage());
+        }
+    }
 }
