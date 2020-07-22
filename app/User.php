@@ -21,7 +21,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'username', 'first_name', 'last_name', 'email', 'password', 'confirm_password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'remember_token'];
+        'username', 'first_name', 'last_name', 'email', 'password', 'confirm_password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'remember_token','is_notify'];
 
     /**
      * The attributes that should be hidden for arrays.

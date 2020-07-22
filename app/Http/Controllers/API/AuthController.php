@@ -224,7 +224,7 @@ class AuthController extends ApiController {
             $user->fill($input);
             $user->save();
 
-            $user = \App\User::whereId($user->id)->select('id', 'first_name', 'last_name', 'email', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id')->first();
+            $user = \App\User::whereId($user->id)->select('id', 'first_name', 'last_name', 'email', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id','is_notify')->first();
             return parent::successCreated(['message' => 'Updated Successfully', 'user' => $user]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
@@ -242,7 +242,7 @@ class AuthController extends ApiController {
             $model = new \App\User();
             $roleusersSA = \DB::table('role_user')->where('role_id', \App\Role::where('name', 'Customer')->first()->id)->pluck('user_id');
             $model = $model->wherein('users.id', $roleusersSA)
-                    ->Select('id', 'username', 'first_name', 'last_name', 'email', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id');
+                    ->Select('id', 'username', 'first_name', 'last_name', 'email', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id','is_notify');
             $model = $model->groupBy('users.id');
             $model = $model->where('users.id', \Auth::id());
             if (isset($request->search))
