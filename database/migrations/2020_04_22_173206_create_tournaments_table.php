@@ -21,6 +21,7 @@ class CreateTournamentsTable extends Migration {
             $table->enum('number_of_players_that_will_be_in_the_knockout_stage', ['16_player', '8_player', '4_player', '2_player'])->nullable(); //only with knockout
             $table->integer('legs_per_match_in_knockout_stage')->nullable(); //only with knockout
             $table->integer('number_of_legs_in_final')->nullable(); //only with knockout
+            $table->timestamp('deadline')->nullable(); 
             \App\Helpers\DbExtender::defaultParams($table, true);
         });
 //        \DB::update("ALTER TABLE tournie.tournaments AUTO_INCREMENT = 1001;");

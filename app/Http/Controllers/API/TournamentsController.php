@@ -10,6 +10,7 @@ use App\User;
 use App\Tournament;
 use App\Tournament as MyModel;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TournamentsController extends ApiController {
 
@@ -58,6 +59,8 @@ class TournamentsController extends ApiController {
     public function createTournaments(Request $request) {
 //        dd($request->Player_.$i);
         $rules = ['name' => 'required|string', 'type' => 'required|in:league,league_and_knockout,knockout', 'number_of_players' => 'required|integer|min:1|max:32', 'number_of_teams_per_player' => 'required|integer|min:1|max:4', 'number_of_plays_against_each_team' => 'required_if:type,league_and_knockout,league|integer|min:1|max:2', 'number_of_players_that_will_be_in_the_knockout_stage' => 'required_if:type,knockout|in:16_player,8_player,4_player,2_player', 'legs_per_match_in_knockout_stage' => 'required_if:type,==,knockout|integer|min:1|max:2', 'number_of_legs_in_final' => 'required_if:type,==,knockout|integer|min:1|max:2'];
+        if($request->deadline != '')
+            $rules+=['deadline'=>'date_format:Y-m-d H:i:s|after:tomorrow'];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $errors = self::formatValidator($validator);
@@ -65,6 +68,7 @@ class TournamentsController extends ApiController {
         }
 
         $input = $request->all();
+//        dd($request->deadline);
         if ($request->type == 'knockout'):
             if (!in_array($request->number_of_players, ["2", "4", "8", "16"])):
                 return parent::error('Invalid number of players for this type');
@@ -304,11 +308,11 @@ class TournamentsController extends ApiController {
         try {
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final', 'created_by');
-            
+
             $tournament = $tournament->where("id", $request->tournament_id);
             $tournament = $tournament->with(['fixtures']);
             $tournament = $tournament->with(['players']);
-            
+
             return parent::success($tournament->first());
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
@@ -570,7 +574,7 @@ class TournamentsController extends ApiController {
 
     public function addTournamentFixtureReport(Request $request) {
 //        dd('s');
-        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'fixture_id' => 'required|exists:tournament_fixtures,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => 'required'];
+        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'tournament_created_by_id' => 'required|exists:users,id', 'fixture_id' => 'required|exists:tournament_fixtures,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => 'required'];
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -579,14 +583,14 @@ class TournamentsController extends ApiController {
         }
 //        if (\App\TournamentFixtureReport::where('fixture_id', $request->fixture_id)->get()->isEmpty() == false)
 //            return parent::error('Fixture alread reported');
-        
+
         if (\App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->where('player_id', $request->player_id_1)->where('team_id', $request->player_id_1_team_id)->get()->isEmpty())
             return parent::error('Players one are not available in the tournament');
-        
-        
+
+
         if (\App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->where('player_id', $request->player_id_2)->where('team_id', $request->player_id_2_team_id)->get()->isEmpty() == true)
             return parent::error('Players two are not available in the tournament');
-        
+
         if (\App\TournamentFixture::where('id', '=', $request->fixture_id)->where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get()->isEmpty() === true)
             return parent::error('Fixture does not exist');
 
@@ -595,20 +599,20 @@ class TournamentsController extends ApiController {
             $requestData['created_by'] = \Auth::id();
             $requestData['updated_by'] = \Auth::id();
             $reportedTournamentFixture = \App\TournamentFixtureReport::create($requestData);
-            
+
             $tournament = MyModel::findOrFail($request->tournament_id);
-            
-            parent::pushNotifications(['title' => 'Fixture Reported', 'body' => 'Your Tournament Fixture has been Reported', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'ReportFixtureResult']], $tournament->created_by, TRUE); 
-            
+
+            parent::pushNotifications(['title' => 'Fixture Reported', 'body' => 'Your Tournament Fixture has been Reported', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'ReportFixtureResult']], $tournament->created_by, TRUE);
+
             return parent::success(['message' => 'Reported Fixture added Successfully', 'data' => $reportedTournamentFixture]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
     }
-    
+
     public function getReportedFixtures(Request $request) {
 //        dd('s');
-        $rules = ['search' => ''];
+        $rules = ['search' => '', 'status' => 'required|in:pending,accept,reject'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
@@ -616,6 +620,14 @@ class TournamentsController extends ApiController {
         try {
             $reportedFixtures = new \App\TournamentFixtureReport();
             $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'params', 'state', 'created_at', 'updated_at');
+            
+            //if status is pending
+            if($request->status == 'pending'):
+                $reportedFixtures = $reportedFixtures->where('tournament_created_by_id',\Auth::id())->where('status',null);
+            endif;
+            
+            $reportedFixtures = $reportedFixtures->where('tournament_created_by_id',\Auth::id())->where('status',$request->status);
+            
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $reportedFixtures = $reportedFixtures->where(function($query) use ($request) {
@@ -656,8 +668,7 @@ class TournamentsController extends ApiController {
         }
     }
 
-    
-    public function acceptRejectReportedFixtures(Request $request){
+    public function acceptRejectReportedFixtures(Request $request) {
         $rules = ['id' => 'required|exists:tournament_fixture_reports,id', 'status' => 'required|in:accept,reject'];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
@@ -667,20 +678,20 @@ class TournamentsController extends ApiController {
             $updateReportedFixtures = new \App\TournamentFixtureReport();
             $updateReportedFixtures = $updateReportedFixtures->where("id", $request->id)->update(['status' => $request->status]);
             $reportedFixture = \App\TournamentFixtureReport::findOrFail($request->id);
-            
+
             if ($request->status == 'accept'):
 //                dd($reportedFixture->id);
-                \App\TournamentFixture::where('id',$reportedFixture->fixture_id)->update(['player_id_1_score' => $reportedFixture->player_id_1_score,'player_id_2_score' => $reportedFixture->player_id_2_score]);
+                \App\TournamentFixture::where('id', $reportedFixture->fixture_id)->update(['player_id_1_score' => $reportedFixture->player_id_1_score, 'player_id_2_score' => $reportedFixture->player_id_2_score]);
                 parent::pushNotifications(['title' => 'Fixture Report', 'body' => 'Your Report has been accepted', 'data' => ['target_id' => $reportedFixture->id, 'target_model' => 'TournamentFixtureReport', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
-            elseif($request->status == 'reject'):
-               parent::pushNotifications(['title' => 'Fixture Report', 'body' => 'Your Report has been rejected', 'data' => ['target_id' => $reportedFixture->id, 'target_model' => 'TournamentFixtureReport', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE); 
+            elseif ($request->status == 'reject'):
+                parent::pushNotifications(['title' => 'Fixture Report', 'body' => 'Your Report has been rejected', 'data' => ['target_id' => $reportedFixture->id, 'target_model' => 'TournamentFixtureReport', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
             endif;
             return parent::success(['message' => 'Report Status updated Successfully', 'data' => $reportedFixture]);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
     }
-    
+
     public function addScoreToTournament(Request $request) {
 
         $rules = ['id' => 'required|integer', 'tournament_id' => 'required|exists:tournaments,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => 'required'];
@@ -700,6 +711,18 @@ class TournamentsController extends ApiController {
 
         if (\App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get()->isEmpty() === true)
             return parent::error('fixture does not exist');
+        //deadline check
+        $tournamentdeadline = Tournament::where('id', $request->tournament_id)->first();
+        $deadline = $tournamentdeadline->deadline;
+        if ($deadline != null):
+            $current_timestamp = Carbon::now()->timestamp;
+//            dd($deadline);
+            $deadline = Carbon::parse($deadline)->timestamp;
+//            dd($deadline);
+            if($deadline <= $current_timestamp)
+                return parent::error('Tournament has expired');
+        endif;
+        dd('out');
 
         $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
 
@@ -1033,7 +1056,7 @@ class TournamentsController extends ApiController {
         endif;
         //-------------------------------------------code ends-------------------------------------       
     }
-    
+
     public function teamList(Request $request) {
 //        dd('s');
         $rules = ['search' => ''];
