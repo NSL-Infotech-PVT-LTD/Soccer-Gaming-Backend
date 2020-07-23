@@ -16,6 +16,9 @@ class CreateTournamentFixtureReportsTable extends Migration {
             $table->bigIncrements('id');
             $table->integer('tournament_id')->unsigned()->index();
             $table->foreign('tournament_id')->references('id')->on('tournaments')->onDelete('cascade');
+            
+            $table->integer('tournament_created_by_id')->unsigned()->index();
+            $table->foreign('tournament_created_by_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->integer('fixture_id')->unsigned()->index();
             $table->foreign('fixture_id')->references('id')->on('tournament_fixtures')->onDelete('cascade');

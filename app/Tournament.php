@@ -30,7 +30,7 @@ class Tournament extends Model {
      *
      * @var array
      */
-    protected $fillable = ['name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final', 'created_by', 'updated_by'];
+    protected $fillable = ['name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final', 'deadline', 'created_by', 'updated_by'];
 
     /**
      * Change activity log event description
