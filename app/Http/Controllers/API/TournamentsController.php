@@ -577,8 +577,8 @@ class TournamentsController extends ApiController {
             $errors = self::formatValidator($validator);
             return parent::error($errors, 200);
         }
-        if (\App\TournamentFixtureReport::where('fixture_id', $request->fixture_id)->get()->isEmpty() == false)
-            return parent::error('Fixture alread reported');
+//        if (\App\TournamentFixtureReport::where('fixture_id', $request->fixture_id)->get()->isEmpty() == false)
+//            return parent::error('Fixture alread reported');
         
         if (\App\TournamentPlayerTeam::where('tournament_id', $request->tournament_id)->where('player_id', $request->player_id_1)->where('team_id', $request->player_id_1_team_id)->get()->isEmpty())
             return parent::error('Players one are not available in the tournament');
