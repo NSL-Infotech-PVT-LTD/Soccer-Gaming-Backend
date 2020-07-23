@@ -574,7 +574,7 @@ class TournamentsController extends ApiController {
 
     public function addTournamentFixtureReport(Request $request) {
 //        dd('s');
-        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'tournament_created_by_id' => 'required|exists:users,id', 'fixture_id' => 'required|exists:tournament_fixtures,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => 'required'];
+        $rules = ['tournament_id' => 'required|exists:tournaments,id', 'fixture_id' => 'required|exists:tournament_fixtures,id', 'player_id_1' => 'required|exists:users,id', 'player_id_1_team_id' => 'required', 'player_id_1_score' => 'required|integer', 'player_id_2' => 'required|exists:users,id', 'player_id_2_team_id' => 'required', 'player_id_2_score' => 'required|integer', 'stage' => 'required'];
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -596,6 +596,9 @@ class TournamentsController extends ApiController {
 
         try {
             $requestData = $request->all();
+            $tournamentForAuthor = MyModel::where('id',$request->tournament_id)->first();
+//            dd($tournamentForAuthor->created_by);
+            $requestData['tournament_created_by_id'] = $tournamentForAuthor->created_by;	
             $requestData['created_by'] = \Auth::id();
             $requestData['updated_by'] = \Auth::id();
             $reportedTournamentFixture = \App\TournamentFixtureReport::create($requestData);
@@ -619,15 +622,14 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $reportedFixtures = new \App\TournamentFixtureReport();
-            $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'params', 'state', 'created_at', 'updated_at');
+            $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'created_at', 'updated_at');
             
             //if status is pending
             if($request->status == 'pending'):
                 $reportedFixtures = $reportedFixtures->where('tournament_created_by_id',\Auth::id())->where('status',null);
+            else:
+                $reportedFixtures = $reportedFixtures->where('tournament_created_by_id',\Auth::id())->where('status',$request->status);
             endif;
-            
-            $reportedFixtures = $reportedFixtures->where('tournament_created_by_id',\Auth::id())->where('status',$request->status);
-            
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $reportedFixtures = $reportedFixtures->where(function($query) use ($request) {
