@@ -664,6 +664,7 @@ class TournamentsController extends ApiController {
                             ->orWhere('fixture_id', 'LIKE', "$request->search%");
                 });
             }
+            $reportedFixture = $reportedFixture->with(['playerId_1', 'playerId_2']);
             $reportedFixture = $reportedFixture->with(['oldScore'])->orderby('id', 'desc');
 
             return parent::success($reportedFixture->paginate($perPage));
