@@ -44,8 +44,14 @@ class TournamentFixtureReport extends Model {
         return __CLASS__ . " model has been {$eventName}";
     }
 
+    public function tournamentDetails() {
+        return $this->hasOne(Tournament::class, 'id', 'tournament_id')->select('id', 'name', 'type');
+    }
     public function oldScore() {
         return $this->hasOne(TournamentFixture::class, 'id', 'fixture_id')->select('id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score');
+    }
+    public function reportedBy() {
+        return $this->hasOne(User::class, 'id', 'created_by')->select('id', 'username', 'first_name', 'last_name', 'email');
     }
 
 }

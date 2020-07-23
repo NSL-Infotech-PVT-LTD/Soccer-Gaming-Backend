@@ -622,7 +622,7 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $reportedFixtures = new \App\TournamentFixtureReport();
-            $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'created_at', 'updated_at');
+            $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'created_at', 'updated_at','created_by' ,'updated_by');
             
             //if status is pending
             if($request->status == 'pending'):
@@ -637,6 +637,8 @@ class TournamentsController extends ApiController {
                             ->orWhere('fixture_id', 'LIKE', "$request->search%");
                 });
             }
+            $reportedFixtures = $reportedFixtures->with(['tournamentDetails']);
+            $reportedFixtures = $reportedFixtures->with(['reportedBy']);
             $reportedFixtures = $reportedFixtures->with(['oldScore'])->orderby('id', 'desc');
 
             return parent::success($reportedFixtures->paginate($perPage));
