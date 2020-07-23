@@ -32,7 +32,7 @@ class TournamentFixture extends Model {
      */
     protected $fillable = ['tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score', 'stage', 'created_by', 'updated_by'];
     
-    protected $appends = ['player_id_one_team_id','player_id_two_team_id'];
+    protected $appends = ['player_id_one_team_id','player_id_two_team_id','is_reported'];
 
     /**
      * Change activity log event description
@@ -83,9 +83,21 @@ class TournamentFixture extends Model {
 //        return $this->player_id_2_team_id;
         return (['team_name' => $this->player_id_2_team_id]);
     }
+    
+    public function getIsReportedAttribute() {
+        $model = TournamentFixtureReport::where('fixture_id',$this->id);
+//        dd($model->get()->toArray());
+        if($model->get()->isEmpty() == true){
+            return false;
+        }elseif($model->get()->isEmpty() != true){
+            if($model->where('status',null)->get()->isEmpty()):
+               return false; 
+            else:
+               return true; 
+            endif;
+            
+        }
 
-//    public function playerId_2TeamId() {
-//        return $this->hasOne(Team::class, 'id', 'player_id_2_team_id')->select('id', 'team_name', 'image');
-//    }
+    }
 
 }
