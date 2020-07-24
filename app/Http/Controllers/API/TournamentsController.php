@@ -727,7 +727,7 @@ class TournamentsController extends ApiController {
             if($deadline <= $current_timestamp)
                 return parent::error('Tournament has expired');
         endif;
-        dd('out');
+//        dd('out');
 
         $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
 
