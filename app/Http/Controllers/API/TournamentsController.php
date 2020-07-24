@@ -729,7 +729,7 @@ class TournamentsController extends ApiController {
         endif;
 //        dd('out');
 
-        $tournamentfixtured = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->first();
+        $tournamentfixtured = \App\TournamentFixture::where('id', $request->id)->first();
 
         if (Tournament::where('id', $request->tournament_id)->where('created_by', \Auth::id())->get()->isEmpty() == true)
             if (($tournamentfixtured->player_id_1 != \Auth::id()) || ($tournamentfixtured->player_id_2 != \Auth::id()))
