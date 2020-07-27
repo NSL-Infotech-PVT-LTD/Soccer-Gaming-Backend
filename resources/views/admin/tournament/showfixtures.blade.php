@@ -49,7 +49,7 @@
                                             echo $item->created_by;
                                         ?>
                                     </td>
-                                    <td><?=($item->status == null) ? "Pending" : $item->status ?></td>
+                                    <td><?=($item->status == null) ? "<span style='color:orange;'>Pending</span>" : "<span style='color:green;'>$item->status</span>" ?></td>
 
 <!--                                    <td>
                                         <?= ($item->state == '0') ? '' : "&nbsp;<a href=" . url('admin/editfixture/' . $item->id) . " style='color:red; text-decoration:none;position:absolute;' title = 'Edit Fixture'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>
