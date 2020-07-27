@@ -115,7 +115,7 @@ class TournamentController extends Controller {
 
     public function showTournamentPlayerFixturesReported(Request $request) {
 
-        $tournamentfixtures = \App\TournamentFixture::where('state', '1')->get();
+        $tournamentfixtures = \App\TournamentFixtureReport::get();
 
         return view('admin.tournament.showfixtures', compact('tournamentfixtures'));
     }

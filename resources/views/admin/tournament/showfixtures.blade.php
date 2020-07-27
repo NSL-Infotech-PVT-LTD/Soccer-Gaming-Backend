@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <a href="{{ url(url()->previous()) }}" title="Back"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
             <div class="card">
-                <div class="card-header">Tournament Fixtures</div>
+                <div class="card-header">Tournament Reports</div>
                 <div class="card-body">
                     <br/>
                     <br/>
@@ -16,40 +16,45 @@
                         <table class="mytable">
                             <thead>
                                 <tr>
-                                    <th>#</th><th>Player1 Name</th><th>Player1 Score</th><th>Player2 Name</th><th>Player2 Score</th><th>Report</th>
-                                    <!--<th>Actions</th>-->
+                                    <th>#</th><th>Tournament Name</th><th>Type</th><th>Author</th><th>Reported By</th><th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($tournamentfixtures as $item)
                                 <tr>
-                                    <td>{{ $item->id }}</td>
+                                    <td>{{$item->id}}</td>
                                     <td>
                                         <?php
-                                        $user = DB::table('users')->where('id', $item->player_id_1)->get();
+                                        $tournament = DB::table('tournaments')->where('id', $item->tournament_id)->get();
+                                        if($tournament->isEmpty()!=true)
+                                            echo $tournament->first()->name;
+                                        else
+                                            echo $item->tournament_id;
+                                        ?>
+                                    </td>
+                                    <td><?=($tournament->first()->type != null) ? $tournament->first()->type : "-" ?></td>
+                                    <td><?php
+                                        $user = DB::table('users')->where('id', $item->tournament_created_by_id)->get();
                                         if($user->isEmpty()!=true)
                                             echo $user->first()->username;
                                         else
-                                            echo $item->player_id_1;
+                                            echo $item->tournament_created_by_id;
                                         ?>
                                     </td>
-                                    <td><?= ($item->player_id_1_score != null) ? $item->player_id_1_score : "-" ?></td>
-                                    <td>
-                                        <?php
-                                        
-                                        $user = DB::table('users')->where('id', $item->player_id_2)->get();
-                                        if($user->isEmpty()!=true)
-                                            echo $user->first()->username;
+                                    <td><?php
+                                        $reportedBy = DB::table('users')->where('id', $item->created_by)->get();
+                                        if($reportedBy->isEmpty()!=true)
+                                            echo $reportedBy->first()->username;
                                         else
-                                            echo $item->player_id_2;
+                                            echo $item->created_by;
                                         ?>
                                     </td>
-                                    <td><?= ($item->player_id_2_score != null) ? $item->player_id_2_score : "-" ?></td>
+                                    <td><?=($item->status == null) ? "Pending" : $item->status ?></td>
 
-                                    <td>
+<!--                                    <td>
                                         <?= ($item->state == '0') ? '' : "&nbsp;<a href=" . url('admin/editfixture/' . $item->id) . " style='color:red; text-decoration:none;position:absolute;' title = 'Edit Fixture'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>
 </a>" ?>
-                                    </td>
+                                    </td>-->
 <!--                                    <td>
 
                                         {!! Form::open([
@@ -70,8 +75,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>#</th><th>Player1 Name</th><th>Player1 Score</th><th>Player2 Name</th><th>Player2 Score</th><th>Report</th>
-                                    <!--<th>Actions</th>-->
+                                    <th>#</th><th>Tournament Name</th><th>Type</th><th>Author</th><th>Reported By</th><th>Status</th>
                                 </tr>
                             </tfoot>
                         </table>
