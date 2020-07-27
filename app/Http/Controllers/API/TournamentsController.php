@@ -721,9 +721,7 @@ class TournamentsController extends ApiController {
         $deadline = $tournamentdeadline->deadline;
         if ($deadline != null):
             $current_timestamp = Carbon::now()->timestamp;
-//            dd($deadline);
             $deadline = Carbon::parse($deadline)->timestamp;
-//            dd($deadline);
             if($deadline <= $current_timestamp)
                 return parent::error('Tournament has expired');
         endif;
