@@ -602,10 +602,10 @@ class TournamentsController extends ApiController {
             $requestData['created_by'] = \Auth::id();
             $requestData['updated_by'] = \Auth::id();
             $reportedTournamentFixture = \App\TournamentFixtureReport::create($requestData);
-
+//            dd($reportedTournamentFixture->id);
             $tournament = MyModel::findOrFail($request->tournament_id);
 
-            parent::pushNotifications(['title' => 'Fixture Reported', 'body' => 'Your Tournament Fixture has been Reported', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'ReportFixtureResult']], $tournament->created_by, TRUE);
+            parent::pushNotifications(['title' => 'Fixture Reported', 'body' => 'Your Tournament Fixture has been Reported', 'data' => ['target_id' => $reportedTournamentFixture->id, 'target_model' => 'TournamentFixtureReport', 'data_type' => 'ReportFixtureResult']], $tournament->created_by, TRUE);
 
             return parent::success(['message' => 'Reported Fixture added Successfully', 'data' => $reportedTournamentFixture]);
         } catch (\Exception $ex) {
@@ -683,13 +683,13 @@ class TournamentsController extends ApiController {
             $updateReportedFixtures = new \App\TournamentFixtureReport();
             $updateReportedFixtures = $updateReportedFixtures->where("id", $request->id)->update(['status' => $request->status]);
             $reportedFixture = \App\TournamentFixtureReport::findOrFail($request->id);
-
+//            dd($reportedFixture->tournament_id);
             if ($request->status == 'accept'):
 //                dd($reportedFixture->id);
                 \App\TournamentFixture::where('id', $reportedFixture->fixture_id)->update(['player_id_1_score' => $reportedFixture->player_id_1_score, 'player_id_2_score' => $reportedFixture->player_id_2_score]);
-                parent::pushNotifications(['title' => 'Fixture Report', 'body' => 'Your Report has been accepted', 'data' => ['target_id' => $reportedFixture->id, 'target_model' => 'TournamentFixtureReport', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
+                parent::pushNotifications(['title' => 'Fixture Report', 'body' => 'Your Report has been accepted', 'data' => ['target_id' => $reportedFixture->tournament_id, 'target_model' => 'Tournament', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
             elseif ($request->status == 'reject'):
-                parent::pushNotifications(['title' => 'Fixture Report', 'body' => 'Your Report has been rejected', 'data' => ['target_id' => $reportedFixture->id, 'target_model' => 'TournamentFixtureReport', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
+                parent::pushNotifications(['title' => 'Fixture Report', 'body' => 'Your Report has been rejected', 'data' => ['target_id' => $reportedFixture->tournament_id, 'target_model' => 'Tournament', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
             endif;
             return parent::success(['message' => 'Report Status updated Successfully', 'data' => $reportedFixture]);
         } catch (\Exception $ex) {
