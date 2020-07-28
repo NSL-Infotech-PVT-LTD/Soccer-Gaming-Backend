@@ -59,8 +59,8 @@ class TournamentsController extends ApiController {
     public function createTournaments(Request $request) {
 //        dd($request->Player_.$i);
         $rules = ['name' => 'required|string', 'type' => 'required|in:league,league_and_knockout,knockout', 'number_of_players' => 'required|integer|min:1|max:32', 'number_of_teams_per_player' => 'required|integer|min:1|max:4', 'number_of_plays_against_each_team' => 'required_if:type,league_and_knockout,league|integer|min:1|max:2', 'number_of_players_that_will_be_in_the_knockout_stage' => 'required_if:type,knockout|in:16_player,8_player,4_player,2_player', 'legs_per_match_in_knockout_stage' => 'required_if:type,==,knockout|integer|min:1|max:2', 'number_of_legs_in_final' => 'required_if:type,==,knockout|integer|min:1|max:2'];
-        if($request->deadline != '')
-            $rules+=['deadline'=>'date_format:Y-m-d H:i:s'];
+        if ($request->deadline != '')
+            $rules += ['deadline' => 'date_format:Y-m-d H:i:s'];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $errors = self::formatValidator($validator);
@@ -596,9 +596,9 @@ class TournamentsController extends ApiController {
 
         try {
             $requestData = $request->all();
-            $tournamentForAuthor = MyModel::where('id',$request->tournament_id)->first();
+            $tournamentForAuthor = MyModel::where('id', $request->tournament_id)->first();
 //            dd($tournamentForAuthor->created_by);
-            $requestData['tournament_created_by_id'] = $tournamentForAuthor->created_by;	
+            $requestData['tournament_created_by_id'] = $tournamentForAuthor->created_by;
             $requestData['created_by'] = \Auth::id();
             $requestData['updated_by'] = \Auth::id();
             $reportedTournamentFixture = \App\TournamentFixtureReport::create($requestData);
@@ -622,13 +622,13 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $reportedFixtures = new \App\TournamentFixtureReport();
-            $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'created_at', 'updated_at','created_by' ,'updated_by');
-            
+            $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'created_at', 'updated_at', 'created_by', 'updated_by');
+
             //if status is pending
-            if($request->status == 'pending'):
-                $reportedFixtures = $reportedFixtures->where('tournament_created_by_id',\Auth::id())->where('status',null);
+            if ($request->status == 'pending'):
+                $reportedFixtures = $reportedFixtures->where('tournament_created_by_id', \Auth::id())->where('status', null);
             else:
-                $reportedFixtures = $reportedFixtures->where('tournament_created_by_id',\Auth::id())->where('status',$request->status);
+                $reportedFixtures = $reportedFixtures->where('tournament_created_by_id', \Auth::id())->where('status', $request->status);
             endif;
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
@@ -720,7 +720,7 @@ class TournamentsController extends ApiController {
         if ($deadline != null):
             $current_timestamp = Carbon::now()->timestamp;
             $deadline = Carbon::parse($deadline)->timestamp;
-            if($deadline <= $current_timestamp)
+            if ($deadline <= $current_timestamp)
                 return parent::error('Tournament has expired');
         endif;
 //        dd('out');
@@ -745,13 +745,13 @@ class TournamentsController extends ApiController {
             if ($checkTournamentLegs->number_of_legs_in_final == '2' && $tournamentfixtured->stage == 'final'):
                 $finalFixtureCountForKnockout = \App\TournamentFixture::where('tournament_id', $request->tournament_id)->whereNotNull('player_id_1_score')->whereNotNull('player_id_2_score')->where('stage', 'final');
 //            dd($finalFixtureCountForKnockout->get()->count());
-                if($finalFixtureCountForKnockout->get()->count() > 0):
+                if ($finalFixtureCountForKnockout->get()->count() > 0):
                     $player1scores = $request->player_id_1_score;
                     $player2scores = $request->player_id_2_score;
-                    $player1scores+= $finalFixtureCountForKnockout->first()->player_id_1_score;
-                    $player2scores+= $finalFixtureCountForKnockout->first()->player_id_2_score;
-                   
-                    if($player1scores == $player2scores):
+                    $player1scores += $finalFixtureCountForKnockout->first()->player_id_1_score;
+                    $player2scores += $finalFixtureCountForKnockout->first()->player_id_2_score;
+
+                    if ($player1scores == $player2scores):
                         return parent::error('Score ended in a tie, kindly play extra time or penalty shootout and update the result');
                     else:
                         $input = $request->all();
@@ -770,7 +770,7 @@ class TournamentsController extends ApiController {
                     $TournamnetFixed->fill($input);
                     $TournamnetFixed->save();
                     return parent::success(['message' => 'Scores has been successfully updated for final', 'tournamentFixtures' => $TournamnetFixed]);
-                    
+
                 endif;
             else:
                 if ($checkTournament->type == 'knockout' && $request->stage == 'final' && $request->player_id_1_score == $request->player_id_2_score):
@@ -871,13 +871,19 @@ class TournamentsController extends ApiController {
                         else:
                             $stage = 'final';
                         endif;
-//                        dd($checkTournamentLegs->legs_per_match_in_knockout_stage);
+//                        dd($checkTournamentLegs->toArray());
                         for ($i = 0; $i < $playersInKnockout[0];):
                             //creating double fixtures for auto-generated semi-finals  
                             $fixture[] = ['tournament_id' => $checkTournament->id, 'player_id_1' => $customsortarray[$i]['player']['id'], 'player_id_1_team_id' => $customsortarray[$i]['team']['id'], 'player_id_2' => $customsortarray[$i + 1]['player']['id'], 'player_id_2_team_id' => $customsortarray[$i + 1]['team']['id'], 'stage' => $stage];
                             if ($playersInKnockout[0] == $i + 2) {
                                 \App\TournamentFixture::insert($fixture);
-                                if ($checkTournamentLegs->legs_per_match_in_knockout_stage == '2'):
+//                                if ($checkTournamentLegs->legs_per_match_in_knockout_stage == '2'):
+//                                    \App\TournamentFixture::insert($fixture);
+//                                endif;
+                                if ($checkTournamentLegs->legs_per_match_in_knockout_stage == '2' && $checkTournamentLegs->number_of_players != '2'):
+                                    \App\TournamentFixture::insert($fixture);
+                                endif;
+                                if ($checkTournamentLegs->number_of_players == '2' && $checkTournamentLegs->number_of_legs_in_final == '2'):
                                     \App\TournamentFixture::insert($fixture);
                                 endif;
                                 break;
