@@ -11,6 +11,7 @@ use App\Tournament;
 use App\Tournament as MyModel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use DB;
 
 class TournamentsController extends ApiController {
 
@@ -1113,31 +1114,41 @@ class TournamentsController extends ApiController {
             return $validateAttributes;
         endif;
         try {
-            $user = \App\User::findOrFail(\Auth::id());
-//            $myfriends = new \App\UserFriend();
-//            $myfriends = $myfriends->select('id', 'user_id', 'friend_id');
-//            $myfriends = $myfriends->where(function($query) use ($request) {
-//                $query->where('user_id', \Auth::id());
-//                $query->orWhere('friend_id', \Auth::id());
-//            });
-//            $myfriends = $myfriends->where("status", "accepted")->pluck('user_id')->get()->toArray();
-
-
-            $players = new User();
-
-            $myfriends = User::wherein('id', \DB::table('user_friends')->where('status', 'accepted')->where('user_id', \Auth::id())->orWhere('friend_id', \Auth::id())->pluck('friend_id'))->get()->toArray();
-
-//            dd($myfriends);
-            $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state')->whereHas(
+            
+            //finding AUTH User friends
+            $myfriends = new \App\UserFriend();
+            $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
+            $myfriends = $myfriends->where(function($query) use ($request) {
+                $query->where('user_id', \Auth::id());
+                $query->orWhere('friend_id', \Auth::id());
+            });
+            $myfriends = $myfriends->where("status", "accepted");
+            $myFriendsUserId = [];
+            foreach ($myfriends->get() as $friends):
+                array_push($myFriendsUserId,($friends->friend_id == \Auth::id()) ? $friends->user_id : $friends->friend_id);
+            endforeach;
+            //ends
+            
+            //finding other users/players excluding friends
+            $playersOtherThenFriends = new User();
+            $playersOtherThenFriends = $playersOtherThenFriends->whereHas(
                     'roles', function($q) {
                 $q->where('name', 'Customer');
             }
             );
-//            $players = $players->where('id', '!=', \Auth::id());
-            $players = $players->whereNotIn('id', \DB::table('user_friends')->where('status', 'accepted')->where('user_id', \Auth::id())->orWhere('friend_id', \Auth::id())->pluck('friend_id'))->orderBy('id', 'DESC')->get()->toArray();
-            $players = array_merge($myfriends, $players);
-
-//            $players = $myfriends;
+            $playersOtherThenFriends = $playersOtherThenFriends->whereNotIn('id', $myFriendsUserId)->get()->pluck('id')->toArray();
+            
+            $playersWithFriendsOnTop = array_merge($myFriendsUserId, $playersOtherThenFriends);
+//            dd($playersWithFriendsOnTop);
+            //ends
+            
+            //after merging id of friends with rest user id now getting details of those users with friends on top from users table
+            
+            $players = new User();
+            $playersWithFriendsOnTop_ordered = implode(',', $playersWithFriendsOnTop);
+            $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state')->whereIn('id', $playersWithFriendsOnTop)->orderByRaw(DB::raw("FIELD(id, $playersWithFriendsOnTop_ordered)"))->get()->toArray();
+            
+            
 //            $perPage = isset($request->limit) ? $request->limit : 20;
 //            if (isset($request->search)) {
 //                $players = $players->where(function($query) use ($request) {
@@ -1245,6 +1256,7 @@ class TournamentsController extends ApiController {
                 $query->orWhere('friend_id', \Auth::id());
             });
             $myfriends = $myfriends->where("status", "accepted");
+//            dd($myfriends->get()->toArray());
 //            $myfriends = $myfriends->with(['userDetails']);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
