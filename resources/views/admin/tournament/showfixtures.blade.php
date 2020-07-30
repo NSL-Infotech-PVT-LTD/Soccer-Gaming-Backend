@@ -16,7 +16,7 @@
                         <table class="mytable">
                             <thead>
                                 <tr>
-                                    <th>#</th><th>Tournament Name</th><th>Type</th><th>Author</th><th>Reported By</th><th>Status</th>
+                                    <th>#</th><th>Tournament Name</th><th>Author</th><th>Reported By</th><th>Status</th><th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -32,7 +32,7 @@
                                             echo $item->tournament_id;
                                         ?>
                                     </td>
-                                    <td><?=($tournament->first()->type != null) ? $tournament->first()->type : "-" ?></td>
+                                    
                                     <td><?php
                                         $user = DB::table('users')->where('id', $item->tournament_created_by_id)->get();
                                         if($user->isEmpty()!=true)
@@ -49,33 +49,18 @@
                                             echo $item->created_by;
                                         ?>
                                     </td>
-                                    <td><?=($item->status == null) ? "<span style='color:orange;'>Pending</span>" : "<span style='color:green;'>$item->status</span>" ?></td>
-
-<!--                                    <td>
-                                        <?= ($item->state == '0') ? '' : "&nbsp;<a href=" . url('admin/editfixture/' . $item->id) . " style='color:red; text-decoration:none;position:absolute;' title = 'Edit Fixture'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button>
-</a>" ?>
-                                    </td>-->
-<!--                                    <td>
-
-                                        {!! Form::open([
-                                        'method' => 'DELETE',
-                                        'url' => ['/admin/tournament', $item->id],
-                                        'style' => 'display:inline'
-                                        ]) !!}
-                                        {!! Form::button('<i class="fa fa-trash-o" aria-hidden="true"></i>', array(
-                                        'type' => 'submit',
-                                        'class' => 'btn btn-danger btn-sm',
-                                        'title' => 'Delete Tournament',
-                                        'onclick'=>'return confirm("Confirm delete?")'
-                                        )) !!}
-                                        {!! Form::close() !!}
-                                    </td>-->
+                                    <td> <?php $status = ucfirst($item->status);
+                                    if($status == null): echo "<span style='color:orange;font-weight: 500;'>Pending</span>"; elseif($status == 'Accept'): echo "<span style='color:green;font-weight: 500;'>$status</span>"; else: echo "<span style='color:red;font-weight: 500;'>$status</span>"; endif; ?>
+                                    </td>
+                                    <td>
+                                        <a href="{{url('/admin/report/' . $item->id)}}" title='View Driver'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>#</th><th>Tournament Name</th><th>Type</th><th>Author</th><th>Reported By</th><th>Status</th>
+                                    <th>#</th><th>Tournament Name</th><th>Author</th><th>Reported By</th><th>Status</th><th>Action</th>
                                 </tr>
                             </tfoot>
                         </table>

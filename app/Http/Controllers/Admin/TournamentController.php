@@ -119,6 +119,13 @@ class TournamentController extends Controller {
 
         return view('admin.tournament.showfixtures', compact('tournamentfixtures'));
     }
+    
+    public function showTournamentPlayerFixtureReportIndividual(Request $request) {
+
+        $tournamentFixtureByReportId = \App\TournamentFixtureReport::where('id',$request->report_id)->first();
+//dd($tournamentFixtureByReportId);
+        return view('admin.tournament.showreportedfixturedetail', compact('tournamentFixtureByReportId'));
+    }
 
     /**
      * Show the form for editing the specified resource.
