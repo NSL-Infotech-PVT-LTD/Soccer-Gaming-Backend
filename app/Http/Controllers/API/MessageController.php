@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Hash;
 use App;
 use App\Message as MyModel;
+use Config;
 
 class MessageController extends ApiController {
 
@@ -31,9 +32,7 @@ class MessageController extends ApiController {
 
 // dd($data);
             $model = MyModel::create($data);
-// dd($model);
-
-            parent::pushNotifications(['title' => 'New Message Received', 'body' => $request->message, 'data' => ['target_id' => \Auth::id(), 'target_model' => 'Message', 'data_type' => 'message']], $request->receiver_id, TRUE);
+            parent::pushNotifications(['title' => config('constants.notifications.SEND_MESSAGE_TITLE'), 'body' => $request->message, 'data' => ['target_id' => \Auth::id(), 'target_model' => 'Message', 'data_type' => 'message']], $request->receiver_id, TRUE);
 
 
             return parent::success(['message' => 'Sent Successfully', 'model_data' => $model]);

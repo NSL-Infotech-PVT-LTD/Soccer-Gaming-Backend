@@ -237,7 +237,7 @@ class TournamentsController extends ApiController {
             $playerIDs[] = $request->$key;
         endfor;
 //        dd($playerIDs);
-        parent::pushNotificationMultiple(['title' => 'Tournament created', 'body' => 'You have added in a tournament', 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']], $playerIDs, TRUE);
+        parent::pushNotificationMultiple(['title' => config('constants.notifications.TOURNAMENT_CREATED_TITLE'), 'body' => config('constants.notifications.TOURNAMENT_CREATED_BODY'), 'data' => ['target_id' => $tournament->id, 'target_model' => 'Tournament', 'data_type' => 'AddedInTournament']], $playerIDs, TRUE);
 
         return parent::success(['message' => 'Your Tournament has been successfully created', 'tournaments' => $tournamentGet->first()]);
     }
@@ -606,7 +606,7 @@ class TournamentsController extends ApiController {
 //            dd($reportedTournamentFixture->id);
             $tournament = MyModel::findOrFail($request->tournament_id);
 
-            parent::pushNotifications(['title' => 'Fixture Reported', 'body' => 'Your Tournament Fixture has been Reported', 'data' => ['target_id' => $reportedTournamentFixture->id, 'target_model' => 'TournamentFixtureReport', 'data_type' => 'ReportFixtureResult']], $tournament->created_by, TRUE);
+            parent::pushNotifications(['title' => config('constants.notifications.FIXTURE_REPORTED_TITLE'), 'body' => config('constants.notifications.FIXTURE_REPORTED_BODY'), 'data' => ['target_id' => $reportedTournamentFixture->id, 'target_model' => 'TournamentFixtureReport', 'data_type' => 'ReportFixtureResult']], $tournament->created_by, TRUE);
 
             return parent::success(['message' => 'Reported Fixture added Successfully', 'data' => $reportedTournamentFixture]);
         } catch (\Exception $ex) {
@@ -688,9 +688,9 @@ class TournamentsController extends ApiController {
             if ($request->status == 'accept'):
 //                dd($reportedFixture->id);
                 \App\TournamentFixture::where('id', $reportedFixture->fixture_id)->update(['player_id_1_score' => $reportedFixture->player_id_1_score, 'player_id_2_score' => $reportedFixture->player_id_2_score]);
-                parent::pushNotifications(['title' => 'Fixture Report', 'body' => 'Your Report has been accepted', 'data' => ['target_id' => $reportedFixture->tournament_id, 'target_model' => 'Tournament', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
+                parent::pushNotifications(['title' => config('constants.notifications.FIXTURE_REQUEST_ACCEPT_TITLE'), 'body' => config('constants.notifications.FIXTURE_REQUEST_ACCEPT_BODY'), 'data' => ['target_id' => $reportedFixture->tournament_id, 'target_model' => 'Tournament', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
             elseif ($request->status == 'reject'):
-                parent::pushNotifications(['title' => 'Fixture Report', 'body' => 'Your Report has been rejected', 'data' => ['target_id' => $reportedFixture->tournament_id, 'target_model' => 'Tournament', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
+                parent::pushNotifications(['title' => config('constants.notifications.FIXTURE_REQUEST_REJECT_TITLE'), 'body' => config('constants.notifications.FIXTURE_REQUEST_REJECT_BODY'), 'data' => ['target_id' => $reportedFixture->tournament_id, 'target_model' => 'Tournament', 'data_type' => 'ReportFixtureResult']], $reportedFixture->created_by, TRUE);
             endif;
             return parent::success(['message' => 'Report Status updated Successfully', 'data' => $reportedFixture]);
         } catch (\Exception $ex) {
@@ -1235,7 +1235,7 @@ class TournamentsController extends ApiController {
 
 
         $userfriends = \App\UserFriend::create($input);
-        parent::pushNotifications(['title' => 'Friend Request', 'body' => 'You have a friend request', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+        parent::pushNotifications(['title' => config('constants.notifications.ADD_FRIEND_TITLE'), 'body' => config('constants.notifications.ADD_FRIEND_BODY'), 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
 
         return parent::success(['message' => 'Your friend request has been sent', 'userfriends' => $userfriends]);
     }
@@ -1324,7 +1324,7 @@ class TournamentsController extends ApiController {
             $frienddata = \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
 
             if ($request->status == 'accepted'):
-                parent::pushNotifications(['body' => 'Your Friend Request has been accepted', 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+                parent::pushNotifications(['body' => config('constants.notifications.REQUEST_ACCEPTED_TITLE'), 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
             endif;
 
 
