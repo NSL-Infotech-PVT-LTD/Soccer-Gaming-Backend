@@ -51,5 +51,18 @@ class Tournament extends Model {
         $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->select('id','tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score', 'stage','state', 'created_at')->with(['playerId_1', 'playerId_2']);
         return $data;
     }
+    
+    public function totalfixtures() {
+       $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id');
+       return $data; 
+    }
+    public function upcoming() {
+       $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->where('player_id_1_score',null)->where('player_id_2_score',null);
+       return $data; 
+    }
+    public function outstanding() {
+       $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->where('player_id_1_score', '!=' ,null)->where('player_id_2_score', '!=' ,null);
+       return $data; 
+    }
 
 }
