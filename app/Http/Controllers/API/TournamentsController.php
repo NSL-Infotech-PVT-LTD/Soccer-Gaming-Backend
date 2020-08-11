@@ -263,18 +263,19 @@ class TournamentsController extends ApiController {
 
     public function tournamentList(Request $request) {
 
-        $rules = ['search' => '', 'show_my' => ''];
+        $rules = ['search' => '', 'show_my' => '', 'is_running' => ''];
         $validateAttributes = parent::validateAttributes($request, 'POST', $rules, array_keys($rules), false);
         if ($validateAttributes):
             return $validateAttributes;
         endif;
         try {
-            $user = \App\User::findOrFail(\Auth::id());
-
+//            $user = \App\User::findOrFail(\Auth::id());
+            \DB::connection()->enableQueryLog();
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final', 'deadline');
             if ($request->show_my == 'my')
                 $tournament = $tournament->where("created_by", \Auth::id());
+
 
             $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
             $ids = array_merge($ids, MyModel::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
@@ -283,6 +284,12 @@ class TournamentsController extends ApiController {
             $tournament = $tournament->whereIn("id", $ids);
             $tournament = $tournament->whereNotIn("id", $completedTournamentIds);
 
+//                return dd(DB::getQueryLog());
+//                foreach($tournament as $tournament):
+//                    if(\App\TournamentFixture::where('tournament_id',$tournament->id)):
+//                        
+//                    endif;
+//                endforeach;
 //            $tournament = $tournament->where('type',$request->type);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
@@ -292,12 +299,15 @@ class TournamentsController extends ApiController {
                 });
             }
             $tournament = $tournament->with(['players']);
-            $tournament = $tournament->withCount(['totalfixtures']);
-            $tournament = $tournament->withCount(['upcoming']);
-            $tournament = $tournament->withCount(['outstanding']);
+            $tournament = $tournament->withCount(['totalfixtures', 'upcoming', 'outstanding']);
             $tournament = $tournament->orderby('id', 'desc');
 
+            if ($request->is_running == '1')
+                $tournament = $tournament->having('outstanding_count', '!=', '0');
+            
+            
             return parent::success($tournament->paginate($perPage));
+//            return parent::success($tournament->get());
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
@@ -1117,7 +1127,7 @@ class TournamentsController extends ApiController {
             return $validateAttributes;
         endif;
         try {
-            
+
             //finding AUTH User friends
             $myfriends = new \App\UserFriend();
             $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
@@ -1128,10 +1138,9 @@ class TournamentsController extends ApiController {
             $myfriends = $myfriends->where("status", "accepted");
             $myFriendsUserId = [];
             foreach ($myfriends->get() as $friends):
-                array_push($myFriendsUserId,($friends->friend_id == \Auth::id()) ? $friends->user_id : $friends->friend_id);
+                array_push($myFriendsUserId, ($friends->friend_id == \Auth::id()) ? $friends->user_id : $friends->friend_id);
             endforeach;
             //ends
-            
             //finding other users/players excluding friends
             $playersOtherThenFriends = new User();
             $playersOtherThenFriends = $playersOtherThenFriends->whereHas(
@@ -1140,18 +1149,17 @@ class TournamentsController extends ApiController {
             }
             );
             $playersOtherThenFriends = $playersOtherThenFriends->whereNotIn('id', $myFriendsUserId)->get()->pluck('id')->toArray();
-            
+
             $playersWithFriendsOnTop = array_merge($myFriendsUserId, $playersOtherThenFriends);
 //            dd($playersWithFriendsOnTop);
             //ends
-            
             //after merging id of friends with rest user id now getting details of those users with friends on top from users table
-            
+
             $players = new User();
             $playersWithFriendsOnTop_ordered = implode(',', $playersWithFriendsOnTop);
             $players = $players->select('id', 'username', 'first_name', 'last_name', 'email', 'email_verified_at', 'password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'is_login', 'is_notify', 'params', 'state')->whereIn('id', $playersWithFriendsOnTop)->orderByRaw(DB::raw("FIELD(id, $playersWithFriendsOnTop_ordered)"))->get()->toArray();
-            
-            
+
+
 //            $perPage = isset($request->limit) ? $request->limit : 20;
 //            if (isset($request->search)) {
 //                $players = $players->where(function($query) use ($request) {

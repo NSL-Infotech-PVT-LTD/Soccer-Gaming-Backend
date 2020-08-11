@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f2ba9fc56b676828220178ba9ffe215d",
+    "content-hash": "2d3c84a63bbcd47efaeb7d7ff79749c2",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -1087,6 +1087,49 @@
             "description": "Highlight PHP code in terminal",
             "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
+        },
+        {
+            "name": "justbetter/laravel-pagination-with-havings",
+            "version": "1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/justbetter/laravel-pagination-with-havings.git",
+                "reference": "845a17ca9344ca9a92f86ee90241556df1d52e87"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/justbetter/laravel-pagination-with-havings/zipball/845a17ca9344ca9a92f86ee90241556df1d52e87",
+                "reference": "845a17ca9344ca9a92f86ee90241556df1d52e87",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0",
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JustBetter\\PaginationWithHavings\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roy Duineveld",
+                    "email": "royduineveld@gmail.com"
+                }
+            ],
+            "description": "Makes it possible to use pagination with havings in queries.",
+            "homepage": "https://github.com/justbetter/laravel-pagination-with-havings",
+            "keywords": [
+                "having",
+                "laravel",
+                "pagination"
+            ],
+            "time": "2020-03-12T10:49:10+00:00"
         },
         {
             "name": "laravel/framework",

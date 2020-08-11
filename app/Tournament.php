@@ -5,11 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use JustBetter\PaginationWithHavings\PaginationWithHavings;
 
 class Tournament extends Model {
 
     use LogsActivity;
     use SoftDeletes;
+    use PaginationWithHavings;
 
     /**
      * The database table used by the model.
@@ -48,21 +50,23 @@ class Tournament extends Model {
     }
 
     public function fixtures() {
-        $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->select('id','tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score', 'stage','state', 'created_at')->with(['playerId_1', 'playerId_2']);
+        $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->select('id', 'tournament_id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score', 'stage', 'state', 'created_at')->with(['playerId_1', 'playerId_2']);
         return $data;
     }
-    
+
     public function totalfixtures() {
-       $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id');
-       return $data; 
+        $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id');
+        return $data;
     }
+
     public function upcoming() {
-       $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->where('player_id_1_score',null)->where('player_id_2_score',null);
-       return $data; 
+        $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->where('player_id_1_score', null)->where('player_id_2_score', null);
+        return $data;
     }
+
     public function outstanding() {
-       $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->where('player_id_1_score', '!=' ,null)->where('player_id_2_score', '!=' ,null);
-       return $data; 
+        $data = $this->hasMany('\App\TournamentFixture', 'tournament_id', 'id')->where('player_id_1_score', '!=', null)->where('player_id_2_score', '!=', null);
+        return $data;
     }
 
 }
