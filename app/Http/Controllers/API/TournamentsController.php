@@ -292,6 +292,9 @@ class TournamentsController extends ApiController {
                 });
             }
             $tournament = $tournament->with(['players']);
+            $tournament = $tournament->withCount(['totalfixtures']);
+            $tournament = $tournament->withCount(['upcoming']);
+            $tournament = $tournament->withCount(['outstanding']);
             $tournament = $tournament->orderby('id', 'desc');
 
             return parent::success($tournament->paginate($perPage));
