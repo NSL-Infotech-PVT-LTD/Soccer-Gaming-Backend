@@ -211,7 +211,10 @@ class ApiController extends \App\Http\Controllers\Controller {
 
         $optionBuilder = new OptionsBuilder();
         // $optionBuilder->setTimeToLive(60 * 20);
-        $notificationBuilder = new PayloadNotificationBuilder($data['title']);
+        if (isset($data['title']))
+            $notificationBuilder = new PayloadNotificationBuilder($data['title']);
+        else
+            $notificationBuilder = new PayloadNotificationBuilder();
         $notificationBuilder->setBody($data['body'])->setSound('default');
         $dataBuilder = new PayloadDataBuilder();
         $dataBuilder->addData(['target_id' => $data['data']['target_id']]);
