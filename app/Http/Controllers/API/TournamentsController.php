@@ -270,7 +270,7 @@ class TournamentsController extends ApiController {
         endif;
         try {
 //            $user = \App\User::findOrFail(\Auth::id());
-            \DB::connection()->enableQueryLog();
+//            \DB::connection()->enableQueryLog();
             $tournament = new Tournament();
             $tournament = $tournament->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final', 'deadline');
             if ($request->show_my == 'my')
@@ -283,7 +283,16 @@ class TournamentsController extends ApiController {
             $completedTournamentIds = self::getCompletedTournamentsId($request->type);
             $tournament = $tournament->whereIn("id", $ids);
             $tournament = $tournament->whereNotIn("id", $completedTournamentIds);
-
+            
+//            dd(date('Y-m-d H:i:s'));
+            $tournament = $tournament->where(function($q){
+                            $q->where(function($q){
+                                $q->whereNull('deadline');
+                            })->orWhere(function($q){
+                                $q->where('deadline', '>', date('Y-m-d H:i:s'));
+                            });
+                            });
+            
 //                return dd(DB::getQueryLog());
 //                foreach($tournament as $tournament):
 //                    if(\App\TournamentFixture::where('tournament_id',$tournament->id)):
@@ -302,9 +311,11 @@ class TournamentsController extends ApiController {
             $tournament = $tournament->withCount(['totalfixtures', 'upcoming', 'outstanding']);
             $tournament = $tournament->orderby('id', 'desc');
 
-            if ($request->is_running == '1')
+            if ($request->is_running == '1'){
                 $tournament = $tournament->having('outstanding_count', '!=', '0');
-            
+            }elseif($request->is_running == '0'){
+                $tournament = $tournament->having('outstanding_count', '==', '0');
+            }
             
             return parent::success($tournament->paginate($perPage));
 //            return parent::success($tournament->get());
