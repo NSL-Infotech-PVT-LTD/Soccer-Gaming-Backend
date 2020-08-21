@@ -301,12 +301,12 @@ class TournamentsController extends ApiController {
 //                endforeach;
 //            $tournament = $tournament->where('type',$request->type);
             $perPage = isset($request->limit) ? $request->limit : 20;
-            if (isset($request->search)) {
-                $tournament = $tournament->where(function($query) use ($request) {
-                    $query->where('name', 'LIKE', "%$request->search%")
-                            ->orWhere('type', 'LIKE', "%$request->search%");
-                });
-            }
+//            if (isset($request->search)) {
+//                $tournament = $tournament->where(function($query) use ($request) {
+//                    $query->where('name', 'LIKE', "%$request->search%")
+//                            ->orWhere('type', 'LIKE', "%$request->search%");
+//                });
+//            }
             $tournament = $tournament->with(['players']);
             $tournament = $tournament->withCount(['totalfixtures', 'upcoming', 'outstanding']);
             $tournament = $tournament->orderby('id', 'desc');
