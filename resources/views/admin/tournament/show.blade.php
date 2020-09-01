@@ -7,10 +7,10 @@
 
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Tournament {{ $tournament->id }}</div>
+                <div class="card-header">Tournament Details</div>
                 <div class="card-body">
 
-                    <a href="{{ url('/admin/tournament') }}" title="Back"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
+                    <a href="{{ url(url()->previous()) }}" title="Back"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
 <!--                    <a href="{{ url('/admin/tournament/' . $tournament->id . '/edit') }}" title="Edit Tournament"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
                     {!! Form::open([
                     'method'=>'DELETE',

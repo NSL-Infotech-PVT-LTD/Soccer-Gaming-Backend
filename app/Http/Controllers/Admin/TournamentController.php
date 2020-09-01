@@ -135,10 +135,6 @@ class TournamentController extends Controller {
             $tournament1 = $tournament1->where("type", $type);
         $tournament1 = $tournament1->get();
 
-        $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
-        $ids = array_merge($ids, Tournament::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
-//            dd($ids);
-        $tournament1 = $tournament1->whereIn("id", $ids);
         $completedTournamentIds = [];
 //            dd($tournament->toArray());
         foreach ($tournament1 as $items):
