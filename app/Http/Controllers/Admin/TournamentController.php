@@ -126,6 +126,36 @@ class TournamentController extends Controller {
 //dd($tournamentFixtureByReportId);
         return view('admin.tournament.showreportedfixturedetail', compact('tournamentFixtureByReportId'));
     }
+    
+    public function showCompletedTournaments(Request $request,$type = null) {
+       
+        $tournament1 = new Tournament();
+        $tournament1 = $tournament1->select('id', 'name', 'type', 'number_of_players', 'number_of_teams_per_player', 'number_of_plays_against_each_team', 'number_of_players_that_will_be_in_the_knockout_stage', 'legs_per_match_in_knockout_stage', 'number_of_legs_in_final');
+        if ($type != null)
+            $tournament1 = $tournament1->where("type", $type);
+        $tournament1 = $tournament1->get();
+
+        $ids = \App\TournamentPlayerTeam::where('player_id', \Auth::id())->get()->pluck('tournament_id')->toArray();
+        $ids = array_merge($ids, Tournament::where("created_by", \Auth::id())->get()->pluck('id')->toArray());
+//            dd($ids);
+        $tournament1 = $tournament1->whereIn("id", $ids);
+        $completedTournamentIds = [];
+//            dd($tournament->toArray());
+        foreach ($tournament1 as $items):
+            if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->get()->isEmpty() != true):
+                if (\App\TournamentFixture::where('tournament_id', '=', $items->id)->Where('player_id_2_score', '=', null)->get()->isEmpty() === true):
+                    $completedTournamentIds[] = $items->id;
+                endif;
+            endif;
+        endforeach;
+         if (!isset($completedTournamentIds))
+                return parent::error('No Tournament has completed yet');
+
+        $tournaments = new Tournament();
+        $completedtournaments = $tournaments->wherein('id', $completedTournamentIds)->get();
+//        dd($completedtournaments);
+        return view('admin.tournament.completedtournaments', compact('completedtournaments'));
+    }
 
     /**
      * Show the form for editing the specified resource.

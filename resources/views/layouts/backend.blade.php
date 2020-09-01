@@ -130,6 +130,7 @@
                     <li><a href="{{ url('admin/banner')}}"><i class="fa fa-picture-o"></i> <span>Banner Image</span></a></li>
                     <li><a href="{{ url('admin/configuration')}}"><i class="fa fa-cogs"></i> <span>Configuration</span></a></li>
                     <li><a href="{{ url('admin/player/fixtures/reported')}}"><i class="fa fa-file"></i> <span>Reported Fixtures</span></a></li>
+                    <li><a href="{{ url('admin/tournament/history')}}"><i class="fa fa-file"></i> <span>Tournament History</span></a></li>
                     
                    
 
