@@ -1117,8 +1117,8 @@ class TournamentsController extends ApiController {
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $teams = $teams->where(function($query) use ($request) {
-                    $query->where('team_name', 'LIKE', "$request->search%")
-                            ->orWhere('league_name', 'LIKE', "$request->search%");
+                    $query->where('team_name', 'LIKE', "%$request->search%")
+                            ->orWhere('league_name', 'LIKE', "%$request->search%");
                 });
             }
 //            $tournament = $tournament->with(['players']);
