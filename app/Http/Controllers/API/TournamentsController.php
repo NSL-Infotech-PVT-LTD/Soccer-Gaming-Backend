@@ -757,7 +757,7 @@ class TournamentsController extends ApiController {
 
         if (Tournament::where('id', $request->tournament_id)->where('created_by', \Auth::id())->get()->isEmpty() == true)
             if (($tournamentfixtured->player_id_1 != \Auth::id()) && ($tournamentfixtured->player_id_2 != \Auth::id()))
-                return parent::error('You are not allowed to update score');
+                return parent::error('You are not authorized! Only Tournament admin and participants can update this score');
 
         $fixtureForLegs = \App\TournamentFixture::where('tournament_id', '=', $request->tournament_id)->where('player_id_1', '=', $request->player_id_1)->where('player_id_1_team_id', '=', $request->player_id_1_team_id)->where('player_id_2_team_id', '=', $request->player_id_2_team_id)->where('player_id_2', '=', $request->player_id_2)->where('stage', '=', $request->stage)->get();
 
