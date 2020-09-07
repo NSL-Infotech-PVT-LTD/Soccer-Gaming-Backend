@@ -680,8 +680,11 @@ class TournamentsController extends ApiController {
             return $validateAttributes;
         endif;
         try {
-            $reportedFixture = \App\TournamentFixtureReport::findOrFail($request->id);
-            $reportedFixture = $reportedFixture->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'params', 'state', 'created_at', 'updated_at');
+            $reportedFixture = new \App\TournamentFixtureReport;
+//            $reportedFixture = \App\TournamentFixtureReport::findOrFail($request->id);
+            $reportedFixture = $reportedFixture->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'status', 'params', 'state', 'created_at', 'updated_at');
+            $reportedFixture = $reportedFixture->where('id',$request->id);
+//            dd($request->id);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $reportedFixture = $reportedFixture->where(function($query) use ($request) {
