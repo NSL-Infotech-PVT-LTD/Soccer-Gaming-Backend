@@ -117,7 +117,7 @@ class TournamentPlayerTeam extends Model {
 
         endforeach;
 
-        return $return;
+        return $return['0'];
     }
 
     public function getPlayerDataAttribute($value) {
