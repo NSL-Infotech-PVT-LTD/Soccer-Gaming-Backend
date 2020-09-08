@@ -338,7 +338,9 @@ class TournamentsController extends ApiController {
             $tournament = $tournament->with(['fixtures']);
             $tournament = $tournament->with(['players']);
             $data = $tournament->first()->toArray();
-            $data['players'] = self::orderBy($data['players'], 'player_data');
+            usort($data['players'], function($a, $b) {
+                return $b['player_data']['points'] - $a['player_data']['points'];
+            });
 //            dd(self::orderBy($data['players'], 'player_data'));
             return parent::success((object) $data);
         } catch (\Exception $ex) {
@@ -346,11 +348,11 @@ class TournamentsController extends ApiController {
         }
     }
 
-    public static function orderBy($data, $field) {
-        $code = "return strnatcmp(\$a['$field']['points'], \$b['$field']['points']);";
-        usort($data, create_function('$b,$a', $code));
-        return $data;
-    }
+//    public static function orderBy($data, $field) {
+//        $code = "return strnatcmp(\$a['$field']['points'], \$b['$field']['points']);";
+//        usort($data, create_function('$b,$a', $code));
+//        return $data;
+//    }
 
     public function getBannerImages(Request $request) {
         $rules = ['search' => ''];
