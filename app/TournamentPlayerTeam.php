@@ -177,7 +177,7 @@ class TournamentPlayerTeam extends Model {
 
 
         endforeach;
-        $return = ['played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points, 'avgpoints' => $avgpoints];
+        $return = ['played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points, 'avgpoints' => number_format((float)$avgpoints, 2, '.', '')];
         return $return;
     }
 
