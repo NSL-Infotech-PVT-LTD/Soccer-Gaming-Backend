@@ -780,7 +780,7 @@ class TournamentsController extends ApiController {
                     $player2scores += $finalFixtureCountForKnockout->first()->player_id_2_score;
 
                     if ($player1scores == $player2scores):
-//                        return parent::error('Score ended in a tie, kindly play extra time or penalty shootout and update the result');
+                        return parent::error('Score ended in a tie, kindly play extra time or penalty shootout and update the result');
                     else:
                         $input = $request->all();
                         $input['created_by'] = \Auth::id();
@@ -1032,7 +1032,7 @@ class TournamentsController extends ApiController {
                         return parent::success(['message' => 'Scores has been successfully Added and fixture generated for ' . $stage, 'tournamentFixtures' => $TournamnetFinal]);
                     endif;
                 else:
-//                    return parent::error('Score ended in a tie, kindly play extra time or penalty shootout and update the result');
+                    return parent::error('Score ended in a tie, kindly play extra time or penalty shootout and update the result');
                 endif;
             else:
                 //--------if number of legs per match in knockout stage is 1----------------
