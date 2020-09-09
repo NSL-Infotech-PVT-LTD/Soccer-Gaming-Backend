@@ -283,16 +283,16 @@ class TournamentsController extends ApiController {
             $completedTournamentIds = self::getCompletedTournamentsId($request->type);
             $tournament = $tournament->whereIn("id", $ids);
             $tournament = $tournament->whereNotIn("id", $completedTournamentIds);
-            
+
 //            dd(date('Y-m-d H:i:s'));
-            $tournament = $tournament->where(function($q){
-                            $q->where(function($q){
-                                $q->whereNull('deadline');
-                            })->orWhere(function($q){
-                                $q->where('deadline', '>', date('Y-m-d H:i:s'));
-                            });
-                            });
-            
+            $tournament = $tournament->where(function($q) {
+                $q->where(function($q) {
+                    $q->whereNull('deadline');
+                })->orWhere(function($q) {
+                    $q->where('deadline', '>', date('Y-m-d H:i:s'));
+                });
+            });
+
 //                return dd(DB::getQueryLog());
 //                foreach($tournament as $tournament):
 //                    if(\App\TournamentFixture::where('tournament_id',$tournament->id)):
@@ -311,12 +311,12 @@ class TournamentsController extends ApiController {
             $tournament = $tournament->withCount(['totalfixtures', 'upcoming', 'outstanding']);
             $tournament = $tournament->orderby('id', 'desc');
 
-            if ($request->is_running == '1'){
+            if ($request->is_running == '1') {
                 $tournament = $tournament->having('outstanding_count', '!=', '0');
-            }elseif($request->is_running == '0'){
+            } elseif ($request->is_running == '0') {
                 $tournament = $tournament->having('outstanding_count', '==', '0');
             }
-            
+
             return parent::success($tournament->paginate($perPage));
 //            return parent::success($tournament->get());
         } catch (\Exception $ex) {
@@ -337,12 +337,22 @@ class TournamentsController extends ApiController {
             $tournament = $tournament->where("id", $request->tournament_id);
             $tournament = $tournament->with(['fixtures']);
             $tournament = $tournament->with(['players']);
-
-            return parent::success($tournament->first());
+            $data = $tournament->first()->toArray();
+            usort($data['players'], function($a, $b) {
+                return $b['player_data']['points'] - $a['player_data']['points'];
+            });
+//            dd(self::orderBy($data['players'], 'player_data'));
+            return parent::success((object) $data);
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
         }
     }
+
+//    public static function orderBy($data, $field) {
+//        $code = "return strnatcmp(\$a['$field']['points'], \$b['$field']['points']);";
+//        usort($data, create_function('$b,$a', $code));
+//        return $data;
+//    }
 
     public function getBannerImages(Request $request) {
         $rules = ['search' => ''];
@@ -647,7 +657,7 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $reportedFixtures = new \App\TournamentFixtureReport();
-            $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage','status', 'created_at', 'updated_at', 'created_by', 'updated_by');
+            $reportedFixtures = $reportedFixtures->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by');
 
             //if status is pending
             if ($request->status == 'pending'):
@@ -683,7 +693,7 @@ class TournamentsController extends ApiController {
             $reportedFixture = new \App\TournamentFixtureReport;
 //            $reportedFixture = \App\TournamentFixtureReport::findOrFail($request->id);
             $reportedFixture = $reportedFixture->select('id', 'tournament_id', 'fixture_id', 'player_id_1', 'player_id_1_score', 'player_id_1_team_id', 'player_id_2', 'player_id_2_score', 'player_id_2_team_id', 'stage', 'status', 'params', 'state', 'created_at', 'updated_at');
-            $reportedFixture = $reportedFixture->where('id',$request->id);
+            $reportedFixture = $reportedFixture->where('id', $request->id);
 //            dd($request->id);
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {

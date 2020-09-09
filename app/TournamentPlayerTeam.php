@@ -46,6 +46,7 @@ class TournamentPlayerTeam extends Model {
     public function player() {
         return $this->hasOne('\App\User', 'id', 'player_id')->select('id', 'username', 'first_name', 'last_name', 'image', 'email');
     }
+
 //    public function getplayerTeamsAttribute($value) {
 //        $arr = TournamentPlayerTeam::where('tournament_id', $this->tournament_id)->where('player_id', $this->player_id)->get()->toArray();
 //        return $arr;
@@ -68,7 +69,7 @@ class TournamentPlayerTeam extends Model {
         foreach ($arr as $team_id):
 
 
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1_team_id', $team_id)->where('player_id_1_score', '!=' ,null)->get() as $tournamentTeam):
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1_team_id', $team_id)->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
 
 
                 $played = $played + 1;
@@ -85,7 +86,7 @@ class TournamentPlayerTeam extends Model {
                     $draw = $draw + 1;
             endforeach;
 
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2_team_id', $team_id)->where('player_id_2_score', '!=' ,null)->get() as $tournamentTeam):
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2_team_id', $team_id)->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
 
                 $played = $played + 1;
                 $scored = $scored + $tournamentTeam->player_id_2_score;
@@ -101,11 +102,11 @@ class TournamentPlayerTeam extends Model {
             endforeach;
 
             $points = $won * 3 + $draw * 1;
-            
+
 //            $fixtures = TournamentFixture::where('tournament_id', $this->tournament_id)->whereNotNull('player_id_1_score')->whereNotNull('player_id_2_score')->get();
 //            $avgpoints = ($points > 0)?$points / count($fixtures):0; 
-            
-            $return[] = ['team' =>(Team::where('id',$team_id)->get()->isEmpty() != true)?Team::where('id',$team_id)->select('id', 'team_name', 'image')->first():(['team_name' => $team_id]), 'played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points];
+
+            $return[] = ['team' => (Team::where('id', $team_id)->get()->isEmpty() != true) ? Team::where('id', $team_id)->select('id', 'team_name', 'image')->first() : (['team_name' => $team_id]), 'played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points];
             $played = 0;
             $won = 0;
             $draw = 0;
@@ -117,7 +118,7 @@ class TournamentPlayerTeam extends Model {
 
         endforeach;
 
-        return $return;
+        return isset($return['0']) ? $return['0'] : [];
     }
 
     public function getPlayerDataAttribute($value) {
@@ -138,7 +139,7 @@ class TournamentPlayerTeam extends Model {
         foreach ($arr as $team_id):
 
 
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1_team_id', $team_id)->where('player_id_1_score', '!=' ,null)->get() as $tournamentTeam):
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1_team_id', $team_id)->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
 
                 $played = $played + 1;
                 $scored = $scored + $tournamentTeam->player_id_1_score;
@@ -154,7 +155,7 @@ class TournamentPlayerTeam extends Model {
                     $draw = $draw + 1;
             endforeach;
 
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2_team_id', $team_id)->where('player_id_2_score', '!=' ,null)->get() as $tournamentTeam):
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2_team_id', $team_id)->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
 
                 $played = $played + 1;
                 $scored = $scored + $tournamentTeam->player_id_2_score;
@@ -172,11 +173,11 @@ class TournamentPlayerTeam extends Model {
             $points = $won * 3 + $draw * 1;
 
             $fixtures = TournamentFixture::where('tournament_id', $this->tournament_id)->whereNotNull('player_id_1_score')->whereNotNull('player_id_2_score')->get();
-            $avgpoints = ($points > 0)?$points / $played:0; 
+            $avgpoints = ($points > 0) ? $points / $played : 0;
 
 
         endforeach;
-        $return = ['played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points, 'avgpoints' =>$avgpoints];
+        $return = ['played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points, 'avgpoints' => number_format((float)$avgpoints, 2, '.', '')];
         return $return;
     }
 
