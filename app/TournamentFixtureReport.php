@@ -58,7 +58,7 @@ class TournamentFixtureReport extends Model {
         if ($model->get()->isEmpty() != true)
             return $model->select('id', 'team_name', 'image')->where('id', $this->player_id_1_team_id)->first();
 //        return $this->player_id_1_team_id;
-        return (['team_name' => $this->player_id_1_team_id]);
+        return (['id' => 0, 'team_name' => $this->player_id_1_team_id, 'image' => '']);
     }
 
     public function getPlayerIdTwoTeamIdAttribute() {
@@ -66,7 +66,7 @@ class TournamentFixtureReport extends Model {
         if ($model->get()->isEmpty() != true)
             return $model->select('id', 'team_name', 'image')->where('id', $this->player_id_2_team_id)->first();
 //        return $this->player_id_2_team_id;
-        return (['team_name' => $this->player_id_2_team_id]);
+        return (['id' => 0,'team_name' => $this->player_id_2_team_id, 'image' => '']);
     }
 
     public function tournamentDetails() {
@@ -74,7 +74,7 @@ class TournamentFixtureReport extends Model {
     }
 
     public function oldScore() {
-        return $this->hasOne(TournamentFixture::class, 'id', 'fixture_id')->select('id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score','created_at', 'updated_at')->with(['playerId_1', 'playerId_2']);
+        return $this->hasOne(TournamentFixture::class, 'id', 'fixture_id')->select('id', 'player_id_1', 'player_id_1_team_id', 'player_id_1_score', 'player_id_2', 'player_id_2_team_id', 'player_id_2_score', 'created_at', 'updated_at')->with(['playerId_1', 'playerId_2']);
     }
 
     public function reportedBy() {
