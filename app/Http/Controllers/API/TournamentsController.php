@@ -1223,7 +1223,7 @@ class TournamentsController extends ApiController {
 
 //            $players = $players->where("id", '!=', \Auth::id());
             $players = $players->wherein('id', \DB::table('role_user')->where('role_id', '2')->pluck('user_id'));
-
+            dd($players->get()->toArray());
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $players = $players->where(function($query) use ($request) {
