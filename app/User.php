@@ -95,8 +95,9 @@ class User extends Authenticatable {
     }
 
     public function getFriendRequestSentStatusAttribute() {
-//        dd($this->username);
+        
         $model = UserFriend::where([['user_id', \Auth::id()],['friend_id', $this->id]])->orWhere([['user_id', $this->id],['friend_id', \Auth::id()]])->get();
+       
         if ($this->id == \Auth::id()):
             return 'accepted';
         endif;
@@ -106,7 +107,12 @@ class User extends Authenticatable {
             elseif ($model->first()->status == 'rejected'):
                 return 'rejected';
             elseif ($model->first()->status == 'pending'):
-                return 'pending';
+                if($model->first()->friend_id == \Auth::id()):
+                    return 'received';
+                else:    
+                    return 'pending';
+                endif;
+                
             endif;
         else:
             return 'not_sent';
