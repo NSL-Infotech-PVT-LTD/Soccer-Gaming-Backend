@@ -754,6 +754,11 @@ class TournamentsController extends ApiController {
             return parent::error('fixture does not exist');
         //deadline check
         $tournamentdeadline = Tournament::where('id', $request->tournament_id)->first();
+
+        if ($tournamentdeadline->type == 'knockout')
+            if (\App\TournamentFixtureReport::where('tournament_id', $request->tournament_id)->whereNull('status')->get()->isEmpty() != true)
+                return parent::error('One of the Fixture is reported kindly resolve and update fixture');
+
         $deadline = $tournamentdeadline->deadline;
         if ($deadline != null):
             $current_timestamp = Carbon::now()->timestamp;
