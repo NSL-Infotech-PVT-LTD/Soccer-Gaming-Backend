@@ -5,10 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Team extends Model
-{
+class Team extends Model {
+
     use LogsActivity;
-    
 
     /**
      * The database table used by the model.
@@ -18,10 +17,10 @@ class Team extends Model
     protected $table = 'teams';
 
     /**
-    * The database primary key value.
-    *
-    * @var string
-    */
+     * The database primary key value.
+     *
+     * @var string
+     */
     protected $primaryKey = 'id';
 
     /**
@@ -31,8 +30,6 @@ class Team extends Model
      */
     protected $fillable = ['team_name', 'league_name', 'image'];
 
-    
-
     /**
      * Change activity log event description
      *
@@ -40,8 +37,23 @@ class Team extends Model
      *
      * @return string
      */
-    public function getDescriptionForEvent($eventName)
-    {
+    public function getDescriptionForEvent($eventName) {
         return __CLASS__ . " model has been {$eventName}";
     }
+
+    public function getTeamNameAttribute($value) {
+        try {
+            return ucfirst($value);
+        } catch (\Exception $ex) {
+            return $value;
+        }
+    }
+    public function getLeagueNameAttribute($value) {
+        try {
+            return ucfirst($value);
+        } catch (\Exception $ex) {
+            return $value;
+        }
+    }
+
 }
