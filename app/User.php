@@ -43,6 +43,13 @@ class User extends Authenticatable {
     ];
 
 //    protected $appends = array('role');
+    public function getUsernameAttribute($value) {
+        try {
+            return ucfirst($value);
+        } catch (\Exception $ex) {
+            return $value;
+        }
+    }
     public function getFirstNameAttribute($value) {
         try {
             return ucfirst($value);
