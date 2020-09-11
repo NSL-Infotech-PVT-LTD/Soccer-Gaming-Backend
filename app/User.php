@@ -21,7 +21,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'username', 'first_name', 'last_name', 'email', 'password', 'confirm_password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'remember_token','is_notify'];
+        'username', 'first_name', 'last_name', 'email', 'password', 'confirm_password', 'image', 'xbox_id', 'ps4_id', 'youtube_id', 'twitch_id', 'remember_token', 'is_notify'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -43,9 +43,14 @@ class User extends Authenticatable {
     ];
 
 //    protected $appends = array('role');
-//    public function getUserImageAttribute($value) {
-//        return User::where('id', $this->created_by)->value('image');
-//    }
+    public function getFirstNameAttribute($value) {
+        try {
+            return ucfirst($value);
+        } catch (\Exception $ex) {
+            return $value;
+        }
+    }
+
 //    public function getRoleAttribute() {
 //        try {
 //            $rolesID = \DB::table('role_user')->where('user_id', $this->id)->pluck('role_id');
@@ -86,7 +91,7 @@ class User extends Authenticatable {
     public function getFriendRequestSentAttribute() {
 //        dd();
         $model = UserFriend::where('user_id', \Auth::id())->where('friend_id', $this->id)->get();
-        
+
         if ($model->isEmpty() !== true):
             return true;
         else:
@@ -95,9 +100,9 @@ class User extends Authenticatable {
     }
 
     public function getFriendRequestSentStatusAttribute() {
-        
-        $model = UserFriend::where([['user_id', \Auth::id()],['friend_id', $this->id]])->orWhere([['user_id', $this->id],['friend_id', \Auth::id()]])->get();
-       
+
+        $model = UserFriend::where([['user_id', \Auth::id()], ['friend_id', $this->id]])->orWhere([['user_id', $this->id], ['friend_id', \Auth::id()]])->get();
+
         if ($this->id == \Auth::id()):
             return 'accepted';
         endif;
@@ -107,12 +112,12 @@ class User extends Authenticatable {
             elseif ($model->first()->status == 'rejected'):
                 return 'rejected';
             elseif ($model->first()->status == 'pending'):
-                if($model->first()->friend_id == \Auth::id()):
+                if ($model->first()->friend_id == \Auth::id()):
                     return 'received';
-                else:    
+                else:
                     return 'pending';
                 endif;
-                
+
             endif;
         else:
             return 'not_sent';

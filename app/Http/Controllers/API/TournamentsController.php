@@ -1346,20 +1346,20 @@ class TournamentsController extends ApiController {
             return $validateAttributes;
         endif;
         try {
-            $user = \App\User::findOrFail(\Auth::id());
+//            $user = \App\User::findOrFail(\Auth::id());
 
             $friends = new \App\UserFriend();
             $friends = $friends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
-
             $friends = $friends->where("user_id", $request->friend_id)->where("friend_id", \Auth::id())->where("status", "pending")->get();
 //            dd($friends);
             if (count($friends) < 1):
                 return parent::error(['message' => 'Request not found for this player']);
             endif;
-            $frienddata = \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
-
             if ($request->status == 'accepted'):
+                \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
                 parent::pushNotifications(['body' => config('constants.notifications.REQUEST_ACCEPTED_TITLE'), 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
+            else:
+                \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->delete();
             endif;
 
 
