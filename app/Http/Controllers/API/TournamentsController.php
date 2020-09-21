@@ -1394,10 +1394,12 @@ class TournamentsController extends ApiController {
         endif;
         try {
             $myfriends = new \App\UserFriend();
-            $myfriends = $myfriends->where(function($query) use ($request) {
-                    $query->where('user_id', $request->id);
-                    $query->where('friend_id', \Auth::id());
-                    $myfriends = $myfriends->orWhere(function($query) use ($request) {
+            $myfriends = $myfriends->where(function($q) use ($request) {
+                    $q->where(function($query) use ($request) {
+                        $query->where('user_id', $request->id);
+                        $query->where('friend_id', \Auth::id());
+                    })
+                    ->orWhere(function($query) use ($request) {
                         $query->where('user_id', \Auth::id());
                         $query->where('friend_id', $request->id);
                     });
@@ -1407,11 +1409,11 @@ class TournamentsController extends ApiController {
 //                    $query->where('friend_id', $request->id);
 //                });
             $myfriends = $myfriends->where("status", "accepted");
-//            dd($myfriends);
+           
             if ($myfriends->get()->isEmpty() == true)
                 return parent::error('No Friend found for this player');
 //            dd($myfriends->get()->toArray());
-//            $model = $myfriends->delete();
+            $model = $myfriends->delete();
             return parent::success('Friend Removed Successfully');
         } catch (\Exception $ex) {
             return parent::error($ex->getMessage());
