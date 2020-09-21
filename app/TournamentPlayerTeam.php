@@ -52,7 +52,7 @@ class TournamentPlayerTeam extends Model {
 //        return $arr;
 //    }
     public function getTeamsAttribute($value) {
-        $arr = TournamentPlayerTeam::where('tournament_id', $this->tournament_id)->where('player_id', $this->player_id)->get()->pluck('team_id')->toArray();
+        $arr = TournamentPlayerTeam::where('tournament_id', $this->tournament_id)->where('player_id', $this->player_id)->get()->pluck('player_id')->toArray();
 
 
         $return = [];
@@ -69,7 +69,7 @@ class TournamentPlayerTeam extends Model {
         foreach ($arr as $team_id):
 
 
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1_team_id', $team_id)->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1', $team_id)->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
 
 
                 $played = $played + 1;
@@ -86,7 +86,7 @@ class TournamentPlayerTeam extends Model {
                     $draw = $draw + 1;
             endforeach;
 
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2_team_id', $team_id)->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2', $team_id)->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
 
                 $played = $played + 1;
                 $scored = $scored + $tournamentTeam->player_id_2_score;
@@ -122,7 +122,7 @@ class TournamentPlayerTeam extends Model {
     }
 
     public function getPlayerDataAttribute($value) {
-        $arr = TournamentPlayerTeam::where('tournament_id', $this->tournament_id)->where('player_id', $this->player_id)->get()->pluck('team_id')->toArray();
+        $arr = TournamentPlayerTeam::where('tournament_id', $this->tournament_id)->where('player_id', $this->player_id)->get()->pluck('player_id')->toArray();
 
 
         $return = [];
@@ -139,7 +139,7 @@ class TournamentPlayerTeam extends Model {
         foreach ($arr as $team_id):
 
 
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1_team_id', $team_id)->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1', $team_id)->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
 
                 $played = $played + 1;
                 $scored = $scored + $tournamentTeam->player_id_1_score;
@@ -155,7 +155,7 @@ class TournamentPlayerTeam extends Model {
                     $draw = $draw + 1;
             endforeach;
 
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2_team_id', $team_id)->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2', $team_id)->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
 
                 $played = $played + 1;
                 $scored = $scored + $tournamentTeam->player_id_2_score;
