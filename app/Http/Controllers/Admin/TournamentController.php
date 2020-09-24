@@ -46,8 +46,11 @@ class TournamentController extends Controller {
                             ->addIndexColumn()
                             ->addColumn('action', function($item) {
                                 $return = '';
-                                $return .= " <a href=" . url('/admin/tournament/' . $item->id) . " title='View Tournament'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
-                                $return .= " <a href=" . url('/admin/tournamentPlayers/' . $item->id) . " title='View Tournament Players'><button class='btn btn-info btn-sm'><i class='fa fa-gamepad' aria-hidden='true'></i></button></a>";
+                                $return .= " <a href=" . url('/admin/tournament/' . $item->id) . " title='View Tournament' class='inline'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
+                                $return .= " <a href=" . url('/admin/tournamentPlayers/' . $item->id) . " title='View Tournament Players' class='inline'><button class='btn btn-info btn-sm'><i class='fa fa-gamepad' aria-hidden='true'></i></button></a>";
+                                
+                                $return .= " <button class='btn btn-danger btn-sm btnDelete inline' type='submit' data-remove='" . url('/admin/tournament/' . $item->id) . "'><i class='fa fa-trash-o' aria-hidden='true'></i></button>";
+                                
                                 return $return;
                             })
                             ->rawColumns(['action', 'image'])
@@ -222,9 +225,13 @@ class TournamentController extends Controller {
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function destroy($id) {
-        Tournament::destroy($id);
-
-        return redirect('admin/tournament')->with('flash_message', 'Tournament deleted!');
+        if (Tournament::destroy($id)) {
+            $data = 'Success';
+        } else {
+            $data = 'Failed';
+        }
+//        return redirect('admin/tournament')->with('flash_message', 'Tournament deleted!');
+        return response()->json($data);
     }
 
     public function changeStatus(Request $request) {
