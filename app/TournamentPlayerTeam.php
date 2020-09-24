@@ -52,7 +52,7 @@ class TournamentPlayerTeam extends Model {
 //        return $arr;
 //    }
     public function getTeamsAttribute($value) {
-        $arr = TournamentPlayerTeam::where('tournament_id', $this->tournament_id)->where('player_id', $this->player_id)->get()->pluck('player_id')->toArray();
+        $arr = TournamentPlayerTeam::where('tournament_id', $this->tournament_id)->where('player_id', $this->player_id)->get()->pluck('team_id')->toArray();
 
 
         $return = [];
