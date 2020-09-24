@@ -32,7 +32,7 @@
 <script type="text/javascript">
     $(function () {
     var table = $('.data-table').DataTable({
-        
+
     processing: true,
             serverSide: true,
             ajax: "{{ route('tournament.index') }}",
@@ -42,7 +42,7 @@
     <?php if ($rule == 'type'): ?>
                     {data: 'type', name: 'type', orderable: false},
     <?php elseif ($rule == 'number_of_players'): ?>
-                    {data: 'number_of_players', name: 'number_of_players', orderable: false, searchable: false,  className: "text-center"},
+                    {data: 'number_of_players', name: 'number_of_players', orderable: false, searchable: false, className: "text-center"},
     <?php elseif ($rule == 'number_of_teams_per_player'): ?>
                     {data: 'number_of_teams_per_player', name: 'number_of_teams_per_player', orderable: false, searchable: false, className: "text-center"},
     <?php elseif ($rule == 'created_at'): ?>
@@ -58,5 +58,36 @@
 //deleting data
     }
     );
+    //deleting data
+    $('.data-table').on('click', '.btnDelete[data-remove]', function (e) {
+    e.preventDefault();
+    var url = $(this).data('remove');
+    swal.fire({
+    title: "Are you sure want to remove this item?",
+            text: "Data will be Temporary Deleted!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Confirm",
+            cancelButtonText: "Cancel",
+    }).then((result) => {
+    Swal.showLoading();
+    if (result.value) {
+    $.ajax({
+    url: url,
+            type: 'DELETE',
+            dataType: 'json',
+            data: {method: '_DELETE', submit: true, _token: '{{csrf_token()}}'},
+            success: function (data) {
+            if (data == 'Success') {
+//            location.reload();
+            swal.fire("Deleted!", "Tournament has been deleted", "success");
+            $('.table').DataTable().ajax.reload();
+            }
+            }
+    });
+    }
+    });
+    });
 </script>
 @endsection
