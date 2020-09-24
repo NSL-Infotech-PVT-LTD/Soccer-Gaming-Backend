@@ -105,9 +105,9 @@ class TournamentPlayerTeam extends Model {
 
 //            $fixtures = TournamentFixture::where('tournament_id', $this->tournament_id)->whereNotNull('player_id_1_score')->whereNotNull('player_id_2_score')->get();
 //            $avgpoints = ($points > 0)?$points / count($fixtures):0; 
-            $team = Team::where('id', $team_id)->get();
+            $team = Team::where('id', $team_id);
             $teamFinal = ['id' => 0, 'team_name' => $team_id, 'image' => ''];
-            if ($team->isEmpty() != true)
+            if ($team->get()->isEmpty() != true)
                 $teamFinal = $team->select('id', 'team_name', 'image')->first();
 //(Team::where('id', $team_id)->get()->isEmpty() != true) ? (Team::where('id', $team_id)->select('id', 'team_name', 'image')->first()) : (['team_name' => $team_id])
             $return[] = ['team' => $teamFinal, 'played' => $played, 'won' => $won, 'losses' => $losses, 'draw' => $draw, 'scored' => $scored, 'against' => $against, 'difference' => $difference, 'points' => $points];
