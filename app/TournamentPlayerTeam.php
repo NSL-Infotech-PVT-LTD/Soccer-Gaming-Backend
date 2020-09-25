@@ -68,10 +68,9 @@ class TournamentPlayerTeam extends Model {
 //        $avgpoints = 0;
 
         foreach ($arr as $team_id):
-
-
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1_team_id', $team_id)->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
-
+//dd($team_id);
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_1_team_id', $team_id)->where('player_id_1', $this->player_id)->where('player_id_1_score', '!=', null)->get() as $tournamentTeam):
+//dd($tournamentTeam);
 
                 $played = $played + 1;
                 $scored = $scored + $tournamentTeam->player_id_1_score;
@@ -87,7 +86,7 @@ class TournamentPlayerTeam extends Model {
                     $draw = $draw + 1;
             endforeach;
 
-            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2_team_id', $team_id)->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
+            foreach (TournamentFixture::where('tournament_id', $this->tournament_id)->where('player_id_2_team_id', $team_id)->where('player_id_2', $this->player_id)->where('player_id_2_score', '!=', null)->get() as $tournamentTeam):
 
                 $played = $played + 1;
                 $scored = $scored + $tournamentTeam->player_id_2_score;
