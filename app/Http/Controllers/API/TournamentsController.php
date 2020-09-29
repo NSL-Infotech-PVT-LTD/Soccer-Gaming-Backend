@@ -1368,7 +1368,7 @@ class TournamentsController extends ApiController {
             if (count($friends) < 1):
                 return parent::error(['message' => 'Request not found for this player']);
             endif;
-            $frienddata = \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
+            $frienddata = \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->delete();
 
             if ($request->status == 'accepted'):
                 parent::pushNotifications(['body' => config('constants.notifications.REQUEST_ACCEPTED_TITLE'), 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
