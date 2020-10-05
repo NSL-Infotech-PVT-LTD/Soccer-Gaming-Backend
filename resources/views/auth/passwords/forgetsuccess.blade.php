@@ -5,7 +5,7 @@
 <div class="container">
     <div class="row justify-content-center">
          <div class="log">
-                <img src="/tournie/public/tik.png">
+                <img src="/tik.png">
  
             </div>
         <div class="col-md-12">
