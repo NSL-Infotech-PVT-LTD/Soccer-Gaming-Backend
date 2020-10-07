@@ -1379,6 +1379,7 @@ class TournamentsController extends ApiController {
                 parent::pushNotifications(['body' => config('constants.notifications.REQUEST_ACCEPTED_TITLE'), 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
             else:
                 \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->delete();
+                \App\Notification::where('data', 'LIKE', '%' . 'UserFriend' . '%')->where('data', 'LIKE', '%' . $request->friend_id . '%')->where('target_id', \Auth::id())->delete();
             endif;
 
 
