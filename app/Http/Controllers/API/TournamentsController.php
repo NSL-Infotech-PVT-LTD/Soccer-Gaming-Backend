@@ -1181,11 +1181,10 @@ class TournamentsController extends ApiController {
             $playersOtherThenFriends = $playersOtherThenFriends->whereNotIn('id', $myFriendsUserId)->get()->pluck('id')->toArray();
 
             $playersWithFriendsOnTop = array_merge($myFriendsUserId, $playersOtherThenFriends);
-            
+
             //for adding auth id on top of player list array
-            array_unshift($playersWithFriendsOnTop,\Auth::id());
+            array_unshift($playersWithFriendsOnTop, \Auth::id());
             //ends
-          
             //after merging id of friends with rest user id now getting details of those users with friends on top from users table
 
             $players = new User();
@@ -1292,14 +1291,14 @@ class TournamentsController extends ApiController {
             return $validateAttributes;
         endif;
         try {
-            if(isset($request->friendrequests) &&  $request->friendrequests == 'true'){
-              
+            if (isset($request->friendrequests) && $request->friendrequests == 'true') {
+
                 $myfriendrequests = new \App\UserFriend();
                 $myfriendrequests = $myfriendrequests->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
 
                 $myfriendrequests = $myfriendrequests->where("friend_id", \Auth::id())->where("status", "pending");
                 $myfriends = $myfriendrequests;
-            }else{
+            } else {
                 $user = \App\User::findOrFail(\Auth::id());
                 $myfriends = new \App\UserFriend();
                 $myfriends = $myfriends->select('id', 'user_id', 'friend_id', 'status', 'params', 'state');
@@ -1309,7 +1308,7 @@ class TournamentsController extends ApiController {
                 });
                 $myfriends = $myfriends->where("status", "accepted");
             }
-            
+
             $perPage = isset($request->limit) ? $request->limit : 20;
             if (isset($request->search)) {
                 $myfriends = $myfriends->where(function($query) use ($request) {
@@ -1376,6 +1375,7 @@ class TournamentsController extends ApiController {
 
             if ($request->status == 'accepted'):
                 \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->update(['status' => $request->status]);
+                \App\Notification::where('data', 'LIKE', '%' . 'UserFriend' . '%')->where('data', 'LIKE', '%' . $request->friend_id . '%')->where('target_id', \Auth::id())->delete();
                 parent::pushNotifications(['body' => config('constants.notifications.REQUEST_ACCEPTED_TITLE'), 'data' => ['target_id' => \Auth::id(), 'target_model' => 'UserFriend', 'data_type' => 'FriendRequest']], $request->friend_id, TRUE);
             else:
                 \App\UserFriend::where([['user_id', $request->friend_id], ['friend_id', \Auth::id()]])->delete();
@@ -1388,7 +1388,7 @@ class TournamentsController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
-    
+
     public function removeFriend(Request $request) {
 //        dd('s');
         $rules = ['id' => 'required|exists:users,id'];
@@ -1399,21 +1399,21 @@ class TournamentsController extends ApiController {
         try {
             $myfriends = new \App\UserFriend();
             $myfriends = $myfriends->where(function($q) use ($request) {
-                    $q->where(function($query) use ($request) {
-                        $query->where('user_id', $request->id);
-                        $query->where('friend_id', \Auth::id());
-                    })
-                    ->orWhere(function($query) use ($request) {
-                        $query->where('user_id', \Auth::id());
-                        $query->where('friend_id', $request->id);
-                    });
-                });
+                $q->where(function($query) use ($request) {
+                            $query->where('user_id', $request->id);
+                            $query->where('friend_id', \Auth::id());
+                        })
+                        ->orWhere(function($query) use ($request) {
+                            $query->where('user_id', \Auth::id());
+                            $query->where('friend_id', $request->id);
+                        });
+            });
 //            $myfriends = $myfriends->orWhere(function($query) use ($request) {
 //                    $query->where('user_id', \Auth::id());
 //                    $query->where('friend_id', $request->id);
 //                });
             $myfriends = $myfriends->where("status", "accepted");
-           
+
             if ($myfriends->get()->isEmpty() == true)
                 return parent::error('No Friend found for this player');
 //            dd($myfriends->get()->toArray());
@@ -1423,7 +1423,7 @@ class TournamentsController extends ApiController {
             return parent::error($ex->getMessage());
         }
     }
-    
+
     public function clubList(Request $request) {
 
         $rules = [];
