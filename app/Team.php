@@ -64,6 +64,5 @@ class Team extends Model {
            $return =  env('APP_URL').'uploads/team_image/'.$value; 
         }
         return $return;
-        dd($return);
     }
 }
