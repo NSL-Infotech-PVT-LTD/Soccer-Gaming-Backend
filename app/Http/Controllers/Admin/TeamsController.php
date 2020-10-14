@@ -44,6 +44,7 @@ class TeamsController extends Controller {
                             ->addColumn('action', function($item) {
                                 $return = '';
                                 $return .= " <a href=" . url('/admin/teams/' . $item->id) . " title='View Driver'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
+                                $return .= " <a href=" . url('/admin/teams/' . $item->id . '/edit') . " title='Edit Team'><button class='btn btn-primary btn-sm'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></button></a>";
                                 return $return;
                             })
                             ->rawColumns(['action','image'])

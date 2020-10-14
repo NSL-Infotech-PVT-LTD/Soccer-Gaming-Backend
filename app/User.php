@@ -13,6 +13,7 @@ class User extends Authenticatable {
 
     use HasApiTokens,
         Notifiable,
+        \Illuminate\Database\Eloquent\SoftDeletes,
         HasRoles;
 
     /**
@@ -50,6 +51,7 @@ class User extends Authenticatable {
             return $value;
         }
     }
+
     public function getFirstNameAttribute($value) {
         try {
             return ucfirst($value);

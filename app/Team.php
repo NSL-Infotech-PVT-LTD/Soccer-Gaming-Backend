@@ -48,6 +48,7 @@ class Team extends Model {
             return $value;
         }
     }
+
     public function getLeagueNameAttribute($value) {
         try {
             return ucfirst($value);
@@ -56,4 +57,13 @@ class Team extends Model {
         }
     }
 
+    public function getImageAttribute($value) {
+        if (strpos($value, 'https://fut.best') !== false) {
+            $return = $value;
+        }else{
+           $return =  env('APP_URL').'uploads/team_image/'.$value; 
+        }
+        return $return;
+        dd($return);
+    }
 }

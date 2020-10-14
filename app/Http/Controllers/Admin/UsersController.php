@@ -68,7 +68,9 @@ class UsersController extends Controller {
 //                                endif;
                                 $return .= " <a href=" . url('/admin/users/' . $item->id) . " title='View Player'><button class='btn btn-info btn-sm'><i class='fa fa-eye' aria-hidden='true'></i></button></a>";
 //                                $return .= " <a href=" . url('/admin/playerfriends/' . $item->id) . " title='Player friends'><button class='btn btn-warning btn-sm'><i class='fa fa-users' aria-hidden='true'></i></button></a>";
-
+                                if ($role_id != '1') {
+                                    $return .= "&nbsp;<button class='btn btn-danger btn-sm btnDelete' type='submit' data-remove='" . url('/admin/users/' . $item->id) . "'><i class='fa fa-trash-o' aria-hidden='true'></i> </button>";
+                                }
                                 return $return;
                             })
                             ->rawColumns(['action'])
@@ -237,10 +239,18 @@ class UsersController extends Controller {
      *
      * @return void
      */
+//    public function destroy($id) {
+//        User::destroy($id);
+//        return redirect('admin/users')->with('flash_message', 'User deleted!');
+//    }
     public function destroy($id) {
-        User::destroy($id);
-        return redirect('admin/users')->with('flash_message', 'User deleted!');
-    }
+       if (User::destroy($id)) {
+           $data = 'Success';
+       } else {
+           $data = 'Failed';
+       }
+       return response()->json($data);
+   }
 
     public function changeStatus(Request $request) {
         $user = User::findOrFail($request->id);
