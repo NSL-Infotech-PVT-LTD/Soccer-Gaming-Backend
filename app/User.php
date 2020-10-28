@@ -13,7 +13,7 @@ class User extends Authenticatable {
 
     use HasApiTokens,
         Notifiable,
-        \Illuminate\Database\Eloquent\SoftDeletes,
+//        \Illuminate\Database\Eloquent\SoftDeletes,
         HasRoles;
 
     /**

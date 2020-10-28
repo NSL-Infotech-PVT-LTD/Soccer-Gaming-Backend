@@ -244,13 +244,25 @@ class UsersController extends Controller {
 //        return redirect('admin/users')->with('flash_message', 'User deleted!');
 //    }
     public function destroy($id) {
-       if (User::destroy($id)) {
-           $data = 'Success';
-       } else {
-           $data = 'Failed';
-       }
-       return response()->json($data);
-   }
+//        dd($id);
+        if (User::destroy($id)) {
+            $tournamentBYUserId = \App\Tournament::where('created_by', $id)->get()->pluck('id')->toArray();
+            \App\Notification::where('target_id', $id)->delete();
+            \App\UserFriend::where('user_id', $id)->delete();
+            \App\UserFriend::where('friend_id', $id)->delete();
+            \App\Message::where('sender_id', $id)->delete();
+            \App\Message::where('receiver_id', $id)->delete();
+            \App\TournamentFixture::whereIN('tournament_id', $tournamentBYUserId)->delete();
+            \App\TournamentPlayerTeam::whereIN('tournament_id', $tournamentBYUserId)->delete();
+            \App\Tournament::where('created_by', $id)->delete();
+            \App\TournamentFixture::whereIN('tournament_id', $tournamentBYUserId)->delete();
+            \App\TournamentPlayerTeam::whereIN('tournament_id', $tournamentBYUserId)->delete();
+            $data = 'Success';
+        } else {
+            $data = 'Failed';
+        }
+        return response()->json($data);
+    }
 
     public function changeStatus(Request $request) {
         $user = User::findOrFail($request->id);
